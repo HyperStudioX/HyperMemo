@@ -31,12 +31,12 @@ VITE_API_BASE_URL=https://your-api-gateway.example.com
 `VITE_API_BASE_URL` should point to the Firebase HTTPS Functions base URL (2nd gen, Python runtime) that calls Vertex AI for summaries/embeddings and orchestrates Firestore + Google Docs operations.
 
 ## Firebase Functions (Python)
-Backend code lives in `functions/` and targets Python 3.11 with the Firebase Functions SDK:
+Backend code lives in `functions/` and targets Python 3.11 with the Firebase Functions SDK. You can either call the commands manually or rely on the new Makefile helpers (`make backend-install`, `make backend-deploy`):
 
 ```bash
 cd functions
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt  # installs firebase-functions, firebase-admin, google-cloud-firestore>=2.19.0, etc.
 firebase login
 firebase functions:config:set vertex.location="us-central1"  # optional overrides
 firebase deploy --only functions

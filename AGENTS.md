@@ -7,11 +7,9 @@
 - Build artifacts are emitted to `dist/` after running `pnpm run build`. Avoid hand-editing generated files.
 
 ## Build, Test, and Development Commands
-- `pnpm install` – install front-end dependencies.  
-- `pnpm run dev` – Vite dev server + CRX reloader (load `dist/` as an unpacked extension).  
-- `pnpm run build` – type-check + production bundle.  
-- `pnpm run lint` – Biome checks.  
-- Backend workflow: `cd functions && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt` for local setup, `firebase deploy --only functions` to ship Python Cloud Functions.
+- Front-end: `pnpm install`, `pnpm run dev`, `pnpm run build`, `pnpm run lint`.  
+- Makefile shortcuts: `make install`, `make front-dev`, `make front-build`, `make front-lint`, `make backend-install`, `make backend-deploy`.  
+- Backend manual workflow: `cd functions && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt` (installs firebase-functions, firebase-admin, google-cloud-firestore>=2.19.0, etc.), then `firebase deploy --only functions`.
 
 ## Coding Style & Naming Conventions
 - TypeScript/React code uses ES modules, React 18 function components, and absolute imports via the `@/` alias.  
