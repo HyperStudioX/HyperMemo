@@ -1,0 +1,175 @@
+:root {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 360px;
+}
+
+.popup {
+  padding: 1rem;
+  min-height: 560px;
+}
+
+.popup__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.popup__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 0.25rem;
+}
+
+label > button.text {
+  align-self: flex-start;
+  padding: 0.25rem 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-group__label {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.form-group > button.text {
+  align-self: flex-start;
+  padding: 0.25rem 0.5rem;
+}
+
+input,
+textarea {
+  border-radius: 0.4rem;
+  border: 1px solid #cbd5f5;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.popup__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+button {
+  border-radius: 0.4rem;
+  border: 1px solid transparent;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button.primary {
+  background: linear-gradient(120deg, #2563eb, #7c3aed);
+  color: white;
+}
+
+button.text {
+  background: transparent;
+  color: #2563eb;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bookmark-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bookmark-list li {
+  background: white;
+  padding: 0.75rem;
+  border-radius: 0.6rem;
+  border: 1px solid #e2e8f0;
+}
+
+.bookmark-list a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.bookmark-list__tags {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.bookmark-list__tags span {
+  background: #e0e7ff;
+  color: #3730a3;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.7rem;
+}
+
+.tag-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag-input__chips {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.tag-input__chips button {
+  background: #e0f2fe;
+  color: #0c4a6e;
+  border: none;
+  font-size: 0.75rem;
+}
+
+.tag-input__field {
+  flex: 1;
+  min-width: 100px;
+}
+
+.popup__status {
+  font-size: 0.85rem;
+  color: #0f172a;
+}

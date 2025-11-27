@@ -1,0 +1,41 @@
+{
+  "name": "hypermemo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HyperMemo Chrome extension: smart bookmarking, RAG-powered recall, and Google Docs export.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json && vite build",
+    "preview": "vite preview",
+    "lint": "biome lint ."
+  },
+  "keywords": [
+    "chrome-extension",
+    "react",
+    "rag",
+    "firebase"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^11.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "swr": "^2.2.5",
+    "uuid": "^11.0.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@crxjs/vite-plugin": "^2.2.1",
+    "@types/chrome": "^0.0.269",
+    "@types/node": "^24.10.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "type-fest": "^5.2.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}
