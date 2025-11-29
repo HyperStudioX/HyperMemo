@@ -1,0 +1,7 @@
+node_modules
+lib
+.gocache
+.uv-cache
+.venv
+__pycache__/
+*.pyc

@@ -30,6 +30,41 @@ body {
   align-items: flex-start;
 }
 
+.popup__user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.popup__user img,
+.popup__avatar-fallback {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #dbebff;
+}
+
+.popup__avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1d4ed8;
+  color: white;
+  font-weight: 600;
+}
+
+.popup__user-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+}
+
+.popup__user-meta strong {
+  font-size: 0.9rem;
+}
+
 .popup__form {
   display: flex;
   flex-direction: column;

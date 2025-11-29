@@ -1,5 +1,11 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  browserLocalPersistence,
+  inMemoryPersistence,
+  setPersistence
+} from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -15,5 +21,13 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
 export const firebaseAuth = getAuth(app);
 firebaseAuth.useDeviceLanguage();
+void setPersistence(firebaseAuth, browserLocalPersistence).catch(async () => {
+  try {
+    await setPersistence(firebaseAuth, inMemoryPersistence);
+  } catch (error) {
+    console.warn('Failed to set Firebase auth persistence', error);
+  }
+});
+
 export const googleProvider = new GoogleAuthProvider();
 export const firestore = getFirestore(app);

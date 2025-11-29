@@ -5,14 +5,19 @@ import manifest from './src/manifest';
 import path from 'node:path';
 
 export default defineConfig(() => ({
-  plugins: [react(), crx({ manifest })],
-  build: {
-    sourcemap: true,
-    target: 'esnext'
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src')
+    plugins: [react(), crx({ manifest })],
+    build: {
+        sourcemap: true,
+        target: 'esnext'
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src')
+        }
+    },
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/test/setup.ts'
     }
-  }
 }));

@@ -12,5 +12,5 @@ export type RagResponse = {
 };
 
 export async function draftAnswerFromBookmarks(question: string): Promise<RagResponse> {
-  return apiClient.post<RagResponse>('/rag/query', { question });
+  return apiClient.post<RagResponse>('/rag_query', { question });
 }

@@ -4,9 +4,10 @@ import { useBookmarksContext } from '@/contexts/BookmarkContext';
 import type { Bookmark, ChatMessage, NoteDocument } from '@/types/bookmark';
 import { draftAnswerFromBookmarks, type RagMatch } from '@/services/ragService';
 import { composeNoteFromBookmarks, exportNoteToGoogleDocs } from '@/services/notesService';
+import { ApiError } from '@/services/apiClient';
 
 export default function DashboardApp() {
-  const { user, login, logout } = useAuth();
+  const { user, login, logout, loading } = useAuth();
   const { bookmarks } = useBookmarksContext();
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -49,7 +50,29 @@ export default function DashboardApp() {
       setQuestion('');
     } catch (error) {
       console.error('Failed to query RAG backend', error);
-      setChatError('Unable to reach the retrieval service. Please try again.');
+      if (error instanceof ApiError) {
+        if (error.status === 401) {
+          setChatError('Authentication failed. Please sign in again.');
+        } else if (error.status === 400) {
+          const errorBody = error.body as { error?: string } | undefined;
+          setChatError(errorBody?.error || 'Invalid request. Please check your question.');
+        } else if (error.status >= 500) {
+          setChatError('Server error. Please try again later.');
+        } else {
+          const errorBody = error.body as { error?: string } | undefined;
+          setChatError(errorBody?.error || `Request failed (${error.status})`);
+        }
+      } else if (error instanceof Error) {
+        if (error.message.includes('fetch') || error.message.includes('network')) {
+          setChatError('Network error. Please check your connection and try again.');
+        } else if (error.message.includes('VITE_API_BASE_URL')) {
+          setChatError('API configuration error. Please check your environment settings.');
+        } else {
+          setChatError(`Error: ${error.message}`);
+        }
+      } else {
+        setChatError('Unable to reach the retrieval service. Please try again.');
+      }
     } finally {
       setChatLoading(false);
     }
@@ -77,23 +100,39 @@ export default function DashboardApp() {
     setExporting(false);
   };
 
+  if (loading) {
+    return (
+      <div className="dashboard dashboard--loading">
+        <p>Loading workspace…</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="dashboard dashboard--auth">
+        <div className="dashboard__auth-card">
+          <h1>Sign in to HyperMemo</h1>
+          <p>You need to be signed in to view your bookmarks, chat history, and note exports.</p>
+          <button type="button" className="primary" onClick={login}>
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard">
       <header>
         <h1>HyperMemo workspace</h1>
         <div>
-          {user ? (
-            <>
-              <span>{user.email}</span>
-              <button type="button" onClick={logout}>
-                Sign out
-              </button>
-            </>
-          ) : (
-            <button type="button" onClick={login}>
-              Sign in with Google
+          <>
+            <span>{user.email}</span>
+            <button type="button" onClick={logout}>
+              Sign out
             </button>
-          )}
+          </>
         </div>
       </header>
 

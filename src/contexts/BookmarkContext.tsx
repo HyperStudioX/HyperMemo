@@ -13,6 +13,7 @@ import {
   removeBookmark,
   BOOKMARK_CACHE_KEY
 } from '@/services/bookmarkService';
+import { useAuth } from '@/contexts/AuthContext';
 
 export type BookmarkContextValue = {
   bookmarks: Bookmark[];
@@ -40,6 +41,7 @@ export function useBookmarksContext(): BookmarkContextValue {
 function useProvideBookmarks(): BookmarkContextValue {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -52,8 +54,13 @@ function useProvideBookmarks(): BookmarkContextValue {
   }, []);
 
   useEffect(() => {
+    if (!user) {
+      setBookmarks([]);
+      setLoading(false);
+      return;
+    }
     refresh();
-  }, [refresh]);
+  }, [user, refresh]);
 
   useEffect(() => {
     if (typeof chrome === 'undefined' || !chrome.storage) return;

@@ -27,18 +27,22 @@ VITE_FIREBASE_STORAGE_BUCKET=...
 VITE_FIREBASE_MESSAGING_SENDER_ID=...
 VITE_FIREBASE_APP_ID=...
 VITE_API_BASE_URL=https://your-api-gateway.example.com
+VITE_GOOGLE_OAUTH_CLIENT_ID=...
+VITE_AUTO_ANON_LOGIN=true
+VITE_AUTH_WAIT_TIMEOUT_MS=5000
 ```
-`VITE_API_BASE_URL` should point to the Firebase HTTPS Functions base URL (2nd gen, Python runtime) that calls Vertex AI for summaries/embeddings and orchestrates Firestore + Google Docs operations.
 
-## Firebase Functions (Python)
-Backend code lives in `functions/` and targets Python 3.11 with the Firebase Functions SDK. You can either call the commands manually or rely on the new Makefile helpers (`make backend-install`, `make backend-deploy`):
+`VITE_API_BASE_URL` should point to the Firebase HTTPS Functions base URL (2nd gen, Node 20 runtime) that calls Vertex AI for summaries/embeddings and orchestrates Firestore + Google Docs operations.
+
+## Firebase Functions (TypeScript)
+Backend code lives in `functions/` and is written in TypeScript targeting Node 20. Use the Makefile helpers (`make backend-install`, `make backend-deploy`) or run the commands manually:
 
 ```bash
 cd functions
-uv venv --python 3.11
-uv pip install -r requirements.txt  # installs firebase-functions, firebase-admin, google-cloud-firestore>=2.19.0, etc.
 firebase login
-firebase functions:config:set vertex.location="us-central1"  # optional overrides
+pnpm install
+pnpm run build
+firebase functions:config:set vertex.location="asia-northeast1"  # optional overrides
 firebase deploy --only functions
 ```
 
@@ -47,7 +51,7 @@ Endpoints exposed:
 - `bookmarks`: GET/POST upserts with Vertex summaries/tags + embeddings saved to Firestore.
 - `summaries` / `summary_tags`: lightweight Gemini helpers for the popup.
 - `rag_query`: embeds the user question, compares against stored vectors, and returns `{ answer, matches }`.
-- `export_note`: placeholder for Google Docs export (wire OAuth + Docs API before production).
+- `export_note` (temporarily disabled): placeholder for Google Docs export (wire OAuth + Docs API before production).
 
 ## Backend expectations
 - `/bookmarks` (GET/POST/PUT/DELETE) stores bookmark metadata and embeddings through Firebase Cloud Functions into your vector store.

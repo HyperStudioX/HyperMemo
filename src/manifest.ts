@@ -5,6 +5,9 @@ export default defineManifest({
   name: 'HyperMemo',
   version: '0.1.0',
   description: 'Smart bookmarking + RAG recall + Google Docs export powered by Firebase.',
+  content_security_policy: {
+    extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
   action: {
     default_popup: 'pages/popup/index.html',
     default_icon: {

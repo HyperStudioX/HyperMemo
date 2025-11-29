@@ -41,6 +41,15 @@ export default function PopupApp() {
   }, []);
 
   const recentBookmarks = useMemo<Bookmark[]>(() => bookmarks.slice(0, 5), [bookmarks]);
+  const userInitials = useMemo(() => {
+    if (!user) return '?';
+    const source = user.displayName || user.email || '?';
+    const initials = source
+      .split(/\s+/)
+      .map((chunk) => chunk[0] ?? '')
+      .join('');
+    return (initials || '?').slice(0, 2).toUpperCase();
+  }, [user]);
 
   const openWorkspace = () => {
     if (typeof chrome !== 'undefined' && chrome.runtime?.openOptionsPage) {
@@ -95,7 +104,8 @@ export default function PopupApp() {
   const handleSave = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!user) {
-      await login();
+      setStatusMessage('Please sign in before saving');
+      return;
     }
     if (!form.url) {
       setStatusMessage('Missing URL');
@@ -132,9 +142,20 @@ export default function PopupApp() {
           {loading ? (
             <span>Loading…</span>
           ) : user ? (
-            <button type="button" className="text" onClick={logout}>
-              Sign out
-            </button>
+            <div className="popup__user">
+              {user.photoURL ? (
+                <img src={user.photoURL} alt={user.displayName || user.email || 'Account'} />
+              ) : (
+                <span className="popup__avatar-fallback">{userInitials}</span>
+              )}
+              <div className="popup__user-meta">
+                <strong>{user.displayName || 'Signed in'}</strong>
+                {user.email && <small>{user.email}</small>}
+                <button type="button" className="text" onClick={logout}>
+                  Sign out
+                </button>
+              </div>
+            </div>
           ) : (
             <button type="button" className="primary" onClick={login}>
               Sign in with Google
@@ -196,8 +217,8 @@ export default function PopupApp() {
           <button type="button" onClick={handleSummarize} disabled={summarizing}>
             {summarizing ? 'Summarizing…' : 'Auto summarize'}
           </button>
-          <button type="submit" className="primary" disabled={saving}>
-            {saving ? 'Saving…' : 'Save to HyperMemo'}
+          <button type="submit" className="primary" disabled={!user || saving}>
+            {!user ? 'Sign in to save' : saving ? 'Saving…' : 'Save to HyperMemo'}
           </button>
         </div>
         {statusMessage && <p className="popup__status">{statusMessage}</p>}

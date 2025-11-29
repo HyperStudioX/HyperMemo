@@ -1,7 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "files": {
-    "ignore": ["dist", "node_modules"]
+    "ignore": ["dist", "node_modules", "functions/venv", "functions/.venv"]
   },
   "linter": {
     "enabled": true,
