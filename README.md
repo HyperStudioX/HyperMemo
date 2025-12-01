@@ -23,6 +23,8 @@ make frontend-install   # Install dependencies
 make frontend-dev       # Start Vite dev server
 make frontend-build     # Production build
 make frontend-lint      # Run Biome lint
+make frontend-test      # Run Vitest suite (jsdom)
+make backend-test       # Run Deno unit tests for Edge helpers
 ```
 If pnpm warns about ignored install scripts, run `pnpm approve-builds` once to whitelist them.
 
@@ -75,6 +77,21 @@ Endpoints exposed:
 - `summaries` / `summary-tags`: lightweight OpenAI helpers for the popup.
 - `rag-query`: embeds the user question, scores saved bookmarks in-memory, and responds with `{ answer, matches }`.
 - `notes/export`: (TODO) placeholder for Google Docs export—wire your own Drive workflow when ready.
+
+## Testing
+
+| Area      | Command               | Notes |
+|-----------|-----------------------|-------|
+| Frontend  | `make frontend-test`  | Runs Vitest with jsdom (components + services). |
+| Backend   | `make backend-test`   | Executes Deno tests in `supabase/functions`. |
+| Pre-commit| `npx lint-staged` + tests | Husky hook invokes lint-staged, Vitest, and Deno tests before every commit. |
+
+To run everything manually:
+
+```bash
+make frontend-lint frontend-test
+make backend-lint backend-test
+```
 
 ## Backend expectations
 - `/bookmarks` (GET/POST/PUT/DELETE) stores bookmark metadata and embeddings through Supabase Edge Functions into Postgres.
