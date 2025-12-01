@@ -67,7 +67,6 @@ Checks that all required files are present:
 - manifest.json
 - popup page
 - dashboard page
-- icons
 
 ### 4. Package for Chrome Web Store
 

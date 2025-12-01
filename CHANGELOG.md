@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Admin CLI tools for subscription management and user statistics
-- Documentation for Admin CLI (`docs/ADMIN_CLI.md`)
+- Documentation for Admin CLI (`docs/admin-cli.md`)
 - Table format output for admin stats script
 
 ### Changed
