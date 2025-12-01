@@ -7,14 +7,14 @@
 - Build artifacts are emitted to `dist/` after running `pnpm run build`. Avoid hand-editing generated files.
 
 ## Build, Test, and Development Commands
-- Front-end: `pnpm install`, `pnpm run dev`, `pnpm run build`, `pnpm run lint`.  
-- Makefile shortcuts: `make install`, `make front-dev`, `make front-build`, `make front-lint`, `make supabase-db`, `make supabase-functions`.  
-- Backend workflow: `supabase db push` applies migrations, and `supabase functions deploy bookmarks summaries summary-tags rag-query` publishes the Edge Functions (ensure `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and OpenAI env vars are set).
+- Front-end: `make frontend-install`, `make frontend-dev`, `make frontend-build`, `make frontend-lint`.  
+- Backend: `make backend-db` (migrations), `make backend-functions` (deploy functions), `make backend-lint` (lint functions).
+- Backend workflow: Ensure `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and OpenAI env vars are set before deploying.
 
 ## Coding Style & Naming Conventions
 - TypeScript/React code uses ES modules, React 18 function components, and absolute imports via the `@/` alias.  
 - Prefer descriptive camelCase for variables/functions and PascalCase for components/context providers.  
-- Run `pnpm run lint` before committing; Biome enforces spacing, quote style, and basic best practices. Keep files ASCII unless a dependency already uses Unicode.
+- Run `make frontend-lint` and `make backend-lint` before committing; Pre-commit hooks will also enforce this.
 
 ## Testing Guidelines
 
@@ -32,8 +32,8 @@ Currently, the primary testing method is manual verification using the unpacked 
 - **Services**: Check the console for any API or Supabase errors.
 
 ### Static Analysis
-- **Linting**: `pnpm run lint` (Biome) checks for formatting and code quality.
-- **Type Checking**: `pnpm run build` performs a full TypeScript check.
+- **Linting**: `make frontend-lint` (Biome) and `make backend-lint` (Deno).
+- **Type Checking**: `make frontend-build` performs a full TypeScript check.
 
 ### Automated Testing (Future)
 - **Framework**: Vitest is the planned test runner.
@@ -43,7 +43,7 @@ Currently, the primary testing method is manual verification using the unpacked 
 ## Commit & Pull Request Guidelines
 - Use conventional, action-oriented commit messages (e.g., `feat: add popup summary autosuggest`).  
 - Each pull request should include: purpose summary, screenshots/gifs for UI changes (popup + dashboard), and references to related issues.  
-- Verify `pnpm run build` and `pnpm run lint` succeed before requesting review; attach any manual test notes (e.g., “loaded unpacked extension in Chrome 129”).
+- Verify `make frontend-build` and `make frontend-lint` succeed before requesting review.
 
 ## Security & Configuration Tips
 - Store Supabase, OpenAI, and Google API credentials in `.env` files (prefixed with `VITE_…` for the client, regular env vars for functions); never commit secrets.  

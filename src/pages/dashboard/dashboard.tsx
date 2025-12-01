@@ -398,8 +398,14 @@ export default function DashboardApp() {
             {/* Left Sidebar - Always Bookmarks */}
             <aside className="sidebar">
                 <div className="sidebar__header">
-                    <h1>My Library</h1>
-                    <span className="text-subtle">{bookmarks.length} items</span>
+                    <div className="flex-center" style={{ gap: '0.75rem' }}>
+                        <img src="/icons/icon-48.png" alt="HyperMemo" style={{ width: 32, height: 32 }} />
+                        <h1 style={{ fontSize: '1.25rem', letterSpacing: '-0.025em' }}>HyperMemo</h1>
+                    </div>
+                </div>
+                <div style={{ padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', background: 'var(--bg-subtle)', fontSize: '0.75rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <span>My Library</span>
+                    <span className="badge badge-subtle">{bookmarks.length}</span>
                 </div>
                 <div className="sidebar__list">
                     {bookmarks.map((bookmark) => (
@@ -458,16 +464,7 @@ export default function DashboardApp() {
                             style={{ opacity: 0.5, cursor: 'not-allowed', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                         >
                             Notes
-                            <span style={{
-                                fontSize: '0.65rem',
-                                background: '#f1f5f9',
-                                padding: '2px 6px',
-                                borderRadius: '4px',
-                                border: '1px solid #e2e8f0',
-                                color: '#64748b',
-                                fontWeight: 600,
-                                textTransform: 'uppercase'
-                            }}>Soon</span>
+                            <span className="badge badge-subtle">Coming Soon</span>
                         </button>
                     </div>
                     <div className="flex-center">
@@ -562,7 +559,14 @@ export default function DashboardApp() {
                             </div>
                         ) : (
                             <div className="empty-state">
-                                <p>Select a bookmark from the sidebar to view its summary.</p>
+                                <div className="flex-center" style={{ flexDirection: 'column', gap: '1.5rem', opacity: 0.8 }}>
+                                    <img src="/icons/icon-128.png" alt="HyperMemo" style={{ width: 80, height: 80 }} />
+                                    <div style={{ textAlign: 'center' }}>
+                                        <h1 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.025em', marginBottom: '0.5rem', color: '#1e293b' }}>HyperMemo</h1>
+                                        <p style={{ fontSize: '1.125rem', color: '#64748b', margin: 0 }}>Your Second Brain for the Web</p>
+                                    </div>
+                                    <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginTop: '1rem' }}>Select a bookmark from the sidebar to view details</p>
+                                </div>
                             </div>
                         )
                     )}

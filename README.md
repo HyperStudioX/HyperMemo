@@ -5,15 +5,15 @@ A Chrome extension that helps you save, organize, and explore your bookmarks. As
 ## Features
 - **Quick capture**: Save any webpage with one click. Get AI-generated summaries and suggested tags to help you organize your bookmarks.
 - **Chat with your bookmarks**: Ask questions about your saved content and get answers with links back to the original sources.
-- **Note builder**: Select bookmarks, write notes, and export everything to Google Docs with a single click.
+- **Note builder** (Coming Soon): Select bookmarks, write notes, and export everything to Google Docs with a single click.
 - **Secure authentication**: Sign in with your Google account to keep your bookmarks private and synced.
 
 ## Setup
 ```bash
-pnpm install
-pnpm run dev        # Vite dev server + CRX reloader (load dist/ as unpacked extension)
-pnpm run build      # type-check + production build into dist/
-pnpm run lint       # Biome formatting + lint rules
+make frontend-install   # Install dependencies
+make frontend-dev       # Start Vite dev server
+make frontend-build     # Production build
+make frontend-lint      # Run Biome lint
 ```
 If pnpm warns about ignored install scripts, run `pnpm approve-builds` once to whitelist them.
 
@@ -43,9 +43,8 @@ Use the Supabase CLI (or GitHub Action) to push schema changes and deploy functi
 ```bash
 supabase login
 supabase link --project-ref YOUR_PROJECT_REF
-supabase db push                           # applies SQL migrations
-supabase functions deploy bookmarks summaries summary-tags rag-query \
-  --project-ref YOUR_PROJECT_REF
+make backend-db         # applies SQL migrations
+make backend-functions  # deploys bookmarks, summaries, rag_query, notes
 ```
 
 Environment variables consumed by the functions (set via `supabase functions secrets set ...`):
@@ -70,7 +69,7 @@ Endpoints exposed:
 ## Project layout
 - `src/pages/popup` – capture UI + styles.
 - `src/pages/dashboard` – chat workspace + note builder.
-- `src/services` – Firebase wiring, API client, bookmark/notes/RAG helpers.
+- `src/services` – Supabase client, API client, bookmark/notes/RAG helpers.
 - `src/background` / `src/content` – Chrome runtime scripts for page capture.
 - `pages/` – HTML entrypoints consumed by Vite/CRXJS.
 
