@@ -7,20 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-12-01
+
 ### Added
-- Original content indicator when viewing full page content
-- Error boundary for better error handling
-- Performance optimizations for tag and bookmark operations
+- Admin CLI tools for subscription management and user statistics
+- Documentation for Admin CLI (`docs/ADMIN_CLI.md`)
+- Table format output for admin stats script
 
 ### Changed
-- Updated extension description for better clarity
-- Improved tag deletion with optimistic updates
-- Debounced storage writes for better performance
+- Updated CLI scripts to use `pnpm`
+- Refactored `manage-subscription.ts` for better code quality
+- Updated `SUBSCRIPTION_SYSTEM.md` to reference new Admin CLI docs
 
 ### Fixed
-- Tag deletion now provides instant UI feedback
-- Bookmark save operations no longer trigger full list refresh
-- Reduced storage I/O operations by 80%
+- Pre-commit linting issues in `dashboard.tsx`, `SubscriptionManager.tsx`, and `subscriptionService.ts`
+- SVG accessibility issues (added titles)
+- Type safety improvements in subscription service
 
 ## [0.1.0] - 2025-12-01
 

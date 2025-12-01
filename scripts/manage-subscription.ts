@@ -138,8 +138,8 @@ async function main() {
                 console.log('HyperMemo Subscription CLI');
                 console.log('--------------------------');
                 console.log('Usage:');
-                console.log('  npx tsx scripts/manage-subscription.ts get <email>');
-                console.log('  npx tsx scripts/manage-subscription.ts set <email> <tier> [days]');
+                console.log('  pnpm run sub get <email>');
+                console.log('  pnpm run sub set <email> <tier> [days]');
                 break;
         }
     } catch (error) {

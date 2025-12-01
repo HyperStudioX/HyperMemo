@@ -1,6 +1,6 @@
 {
     "name": "hypermemo",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "private": true,
     "description": "HyperMemo Chrome extension: smart bookmarking, RAG-powered recall, and Google Docs export.",
     "type": "module",
@@ -11,7 +11,8 @@
         "lint": "biome lint .",
         "test": "vitest",
         "prepare": "husky",
-        "sub": "tsx scripts/manage-subscription.ts"
+        "sub": "tsx scripts/manage-subscription.ts",
+        "stats": "tsx scripts/admin-stats.ts"
     },
     "keywords": [
         "chrome-extension",
