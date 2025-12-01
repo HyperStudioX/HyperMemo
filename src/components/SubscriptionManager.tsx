@@ -1,4 +1,5 @@
 import { type FC, useEffect, useState } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import type { Subscription } from '@/types/subscription';
 import { getUserSubscription } from '@/services/subscriptionService';
 import { isProUser, getSubscriptionDaysRemaining, formatSubscriptionPeriod } from '@/types/subscription';
@@ -20,6 +21,7 @@ const XIcon = () => (
 );
 
 export const SubscriptionManager: FC = () => {
+    const { t } = useTranslation();
     const [subscription, setSubscription] = useState<Subscription | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -42,7 +44,7 @@ export const SubscriptionManager: FC = () => {
             <div className="subscription-manager">
                 <div className="subscription-manager__loading">
                     <div className="spinner" />
-                    <span>Loading subscription details...</span>
+                    <span>{t('subscription.loading')}</span>
                 </div>
             </div>
         );
@@ -55,65 +57,65 @@ export const SubscriptionManager: FC = () => {
                     <div className="subscription-plan subscription-plan--pro">
                         <div className="subscription-plan__header">
                             <div>
-                                <h3>Upgrade to Pro</h3>
-                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Unlock the full power of HyperMemo</p>
+                                <h3>{t('subscription.upgradeTitle')}</h3>
+                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{t('subscription.upgradeSubtitle')}</p>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                                <p className="subscription-plan__price">$4.99<span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 500 }}>/mo</span></p>
+                                <p className="subscription-plan__price">$4.99<span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{t('subscription.perMonth')}</span></p>
                             </div>
                         </div>
 
                         <div className="subscription-plan__features">
-                            <h4>What's included:</h4>
+                            <h4>{t('subscription.whatsIncluded')}</h4>
                             <ul>
-                                <li><CheckIcon /> <span><strong>AI-Powered Summaries</strong> - Instantly summarize any article</span></li>
-                                <li><CheckIcon /> <span><strong>Smart Auto-Tagging</strong> - Organize your bookmarks automatically</span></li>
-                                <li><CheckIcon /> <span><strong>RAG Chat Assistant</strong> - Chat with your knowledge base</span></li>
-                                <li><CheckIcon /> <span><strong>Unlimited Bookmarks</strong> - Save as much as you want</span></li>
-                                <li><CheckIcon /> <span><strong>Google Docs Export</strong> - Turn research into documents</span></li>
-                                <li><CheckIcon /> <span><strong>Priority Support</strong> - Get help when you need it</span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.aiSummaries" /></span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.smartTags" /></span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.ragChat" /></span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.unlimitedBookmarks" /></span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.docsExport" /></span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.prioritySupport" /></span></li>
                             </ul>
                         </div>
 
                         <button className="btn-upgrade" disabled type="button">
-                            Upgrade to Pro
-                            <span className="badge-coming-soon">Coming Soon</span>
+                            {t('subscription.upgradeTitle')}
+                            <span className="badge-coming-soon">{t('subscription.comingSoon')}</span>
                         </button>
                         <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                            Secure payment via Stripe • Cancel anytime
+                            {t('subscription.securePayment')}
                         </p>
                     </div>
                 ) : (
                     <div className="subscription-plan subscription-plan--pro">
                         <div className="subscription-plan__header">
                             <div>
-                                <h3>Pro Plan Active</h3>
-                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Thank you for supporting HyperMemo!</p>
+                                <h3>{t('subscription.proActiveTitle')}</h3>
+                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{t('subscription.proActiveSubtitle')}</p>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                                <span className="status-pill status-pill--active">Active</span>
+                                <span className="status-pill status-pill--active">{t('subscription.active')}</span>
                             </div>
                         </div>
 
                         <div className="subscription-details-grid">
                             <div className="detail-item">
-                                <span className="detail-label">Current Period</span>
+                                <span className="detail-label">{t('subscription.currentPeriod')}</span>
                                 <span className="detail-value">{subscription ? formatSubscriptionPeriod(subscription) : '-'}</span>
                             </div>
                             <div className="detail-item">
-                                <span className="detail-label">Status</span>
-                                <span className="detail-value" style={{ color: '#059669' }}>Active</span>
+                                <span className="detail-label">{t('subscription.status')}</span>
+                                <span className="detail-value" style={{ color: '#059669' }}>{t('subscription.active')}</span>
                             </div>
                             <div className="detail-item">
-                                <span className="detail-label">Next Billing</span>
+                                <span className="detail-label">{t('subscription.nextBilling')}</span>
                                 <span className="detail-value">
-                                    {subscription?.cancelAtPeriodEnd ? 'Ends on ' : 'Renews on '}
+                                    {subscription?.cancelAtPeriodEnd ? t('subscription.endsOn') : t('subscription.renewsOn')}
                                     {subscription ? new Date(subscription.endDate).toLocaleDateString() : '-'}
                                 </span>
                             </div>
                             <div className="detail-item">
-                                <span className="detail-label">Plan Cost</span>
-                                <span className="detail-value">$4.99/month</span>
+                                <span className="detail-label">{t('subscription.planCost')}</span>
+                                <span className="detail-value">$4.99{t('subscription.perMonthLong')}</span>
                             </div>
                         </div>
 
@@ -125,7 +127,7 @@ export const SubscriptionManager: FC = () => {
                                     <line x1="12" y1="9" x2="12" y2="13" />
                                     <line x1="12" y1="17" x2="12.01" y2="17" />
                                 </svg>
-                                <span>Your subscription expires in {daysRemaining} days</span>
+                                <span>{t('subscription.expiresIn', { days: daysRemaining })}</span>
                             </div>
                         )}
 
@@ -137,19 +139,19 @@ export const SubscriptionManager: FC = () => {
                                     <line x1="12" y1="8" x2="12" y2="12" />
                                     <line x1="12" y1="16" x2="12.01" y2="16" />
                                 </svg>
-                                <span>Your subscription is set to cancel at the end of the period</span>
+                                <span>{t('subscription.wontRenew')}</span>
                             </div>
                         )}
 
                         <div className="subscription-actions">
                             <button className="btn-secondary" disabled type="button">
-                                Manage Billing
-                                <span className="badge-coming-soon">Coming Soon</span>
+                                {t('subscription.manageBilling')}
+                                <span className="badge-coming-soon">{t('subscription.comingSoon')}</span>
                             </button>
                             {!subscription?.cancelAtPeriodEnd && (
                                 <button className="btn-danger" disabled type="button">
-                                    Cancel Subscription
-                                    <span className="badge-coming-soon">Coming Soon</span>
+                                    {t('subscription.cancelSubscription')}
+                                    <span className="badge-coming-soon">{t('subscription.comingSoon')}</span>
                                 </button>
                             )}
                         </div>
@@ -157,45 +159,45 @@ export const SubscriptionManager: FC = () => {
                 )}
 
                 <div className="subscription-comparison">
-                    <h3>Plan Comparison</h3>
+                    <h3>{t('subscription.planComparison')}</h3>
                     <table className="comparison-table">
                         <thead>
                             <tr>
-                                <th>Feature</th>
-                                <th>Free</th>
-                                <th>Pro</th>
+                                <th>{t('subscription.table.feature')}</th>
+                                <th>{t('subscription.table.free')}</th>
+                                <th>{t('subscription.table.pro')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Bookmarks</td>
-                                <td>Unlimited</td>
-                                <td>Unlimited</td>
+                                <td>{t('subscription.table.bookmarks')}</td>
+                                <td>{t('subscription.table.unlimited')}</td>
+                                <td>{t('subscription.table.unlimited')}</td>
                             </tr>
                             <tr>
-                                <td>AI Summaries</td>
+                                <td>{t('subscription.table.aiSummaries')}</td>
                                 <td><XIcon /></td>
                                 <td><CheckIcon /></td>
                             </tr>
                             <tr>
-                                <td>Smart Tags</td>
+                                <td>{t('subscription.table.smartTags')}</td>
                                 <td><XIcon /></td>
                                 <td><CheckIcon /></td>
                             </tr>
                             <tr>
-                                <td>RAG Chat</td>
+                                <td>{t('subscription.table.ragChat')}</td>
                                 <td><XIcon /></td>
                                 <td><CheckIcon /></td>
                             </tr>
                             <tr>
-                                <td>Export to Docs</td>
+                                <td>{t('subscription.table.exportDocs')}</td>
                                 <td><XIcon /></td>
                                 <td><CheckIcon /></td>
                             </tr>
                             <tr>
-                                <td>Support</td>
-                                <td>Community</td>
-                                <td>Priority</td>
+                                <td>{t('subscription.table.support')}</td>
+                                <td>{t('subscription.table.community')}</td>
+                                <td>{t('subscription.table.priority')}</td>
                             </tr>
                         </tbody>
                     </table>

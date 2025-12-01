@@ -1,4 +1,5 @@
 import type React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Subscription } from '@/types/subscription';
 import { isSubscriptionActive, getSubscriptionDaysRemaining, formatSubscriptionPeriod } from '@/types/subscription';
 import './SubscriptionBadge.css';
@@ -9,10 +10,12 @@ interface SubscriptionBadgeProps {
 }
 
 export const SubscriptionBadge: React.FC<SubscriptionBadgeProps> = ({ subscription, showDetails = false }) => {
+    const { t } = useTranslation();
+
     if (!subscription) {
         return (
             <span className="subscription-badge subscription-badge--free">
-                Free
+                {t('subscription.badge.free')}
             </span>
         );
     }
@@ -30,10 +33,10 @@ export const SubscriptionBadge: React.FC<SubscriptionBadgeProps> = ({ subscripti
     };
 
     const getBadgeText = () => {
-        if (!isPro) return 'Free';
-        if (!isActive) return 'Pro (Expired)';
-        if (subscription.status === 'trial') return 'Pro (Trial)';
-        return 'Pro';
+        if (!isPro) return t('subscription.badge.free');
+        if (!isActive) return t('subscription.badge.proExpired');
+        if (subscription.status === 'trial') return t('subscription.badge.proTrial');
+        return t('subscription.badge.pro');
     };
 
     const getStatusIcon = () => {
@@ -54,14 +57,14 @@ export const SubscriptionBadge: React.FC<SubscriptionBadgeProps> = ({ subscripti
             {showDetails && isPro && (
                 <div className="subscription-details">
                     <div className="subscription-details__row">
-                        <span className="subscription-details__label">Status:</span>
+                        <span className="subscription-details__label">{t('subscription.status')}</span>
                         <span className={`subscription-details__value ${isActive ? 'active' : 'inactive'}`}>
-                            {isActive ? 'Active' : 'Expired'}
+                            {isActive ? t('subscription.badge.active') : t('subscription.badge.expired')}
                         </span>
                     </div>
 
                     <div className="subscription-details__row">
-                        <span className="subscription-details__label">Period:</span>
+                        <span className="subscription-details__label">{t('subscription.badge.period')}</span>
                         <span className="subscription-details__value">
                             {formatSubscriptionPeriod(subscription)}
                         </span>
@@ -69,16 +72,16 @@ export const SubscriptionBadge: React.FC<SubscriptionBadgeProps> = ({ subscripti
 
                     {isActive && (
                         <div className="subscription-details__row">
-                            <span className="subscription-details__label">Days Remaining:</span>
+                            <span className="subscription-details__label">{t('subscription.badge.daysRemaining')}</span>
                             <span className={`subscription-details__value ${daysRemaining <= 7 ? 'warning' : ''}`}>
-                                {daysRemaining} days
+                                {t('subscription.badge.days', { days: daysRemaining })}
                             </span>
                         </div>
                     )}
 
                     {subscription.cancelAtPeriodEnd && (
                         <div className="subscription-details__warning">
-                            ⚠️ Subscription will not renew
+                            {t('subscription.badge.wontRenew')}
                         </div>
                     )}
                 </div>

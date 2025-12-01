@@ -12,7 +12,7 @@
     },
     "sidebar": {
         "myLibrary": "我的資料庫",
-        "chats": "聊天",
+        "chats": "對話",
         "newChat": "新對話",
         "resetChat": "重置對話",
         "deleteChat": "刪除對話",
@@ -20,7 +20,7 @@
     },
     "tabs": {
         "overview": "概覽",
-        "chat": "聊天",
+        "chat": "對話",
         "notes": "筆記",
         "comingSoon": "即將推出"
     },
@@ -37,7 +37,8 @@
         "writing": "撰寫中...",
         "fetchingContent": "正在獲取原始內容...",
         "noContent": "無可用內容。",
-        "untitled": "無標題"
+        "untitled": "無標題",
+        "searchPlaceholder": "詢問任何關於您書籤的問題..."
     },
     "chat": {
         "placeholder": "詢問關於您保存的知識... (Cmd+Enter 發送, @ 引用標籤)",
@@ -45,7 +46,9 @@
         "thinking": "思考中...",
         "sources": "來源:",
         "you": "你",
-        "ai": "AI"
+        "ai": "AI",
+        "welcomeTitle": "歡迎使用 HyperMemo 對話",
+        "welcomeSubtitle": "詢問我任何關於您保存書籤的問題。"
     },
     "popup": {
         "title": "保存書籤",
@@ -69,6 +72,70 @@
             "saving": "正在保存書籤…",
             "saved": "已保存!",
             "failed": "保存書籤失敗"
+        }
+    },
+    "subscription": {
+        "title": "訂閱與帳單",
+        "loading": "正在載入訂閱詳情...",
+        "upgradeTitle": "升級到 Pro",
+        "upgradeSubtitle": "解鎖 HyperMemo 的全部潛能",
+        "perMonth": "/月",
+        "perMonthLong": "/月",
+        "whatsIncluded": "包含內容：",
+        "features": {
+            "aiSummaries": "<strong>AI 智能摘要</strong> - 即時總結任何文章",
+            "smartTags": "<strong>智能自動標籤</strong> - 自動整理您的書籤",
+            "ragChat": "<strong>RAG 對話助手</strong> - 與您的知識庫對話",
+            "unlimitedBookmarks": "<strong>無限書籤</strong> - 隨心所欲保存",
+            "docsExport": "<strong>Google Docs 匯出</strong> - 將研究轉化為文檔",
+            "prioritySupport": "<strong>優先支援</strong> - 隨時獲取幫助"
+        },
+        "comingSoon": "即將推出",
+        "securePayment": "通過 Stripe 安全支付 • 隨時取消",
+        "proActiveTitle": "Pro 計劃已激活",
+        "proActiveSubtitle": "感謝您支持 HyperMemo！",
+        "active": "活躍",
+        "currentPeriod": "當前週期",
+        "status": "狀態",
+        "nextBilling": "下次扣費",
+        "endsOn": "結束於 ",
+        "renewsOn": "續費於 ",
+        "planCost": "計劃費用",
+        "expiresIn": "您的訂閱將在 {{days}} 天後過期",
+        "wontRenew": "您的訂閱將在本週期結束時取消",
+        "manageBilling": "管理帳單",
+        "cancelSubscription": "取消訂閱",
+        "planComparison": "計劃對比",
+        "table": {
+            "feature": "功能",
+            "free": "免費版",
+            "pro": "專業版",
+            "bookmarks": "書籤數量",
+            "unlimited": "無限",
+            "aiSummaries": "AI 摘要",
+            "smartTags": "智能標籤",
+            "ragChat": "RAG 對話",
+            "exportDocs": "匯出文檔",
+            "support": "支援",
+            "community": "社群",
+            "priority": "優先"
+        },
+        "badge": {
+            "free": "免費版",
+            "proExpired": "Pro (已過期)",
+            "proTrial": "Pro (試用)",
+            "pro": "Pro",
+            "active": "活躍",
+            "expired": "已過期",
+            "period": "週期:",
+            "daysRemaining": "剩餘天數:",
+            "days": "{{days}} 天",
+            "wontRenew": "⚠️ 訂閱將不再續費"
+        },
+        "prompts": {
+            "chat": "使用 RAG 技術與書籤對話是 Pro 功能。升級以解鎖與您保存知識的智能對話。",
+            "autoTag": "自動標籤是 Pro 功能。升級以自動為您的書籤生成智能標籤。",
+            "aiSummary": "AI 智能摘要是 Pro 功能。升級以自動為您的書籤生成摘要。"
         }
     }
 }

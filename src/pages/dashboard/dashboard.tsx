@@ -231,8 +231,8 @@ export default function DashboardApp() {
 
         if (!isPro) {
             openConfirm(
-                'Upgrade to Pro',
-                'Chat with your bookmarks using RAG technology is a Pro feature. Upgrade to unlock intelligent conversations with your saved knowledge.',
+                t('subscription.upgradeTitle'),
+                t('subscription.prompts.chat'),
                 () => setSubscriptionDrawerOpen(true)
             );
             return;
@@ -318,8 +318,8 @@ export default function DashboardApp() {
     const handleRegenerateTags = async () => {
         if (!isPro) {
             openConfirm(
-                'Upgrade to Pro',
-                'Auto-tagging is a Pro feature. Upgrade to automatically generate smart tags for your bookmarks.',
+                t('subscription.upgradeTitle'),
+                t('subscription.prompts.autoTag'),
                 () => setSubscriptionDrawerOpen(true)
             );
             return;
@@ -343,8 +343,8 @@ export default function DashboardApp() {
     const handleRegenerateSummary = async () => {
         if (!isPro) {
             openConfirm(
-                'Upgrade to Pro',
-                'AI-powered summaries are a Pro feature. Upgrade to automatically generate summaries for your bookmarks.',
+                t('subscription.upgradeTitle'),
+                t('subscription.prompts.aiSummary'),
                 () => setSubscriptionDrawerOpen(true)
             );
             return;
@@ -654,8 +654,8 @@ export default function DashboardApp() {
                             onClick={() => {
                                 if (!isPro) {
                                     openConfirm(
-                                        'Upgrade to Pro',
-                                        'Chat with your bookmarks using RAG technology is a Pro feature. Upgrade to unlock intelligent conversations with your saved knowledge.',
+                                        t('subscription.upgradeTitle'),
+                                        t('subscription.prompts.chat'),
                                         () => setSubscriptionDrawerOpen(true)
                                     );
                                     return;
@@ -806,7 +806,7 @@ export default function DashboardApp() {
                                             onChange={handleChatInputChange}
                                             onSend={handleLandingPageSearch}
                                             onKeyDown={(e) => handleKeyDown(e, handleLandingPageSearch)}
-                                            placeholder="Ask anything about your bookmarks..."
+                                            placeholder={t('dashboard.searchPlaceholder')}
                                             tags={chatTags}
                                             onRemoveTag={handleRemoveChatTag}
                                             showTagSuggestions={showTagSuggestions}
@@ -849,7 +849,7 @@ export default function DashboardApp() {
                                                                 className="citation-chip"
                                                                 title={citation.bookmark.title}
                                                             >
-                                                                {citation.bookmark.title || t('dashboard.untitled')}
+                                                                <span className="citation-title">{citation.bookmark.title || t('dashboard.untitled')}</span>
                                                             </a>
                                                         ))}
                                                     </div>
@@ -860,9 +860,9 @@ export default function DashboardApp() {
                                 ))}
                                 {!messages.length && (
                                     <div className="chat-empty">
-                                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👋</div>
-                                        <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>Welcome to HyperMemo Chat</h3>
-                                        <p style={{ margin: 0 }}>Ask me anything about your saved bookmarks.</p>
+                                        <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>👋</div>
+                                        <h3 style={{ margin: '0 0 0.75rem 0', color: 'var(--text-primary)', fontSize: '1.5rem' }}>{t('chat.welcomeTitle')}</h3>
+                                        <p style={{ margin: 0, fontSize: '1.125rem' }}>{t('chat.welcomeSubtitle')}</p>
                                     </div>
                                 )}
                             </div>
@@ -985,7 +985,7 @@ export default function DashboardApp() {
             <Drawer
                 isOpen={subscriptionDrawerOpen}
                 onClose={() => setSubscriptionDrawerOpen(false)}
-                title="Subscription & Billing"
+                title={t('subscription.title')}
             >
                 <SubscriptionManager />
             </Drawer>

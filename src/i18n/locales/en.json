@@ -38,7 +38,8 @@
         "writing": "Writing...",
         "fetchingContent": "Fetching original content...",
         "noContent": "No content available.",
-        "untitled": "Untitled"
+        "untitled": "Untitled",
+        "searchPlaceholder": "Ask anything about your bookmarks..."
     },
     "chat": {
         "placeholder": "Ask about your saved knowledge... (Cmd+Enter to send, @ for tags)",
@@ -46,7 +47,9 @@
         "thinking": "Thinking...",
         "sources": "Sources:",
         "you": "You",
-        "ai": "AI"
+        "ai": "AI",
+        "welcomeTitle": "Welcome to HyperMemo Chat",
+        "welcomeSubtitle": "Ask me anything about your saved bookmarks."
     },
     "popup": {
         "title": "Save Bookmark",
@@ -70,6 +73,70 @@
             "saving": "Saving bookmark…",
             "saved": "Saved!",
             "failed": "Failed to save bookmark"
+        }
+    },
+    "subscription": {
+        "title": "Subscription & Billing",
+        "loading": "Loading subscription details...",
+        "upgradeTitle": "Upgrade to Pro",
+        "upgradeSubtitle": "Unlock the full power of HyperMemo",
+        "perMonth": "/mo",
+        "perMonthLong": "/month",
+        "whatsIncluded": "What's included:",
+        "features": {
+            "aiSummaries": "<strong>AI-Powered Summaries</strong> - Instantly summarize any article",
+            "smartTags": "<strong>Smart Auto-Tagging</strong> - Organize your bookmarks automatically",
+            "ragChat": "<strong>RAG Chat Assistant</strong> - Chat with your knowledge base",
+            "unlimitedBookmarks": "<strong>Unlimited Bookmarks</strong> - Save as much as you want",
+            "docsExport": "<strong>Google Docs Export</strong> - Turn research into documents",
+            "prioritySupport": "<strong>Priority Support</strong> - Get help when you need it"
+        },
+        "comingSoon": "Coming Soon",
+        "securePayment": "Secure payment via Stripe • Cancel anytime",
+        "proActiveTitle": "Pro Plan Active",
+        "proActiveSubtitle": "Thank you for supporting HyperMemo!",
+        "active": "Active",
+        "currentPeriod": "Current Period",
+        "status": "Status",
+        "nextBilling": "Next Billing",
+        "endsOn": "Ends on ",
+        "renewsOn": "Renews on ",
+        "planCost": "Plan Cost",
+        "expiresIn": "Your subscription expires in {{days}} days",
+        "wontRenew": "Your subscription is set to cancel at the end of the period",
+        "manageBilling": "Manage Billing",
+        "cancelSubscription": "Cancel Subscription",
+        "planComparison": "Plan Comparison",
+        "table": {
+            "feature": "Feature",
+            "free": "Free",
+            "pro": "Pro",
+            "bookmarks": "Bookmarks",
+            "unlimited": "Unlimited",
+            "aiSummaries": "AI Summaries",
+            "smartTags": "Smart Tags",
+            "ragChat": "RAG Chat",
+            "exportDocs": "Export to Docs",
+            "support": "Support",
+            "community": "Community",
+            "priority": "Priority"
+        },
+        "badge": {
+            "free": "Free",
+            "proExpired": "Pro (Expired)",
+            "proTrial": "Pro (Trial)",
+            "pro": "Pro",
+            "active": "Active",
+            "expired": "Expired",
+            "period": "Period:",
+            "daysRemaining": "Days Remaining:",
+            "days": "{{days}} days",
+            "wontRenew": "⚠️ Subscription will not renew"
+        },
+        "prompts": {
+            "chat": "Chat with your bookmarks using RAG technology is a Pro feature. Upgrade to unlock intelligent conversations with your saved knowledge.",
+            "autoTag": "Auto-tagging is a Pro feature. Upgrade to automatically generate smart tags for your bookmarks.",
+            "aiSummary": "AI-powered summaries are a Pro feature. Upgrade to automatically generate summaries for your bookmarks."
         }
     }
 }
