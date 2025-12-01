@@ -8,6 +8,23 @@
     --primary-hover: #1d4ed8;
     --bg-subtle: #f8fafc;
     --border: #e2e8f0;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --bg-main: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color: #f1f5f9;
+        background-color: #0f172a;
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --bg-subtle: #1e293b;
+        --border: #334155;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --bg-main: #0f172a;
+    }
 }
 
 * {
@@ -39,7 +56,7 @@ body {
     font-size: 1.125rem;
     font-weight: 600;
     margin: 0;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 .user-menu {
@@ -53,7 +70,7 @@ body {
     height: 32px;
     border-radius: 50%;
     background: var(--bg-subtle);
-    color: #64748b;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,7 +96,7 @@ body {
 .field label {
     font-size: 0.75rem;
     font-weight: 500;
-    color: #64748b;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.025em;
 }
@@ -94,9 +111,9 @@ textarea {
     padding: 0.625rem 0.75rem;
     border-radius: 8px;
     border: 1px solid var(--border);
-    background: #fff;
+    background: var(--bg-main);
     font-size: 0.875rem;
-    color: #0f172a;
+    color: var(--text-primary);
     transition: all 0.2s ease;
     font-family: inherit;
 }
@@ -121,7 +138,7 @@ textarea {
     padding: 0.5rem;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: #fff;
+    background: var(--bg-main);
     align-items: center;
 }
 
@@ -139,7 +156,7 @@ textarea {
 .tag-input__chips button {
     background: var(--bg-subtle);
     border: 1px solid var(--border);
-    color: #475569;
+    color: var(--text-secondary);
     border-radius: 4px;
     padding: 0.125rem 0.5rem;
     font-size: 0.75rem;
@@ -151,8 +168,8 @@ textarea {
 }
 
 .tag-input__chips button:hover {
-    background: #e2e8f0;
-    color: #1e293b;
+    background: var(--border);
+    color: var(--text-primary);
 }
 
 .tag-input__field {
@@ -201,14 +218,14 @@ button.primary:hover:not(:disabled) {
 }
 
 button.secondary {
-    background: white;
+    background: var(--bg-main);
     border-color: var(--border);
-    color: #475569;
+    color: var(--text-secondary);
 }
 
 button.secondary:hover {
     background: var(--bg-subtle);
-    border-color: #cbd5e1;
+    border-color: var(--border);
 }
 
 button.text {
@@ -233,7 +250,7 @@ button:disabled {
 .status {
     padding: 0.75rem;
     border-radius: 8px;
-    background: #f0fdf4;
+    background: rgba(34, 197, 94, 0.1);
     color: #166534;
     font-size: 0.875rem;
     text-align: center;
@@ -261,5 +278,5 @@ button:disabled {
 }
 
 .text-gray-500 {
-    color: #64748b;
+    color: var(--text-secondary);
 }

@@ -8,6 +8,23 @@
     --border: #e2e8f0;
     --bg-subtle: #f8fafc;
     --bg-active: #eff6ff;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --bg-main: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color: #f1f5f9;
+        background: #0f172a;
+        --primary: #3b82f6;
+        --border: #1e293b;
+        --bg-subtle: #1e293b;
+        --bg-active: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --bg-main: #0f172a;
+    }
 }
 
 html {
@@ -69,12 +86,12 @@ body {
 }
 
 .nav-item:hover {
-    background: white;
+    background: var(--bg-main);
     border-color: var(--border);
 }
 
 .nav-item.active {
-    background: white;
+    background: var(--bg-main);
     border-color: var(--primary);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -91,7 +108,7 @@ body {
 .nav-item p {
     margin: 0;
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 /* Main Content */
@@ -100,7 +117,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: white;
+    background: var(--bg-main);
 }
 
 .main__header {
@@ -109,7 +126,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: white;
+    background: var(--bg-main);
 }
 
 .tabs {
@@ -123,7 +140,7 @@ body {
     padding: 0.5rem 0;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #64748b;
+    color: var(--text-secondary);
     cursor: pointer;
     border-bottom: 2px solid transparent;
 }
@@ -160,7 +177,7 @@ body {
     font-weight: 700;
     line-height: 1.2;
     margin: 0 0 1rem 0;
-    color: #1e293b;
+    color: var(--text-primary);
     letter-spacing: -0.02em;
 }
 
@@ -169,7 +186,7 @@ body {
     align-items: center;
     gap: 1rem;
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .detail-actions {
@@ -193,13 +210,13 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
-    color: #94a3b8;
+    color: var(--text-secondary);
 }
 
 .detail-content {
     font-size: 1.125rem;
     line-height: 1.8;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 .detail-content-header {
@@ -212,7 +229,7 @@ body {
 .detail-content-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0;
 }
 
@@ -223,7 +240,7 @@ body {
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 0.375rem;
-    color: #64748b;
+    color: var(--text-secondary);
     transition: all 0.2s;
     display: flex;
     align-items: center;
@@ -232,8 +249,8 @@ body {
 }
 
 .btn-icon:hover {
-    background: #f1f5f9;
-    color: #0f172a;
+    background: var(--bg-subtle);
+    color: var(--text-primary);
 }
 
 .btn-icon.danger:hover {
@@ -307,8 +324,8 @@ body {
 }
 
 .chat-message--assistant .chat-avatar {
-    background: #e0f2fe;
-    color: #0284c7;
+    background: var(--bg-active);
+    color: var(--primary);
 }
 
 .chat-bubble {
@@ -329,7 +346,7 @@ body {
 .chat-message--assistant .chat-bubble {
     background: transparent;
     border: none;
-    color: #1e293b;
+    color: var(--text-primary);
     padding: 0.25rem 0;
 }
 
@@ -348,7 +365,7 @@ body {
 /* Chat Input Area */
 .chat-input-container {
     margin-top: 1rem;
-    background: white;
+    background: var(--bg-main);
     border: 1px solid var(--border);
     border-radius: 1rem;
     padding: 0.5rem;
@@ -414,6 +431,12 @@ button.ghost {
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     cursor: pointer;
+    color: var(--text-secondary);
+}
+
+button.ghost:hover {
+    background: var(--bg-subtle);
+    color: var(--text-primary);
 }
 
 /* Auth Screen */
@@ -426,7 +449,7 @@ button.ghost {
 }
 
 .dashboard__auth-card {
-    background: white;
+    background: var(--bg-main);
     padding: 2rem;
     border-radius: 1rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -436,7 +459,7 @@ button.ghost {
 /* Utilities & Components */
 .text-subtle {
     font-size: 0.8rem;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .flex-between {
@@ -471,13 +494,13 @@ button.ghost {
 
 .empty-state {
     text-align: center;
-    color: #64748b;
+    color: var(--text-secondary);
     margin-top: 4rem;
 }
 
 .chat-empty {
     text-align: center;
-    color: #94a3b8;
+    color: var(--text-secondary);
     margin-top: 2rem;
 }
 
@@ -502,7 +525,7 @@ button.ghost {
 
 .notes-helper-text {
     font-size: 0.9rem;
-    color: #64748b;
+    color: var(--text-secondary);
     margin-bottom: 1rem;
 }
 
@@ -513,7 +536,7 @@ button.ghost {
 }
 
 .notes-pre {
-    background: #f1f5f9;
+    background: var(--bg-subtle);
     padding: 1rem;
     border-radius: 0.5rem;
     overflow: auto;
@@ -549,7 +572,7 @@ button.ghost {
 }
 
 .text-btn:disabled {
-    color: #94a3b8;
+    color: var(--text-secondary);
     cursor: not-allowed;
     text-decoration: none;
 }
@@ -562,7 +585,7 @@ button.ghost {
 .markdown-body {
     font-size: 1rem;
     line-height: 1.7;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 .markdown-body h1,
@@ -572,7 +595,7 @@ button.ghost {
     margin-top: 1.5em;
     margin-bottom: 0.5em;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text-primary);
     line-height: 1.25;
 }
 
@@ -605,7 +628,7 @@ button.ghost {
 }
 
 .markdown-body code {
-    background: #f1f5f9;
+    background: var(--bg-subtle);
     padding: 0.2em 0.4em;
     border-radius: 0.25em;
     font-size: 0.875em;
@@ -631,7 +654,7 @@ button.ghost {
     border-left: 4px solid #cbd5e1;
     margin: 0 0 1em 0;
     padding-left: 1em;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .markdown-body a {
@@ -657,7 +680,7 @@ button.ghost {
     padding: 0.5rem;
     border: 1px solid var(--border);
     border-radius: 0.5rem;
-    background: #fff;
+    background: var(--bg-main);
     align-items: center;
     transition: all 0.2s;
 }
@@ -676,7 +699,7 @@ button.ghost {
 .tag-input__chips button {
     background: var(--bg-subtle);
     border: 1px solid var(--border);
-    color: #475569;
+    color: var(--text-secondary);
     border-radius: 0.25rem;
     padding: 0.125rem 0.5rem;
     font-size: 0.75rem;
@@ -690,9 +713,9 @@ button.ghost {
 }
 
 .tag-input__chips button:hover {
-    background: #e2e8f0;
-    color: #1e293b;
-    border-color: #cbd5e1;
+    background: var(--bg-active);
+    color: var(--text-primary);
+    border-color: var(--border);
 }
 
 .tag-input__field {
@@ -743,7 +766,7 @@ button.ghost {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: white;
+    background: var(--bg-main);
     min-width: 0;
     /* Prevent flex item from overflowing */
 }
@@ -768,7 +791,7 @@ button.ghost {
 .chat-citations-label {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-secondary);
     margin-bottom: 0.25rem;
     display: block;
     text-transform: uppercase;
@@ -786,11 +809,11 @@ button.ghost {
     align-items: center;
     max-width: 200px;
     padding: 0.25rem 0.5rem;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
     border-radius: 4px;
     font-size: 0.75rem;
-    color: #475569;
+    color: var(--text-secondary);
     text-decoration: none;
     white-space: nowrap;
     overflow: hidden;
@@ -799,9 +822,9 @@ button.ghost {
 }
 
 .citation-chip:hover {
-    background: #e2e8f0;
+    background: var(--bg-active);
     color: var(--primary);
-    border-color: #cbd5e1;
+    border-color: var(--border);
 }
 
 /* Badges */
@@ -821,6 +844,6 @@ button.ghost {
 
 .badge-subtle {
     background-color: var(--bg-subtle);
-    color: #64748b;
+    color: var(--text-secondary);
     border: 1px solid var(--border);
 }

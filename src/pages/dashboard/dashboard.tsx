@@ -471,9 +471,7 @@ export default function DashboardApp() {
                     </div>
                     <div className="flex-center">
                         {activeTab === 'chat' && (
-                            <button type="button" className="ghost btn-sm" onClick={handleResetSession} style={{ marginRight: '0.5rem' }}>
-                                {t('sidebar.resetChat')}
-                            </button>
+                            <div style={{ marginRight: '0.5rem' }} />
                         )}
                         <span className="user-email">{user.email}</span>
                         <button type="button" className="ghost btn-sm" onClick={logout}>
@@ -766,9 +764,14 @@ export default function DashboardApp() {
                 <aside className="sidebar-right">
                     <div className="sidebar__header">
                         <h1 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>{t('sidebar.chats')}</h1>
-                        <button type="button" className="btn-icon" onClick={() => createNewSession()} title={t('sidebar.newChat')}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('sidebar.newChat')}</title><path d="M12 5v14M5 12h14" /></svg>
-                        </button>
+                        <div className="flex-center" style={{ gap: '0.5rem' }}>
+                            <button type="button" className="btn-icon" onClick={handleResetSession} title={t('sidebar.resetChat')}>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('sidebar.resetChat')}</title><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                            </button>
+                            <button type="button" className="btn-icon" onClick={() => createNewSession()} title={t('sidebar.newChat')}>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('sidebar.newChat')}</title><path d="M12 5v14M5 12h14" /></svg>
+                            </button>
+                        </div>
                     </div>
                     <div className="sidebar__list">
                         {sessions.map((session) => (
