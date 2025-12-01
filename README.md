@@ -1,6 +1,15 @@
-# HyperMemo
-
-A Chrome extension that helps you save, organize, and explore your bookmarks. Ask questions about your saved content and get answers with sources. Build notes from your bookmarks and export them to Google Docs.
+<div align="center">
+  <img src="public/icons/icon-128.png" alt="HyperMemo Logo" width="128" height="128" />
+  <h1>HyperMemo</h1>
+  <p>
+    <b>Your Second Brain for the Web</b>
+  </p>
+  <p>
+    A Chrome extension that helps you save, organize, and explore your bookmarks.<br/>
+    Ask questions about your saved content and get answers with sources.<br/>
+    Build notes from your bookmarks and export them to Google Docs.
+  </p>
+</div>
 
 ## Features
 - **Quick capture**: Save any webpage with one click. Get AI-generated summaries and suggested tags to help you organize your bookmarks.
