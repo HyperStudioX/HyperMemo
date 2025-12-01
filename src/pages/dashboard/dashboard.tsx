@@ -9,6 +9,8 @@ import { TagInput } from '@/components/TagInput';
 import { ConfirmationModal } from '@/components/ConfirmationModal';
 import { SubscriptionBadge } from '@/components/SubscriptionBadge';
 import { SubscriptionManager } from '@/components/SubscriptionManager';
+import { ChatInput } from '@/components/ChatInput';
+import { Drawer } from '@/components/Drawer';
 import type { Bookmark, ChatMessage, NoteDocument, ChatSession } from '@/types/bookmark';
 import type { Subscription } from '@/types/subscription';
 import { draftAnswerFromBookmarks, type RagMatch } from '@/services/ragService';
@@ -23,7 +25,8 @@ export default function DashboardApp() {
     const { t } = useTranslation();
 
     // Navigation State
-    const [activeTab, setActiveTab] = useState<'overview' | 'chat' | 'notes' | 'subscription'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'chat' | 'notes'>('overview');
+    const [subscriptionDrawerOpen, setSubscriptionDrawerOpen] = useState(false);
     const [activeBookmarkId, setActiveBookmarkId] = useState<string | null>(null);
     const [detailedBookmark, setDetailedBookmark] = useState<Bookmark | null>(null);
     const [loadingContent, setLoadingContent] = useState(false);
@@ -230,7 +233,7 @@ export default function DashboardApp() {
             openConfirm(
                 'Upgrade to Pro',
                 'Chat with your bookmarks using RAG technology is a Pro feature. Upgrade to unlock intelligent conversations with your saved knowledge.',
-                () => setActiveTab('subscription')
+                () => setSubscriptionDrawerOpen(true)
             );
             return;
         }
@@ -317,7 +320,7 @@ export default function DashboardApp() {
             openConfirm(
                 'Upgrade to Pro',
                 'Auto-tagging is a Pro feature. Upgrade to automatically generate smart tags for your bookmarks.',
-                () => setActiveTab('subscription')
+                () => setSubscriptionDrawerOpen(true)
             );
             return;
         }
@@ -342,7 +345,7 @@ export default function DashboardApp() {
             openConfirm(
                 'Upgrade to Pro',
                 'AI-powered summaries are a Pro feature. Upgrade to automatically generate summaries for your bookmarks.',
-                () => setActiveTab('subscription')
+                () => setSubscriptionDrawerOpen(true)
             );
             return;
         }
@@ -362,8 +365,7 @@ export default function DashboardApp() {
         }
     };
 
-    const handleChatInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const value = e.target.value;
+    const handleChatInputChange = (value: string) => {
         setQuestion(value);
 
         const lastWord = value.split(' ').pop();
@@ -395,7 +397,7 @@ export default function DashboardApp() {
         setChatTags(chatTags.filter(t => t !== tag));
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, onSubmit?: () => void) => {
         if (showTagSuggestions && filteredTags.length > 0) {
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
@@ -421,7 +423,11 @@ export default function DashboardApp() {
 
         if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
-            askAssistant();
+            if (onSubmit) {
+                onSubmit();
+            } else {
+                askAssistant();
+            }
         }
     };
 
@@ -650,7 +656,7 @@ export default function DashboardApp() {
                                     openConfirm(
                                         'Upgrade to Pro',
                                         'Chat with your bookmarks using RAG technology is a Pro feature. Upgrade to unlock intelligent conversations with your saved knowledge.',
-                                        () => setActiveTab('subscription')
+                                        () => setSubscriptionDrawerOpen(true)
                                     );
                                     return;
                                 }
@@ -658,7 +664,12 @@ export default function DashboardApp() {
                             }}
                         >
                             {t('tabs.chat')}
-                            {!isPro && <span className="badge badge-pro" style={{ marginLeft: '0.5rem' }}>Pro</span>}
+                            {!isPro && (
+                                <span className="subscription-badge subscription-badge--pro" style={{ marginLeft: '0.5rem', fontSize: '0.75rem', padding: '0.25rem 0.625rem' }}>
+                                    <span className="subscription-badge__icon">⭐</span>
+                                    <span className="subscription-badge__text">Pro</span>
+                                </span>
+                            )}
                         </button>
                         <button
                             type="button"
@@ -669,19 +680,18 @@ export default function DashboardApp() {
                             {t('tabs.notes')}
                             <span className="badge badge-subtle">{t('tabs.comingSoon')}</span>
                         </button>
-                        <button
-                            type="button"
-                            className={`tab ${activeTab === 'subscription' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('subscription')}
-                        >
-                            {t('tabs.subscription')}
-                        </button>
                     </div>
                     <div className="flex-center">
                         {activeTab === 'chat' && (
                             <div style={{ marginRight: '0.5rem' }} />
                         )}
-                        <SubscriptionBadge subscription={subscription} />
+                        <button
+                            type="button"
+                            onClick={() => setSubscriptionDrawerOpen(true)}
+                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                        >
+                            <SubscriptionBadge subscription={subscription} />
+                        </button>
                         {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                             <img
                                 src={user.user_metadata.avatar_url || user.user_metadata.picture}
@@ -786,148 +796,29 @@ export default function DashboardApp() {
                                 <div className="flex-center" style={{ flexDirection: 'column', gap: '1.5rem', opacity: 0.8, maxWidth: '600px', width: '100%', margin: '0 auto' }}>
                                     <img src="/icons/icon-128.png" alt="HyperMemo" style={{ width: 80, height: 80 }} />
                                     <div style={{ textAlign: 'center' }}>
-                                        <h1 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.025em', marginBottom: '0.5rem', color: '#1e293b' }}>{t('app.name')}</h1>
-                                        <p style={{ fontSize: '1.125rem', color: '#64748b', margin: 0 }}>{t('app.slogan')}</p>
+                                        <h1 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.025em', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{t('app.name')}</h1>
+                                        <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', margin: 0 }}>{t('app.slogan')}</p>
                                     </div>
 
                                     <div className="landing-search" style={{ width: '100%', position: 'relative' }}>
-                                        {chatTags.length > 0 && (
-                                            <div className="chat-tags" style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                                                {chatTags.map(tag => (
-                                                    <span key={tag} style={{
-                                                        background: '#e0f2fe',
-                                                        color: '#0369a1',
-                                                        padding: '2px 8px',
-                                                        borderRadius: '12px',
-                                                        fontSize: '0.75rem',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '4px'
-                                                    }}>
-                                                        @{tag}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleRemoveChatTag(tag)}
-                                                            style={{ border: 'none', background: 'none', cursor: 'pointer', padding: 0, color: 'inherit' }}
-                                                        >
-                                                            ×
-                                                        </button>
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        )}
-
-                                        <div style={{
-                                            position: 'relative',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            background: 'white',
-                                            border: '1px solid #e2e8f0',
-                                            borderRadius: '1.25rem',
-                                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
-                                            padding: '1rem 1.25rem',
-                                            transition: 'box-shadow 0.2s, border-color 0.2s'
-                                        }}>
-                                            <div style={{ marginRight: '1rem', color: '#94a3b8', display: 'flex', alignItems: 'center' }}>
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <title>Search</title>
-                                                    <circle cx="11" cy="11" r="8" />
-                                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                                                </svg>
-                                            </div>
-                                            <input
-                                                type="text"
-                                                value={question}
-                                                onChange={handleChatInputChange}
-                                                onKeyDown={(e) => {
-                                                    handleKeyDown(e);
-                                                    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !showTagSuggestions) {
-                                                        handleLandingPageSearch();
-                                                    }
-                                                }}
-                                                placeholder="Ask anything about your bookmarks..."
-                                                style={{
-                                                    flex: 1,
-                                                    border: 'none',
-                                                    outline: 'none',
-                                                    fontSize: '1.125rem',
-                                                    lineHeight: '1.5',
-                                                    color: '#1e293b',
-                                                    background: 'transparent'
-                                                }}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={handleLandingPageSearch}
-                                                disabled={!question.trim()}
-                                                style={{
-                                                    background: question.trim() ? '#0f172a' : '#f1f5f9',
-                                                    color: question.trim() ? 'white' : '#cbd5e1',
-                                                    border: 'none',
-                                                    borderRadius: '0.75rem',
-                                                    padding: '0.5rem',
-                                                    cursor: question.trim() ? 'pointer' : 'default',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    transition: 'all 0.2s',
-                                                    marginLeft: '0.5rem'
-                                                }}
-                                            >
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <title>Send</title>
-                                                    <line x1="22" y1="2" x2="11" y2="13" />
-                                                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                                                </svg>
-                                            </button>
-                                        </div>
-
-                                        {showTagSuggestions && (
-                                            <div className="tag-suggestions" style={{
-                                                position: 'absolute',
-                                                top: '100%',
-                                                left: 0,
-                                                right: 0,
-                                                marginTop: '0.5rem',
-                                                background: 'white',
-                                                border: '1px solid #e2e8f0',
-                                                borderRadius: '0.5rem',
-                                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                                                maxHeight: '200px',
-                                                overflowY: 'auto',
-                                                zIndex: 10
-                                            }}>
-                                                {filteredTags.map((tag, index) => (
-                                                    <button
-                                                        type="button"
-                                                        key={tag}
-                                                        onClick={() => handleTagSelect(tag)}
-                                                        style={{
-                                                            padding: '0.5rem 1rem',
-                                                            cursor: 'pointer',
-                                                            fontSize: '0.875rem',
-                                                            color: '#334155',
-                                                            background: index === selectedIndex ? '#f1f5f9' : 'white',
-                                                            border: 'none',
-                                                            width: '100%',
-                                                            textAlign: 'left',
-                                                            display: 'block'
-                                                        }}
-                                                        onMouseEnter={() => setSelectedIndex(index)}
-                                                    >
-                                                        {tag}
-                                                    </button>
-                                                ))}
-                                                {filteredTags.length === 0 && (
-                                                    <div style={{ padding: '0.5rem 1rem', color: '#94a3b8', fontSize: '0.875rem' }}>
-                                                        No tags found
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
+                                        <ChatInput
+                                            value={question}
+                                            onChange={handleChatInputChange}
+                                            onSend={handleLandingPageSearch}
+                                            onKeyDown={(e) => handleKeyDown(e, handleLandingPageSearch)}
+                                            placeholder="Ask anything about your bookmarks..."
+                                            tags={chatTags}
+                                            onRemoveTag={handleRemoveChatTag}
+                                            showTagSuggestions={showTagSuggestions}
+                                            filteredTags={filteredTags}
+                                            selectedTagIndex={selectedIndex}
+                                            onTagSelect={handleTagSelect}
+                                            onTagHover={setSelectedIndex}
+                                            suggestionPlacement="bottom"
+                                        />
                                     </div>
 
-                                    <p style={{ fontSize: '0.875rem', color: '#94a3b8' }}>{t('dashboard.selectBookmark')}</p>
+                                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{t('dashboard.selectBookmark')}</p>
                                 </div>
                             </div>
                         )
@@ -970,156 +861,27 @@ export default function DashboardApp() {
                                 {!messages.length && (
                                     <div className="chat-empty">
                                         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👋</div>
-                                        <h3 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>Welcome to HyperMemo Chat</h3>
+                                        <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>Welcome to HyperMemo Chat</h3>
                                         <p style={{ margin: 0 }}>Ask me anything about your saved bookmarks.</p>
                                     </div>
                                 )}
                             </div>
-                            <div className="chat-input-container" style={{ position: 'relative' }}>
-                                {chatTags.length > 0 && (
-                                    <div className="chat-tags" style={{ display: 'flex', gap: '0.5rem', padding: '0.5rem', flexWrap: 'wrap' }}>
-                                        {chatTags.map(tag => (
-                                            <span key={tag} style={{
-                                                background: '#e0f2fe',
-                                                color: '#0369a1',
-                                                padding: '2px 8px',
-                                                borderRadius: '12px',
-                                                fontSize: '0.75rem',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '4px'
-                                            }}>
-                                                @{tag}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleRemoveChatTag(tag)}
-                                                    style={{ border: 'none', background: 'none', cursor: 'pointer', padding: 0, color: 'inherit' }}
-                                                >
-                                                    ×
-                                                </button>
-                                            </span>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {showTagSuggestions && (
-                                    <div className="tag-suggestions" style={{
-                                        position: 'absolute',
-                                        bottom: '100%',
-                                        left: 0,
-                                        background: 'white',
-                                        border: '1px solid #e2e8f0',
-                                        borderRadius: '0.5rem',
-                                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                                        maxHeight: '200px',
-                                        overflowY: 'auto',
-                                        width: '200px',
-                                        zIndex: 10
-                                    }}>
-                                        {filteredTags.map((tag, index) => (
-                                            <button
-                                                type="button"
-                                                key={tag}
-                                                onClick={() => handleTagSelect(tag)}
-                                                style={{
-                                                    padding: '0.5rem 1rem',
-                                                    cursor: 'pointer',
-                                                    fontSize: '0.875rem',
-                                                    color: '#334155',
-                                                    background: index === selectedIndex ? '#f1f5f9' : 'white',
-                                                    border: 'none',
-                                                    width: '100%',
-                                                    textAlign: 'left',
-                                                    display: 'block'
-                                                }}
-                                                onMouseEnter={() => setSelectedIndex(index)}
-                                            >
-                                                {tag}
-                                            </button>
-                                        ))}
-                                        {filteredTags.length === 0 && (
-                                            <div style={{ padding: '0.5rem 1rem', color: '#94a3b8', fontSize: '0.875rem' }}>
-                                                No tags found
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                                <div style={{
-                                    position: 'relative',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    background: 'white',
-                                    border: '1px solid #e2e8f0',
-                                    borderRadius: '1rem',
-                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
-                                    padding: '0.75rem 1rem'
-                                }}>
-                                    <div style={{ marginRight: '0.75rem', color: '#94a3b8', display: 'flex', alignItems: 'center', height: '100%' }}>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <title>Search</title>
-                                            <circle cx="11" cy="11" r="8" />
-                                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                                        </svg>
-                                    </div>
-                                    <textarea
-                                        ref={chatInputRef}
-                                        value={question}
-                                        onChange={(e) => {
-                                            handleChatInputChange(e);
-                                            e.target.style.height = 'auto';
-                                            e.target.style.height = `${e.target.scrollHeight}px`;
-                                        }}
-                                        placeholder={t('chat.placeholder')}
-                                        onKeyDown={handleKeyDown}
-                                        className="chat-textarea"
-                                        rows={1}
-                                        style={{
-                                            flex: 1,
-                                            border: 'none',
-                                            outline: 'none',
-                                            fontSize: '1rem',
-                                            lineHeight: '1.5',
-                                            padding: 0,
-                                            color: '#1e293b',
-                                            resize: 'none',
-                                            overflow: 'hidden',
-                                            background: 'transparent',
-                                            minHeight: '24px',
-                                            maxHeight: '150px'
-                                        }}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => askAssistant()}
-                                        disabled={chatLoading || !question.trim()}
-                                        style={{
-                                            background: question.trim() ? '#0f172a' : '#f1f5f9',
-                                            color: question.trim() ? 'white' : '#cbd5e1',
-                                            border: 'none',
-                                            borderRadius: '0.5rem',
-                                            padding: '0.5rem',
-                                            cursor: question.trim() ? 'pointer' : 'default',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            transition: 'all 0.2s',
-                                            alignSelf: 'flex-end',
-                                            marginLeft: '0.5rem'
-                                        }}
-                                    >
-                                        {chatLoading ? (
-                                            <div className="spinner" style={{ width: 20, height: 20, border: '2px solid #cbd5e1', borderTopColor: '#64748b' }} />
-                                        ) : (
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <title>Send</title>
-                                                <line x1="22" y1="2" x2="11" y2="13" />
-                                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                                            </svg>
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
+                            <ChatInput
+                                value={question}
+                                onChange={handleChatInputChange}
+                                onSend={() => askAssistant()}
+                                onKeyDown={(e) => handleKeyDown(e, () => askAssistant())}
+                                loading={chatLoading}
+                                tags={chatTags}
+                                onRemoveTag={handleRemoveChatTag}
+                                showTagSuggestions={showTagSuggestions}
+                                filteredTags={filteredTags}
+                                selectedTagIndex={selectedIndex}
+                                onTagSelect={handleTagSelect}
+                                onTagHover={setSelectedIndex}
+                                inputRef={chatInputRef}
+                                suggestionPlacement="top"
+                            />
                             {chatError && <p className="chat-error">{chatError}</p>}
                         </div>
                     )}
@@ -1220,11 +982,13 @@ export default function DashboardApp() {
                 )
             }
 
-            {activeTab === 'subscription' && (
-                <div className="subscription-view">
-                    <SubscriptionManager />
-                </div>
-            )}
+            <Drawer
+                isOpen={subscriptionDrawerOpen}
+                onClose={() => setSubscriptionDrawerOpen(false)}
+                title="Subscription & Billing"
+            >
+                <SubscriptionManager />
+            </Drawer>
 
             <ConfirmationModal
                 isOpen={modalConfig.isOpen}
@@ -1234,6 +998,6 @@ export default function DashboardApp() {
                 message={modalConfig.message}
                 isDangerous={modalConfig.isDangerous}
             />
-        </div>
+        </div >
     );
 }

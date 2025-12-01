@@ -12,7 +12,7 @@ const CheckIcon = () => (
 );
 
 const XIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#94a3b8' }}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-secondary)' }}>
         <title>Not Included</title>
         <line x1="18" y1="6" x2="6" y2="18" />
         <line x1="6" y1="6" x2="18" y2="18" />
@@ -50,23 +50,16 @@ export const SubscriptionManager: FC = () => {
 
     return (
         <div className="subscription-manager">
-            <div className="subscription-manager__header">
-                <div>
-                    <h2>Subscription & Billing</h2>
-                    <p style={{ margin: '0.5rem 0 0', color: '#64748b' }}>Manage your plan and billing details</p>
-                </div>
-            </div>
-
             <div className="subscription-manager__content">
                 {!isPro ? (
                     <div className="subscription-plan subscription-plan--pro">
                         <div className="subscription-plan__header">
                             <div>
                                 <h3>Upgrade to Pro</h3>
-                                <p style={{ color: '#64748b', margin: 0 }}>Unlock the full power of HyperMemo</p>
+                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Unlock the full power of HyperMemo</p>
                             </div>
                             <div style={{ textAlign: 'right' }}>
-                                <p className="subscription-plan__price">$4.99<span style={{ fontSize: '1rem', color: '#64748b', fontWeight: 500 }}>/mo</span></p>
+                                <p className="subscription-plan__price">$4.99<span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 500 }}>/mo</span></p>
                             </div>
                         </div>
 
@@ -86,7 +79,7 @@ export const SubscriptionManager: FC = () => {
                             Upgrade to Pro
                             <span className="badge-coming-soon">Coming Soon</span>
                         </button>
-                        <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.875rem', color: '#64748b' }}>
+                        <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                             Secure payment via Stripe • Cancel anytime
                         </p>
                     </div>
@@ -95,7 +88,7 @@ export const SubscriptionManager: FC = () => {
                         <div className="subscription-plan__header">
                             <div>
                                 <h3>Pro Plan Active</h3>
-                                <p style={{ color: '#64748b', margin: 0 }}>Thank you for supporting HyperMemo!</p>
+                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Thank you for supporting HyperMemo!</p>
                             </div>
                             <div style={{ textAlign: 'right' }}>
                                 <span className="status-pill status-pill--active">Active</span>
