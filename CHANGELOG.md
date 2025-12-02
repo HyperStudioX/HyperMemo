@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.1] - 2025-12-01
+## [0.0.2] - 2025-12-01
 
 ### Added
 - Admin CLI tools for subscription management and user statistics
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SVG accessibility issues (added titles)
 - Type safety improvements in subscription service
 
-## [0.1.0] - 2025-12-01
+## [0.0.1] - 2025-12-01
 
 ### Added
 - Initial release

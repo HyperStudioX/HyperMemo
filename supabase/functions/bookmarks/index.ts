@@ -154,7 +154,19 @@ async function upsertBookmark(userId: string, payload: BookmarkPayload, existing
             (existingRecord.raw_content ?? '') !== rawContent;
 
         if (!contentChanged && existingRecord?.embedding) {
-            embedding = existingRecord.embedding;
+            const currentEmbedding = existingRecord.embedding;
+            if (typeof currentEmbedding === 'string') {
+                try {
+                    embedding = JSON.parse(currentEmbedding);
+                } catch {
+                    // Fallback if parse fails
+                    embedding = await computeEmbedding([title, summary, rawContent]);
+                }
+            } else if (Array.isArray(currentEmbedding)) {
+                embedding = currentEmbedding;
+            } else {
+                embedding = await computeEmbedding([title, summary, rawContent]);
+            }
         } else {
             embedding = await computeEmbedding([title, summary, rawContent]);
         }

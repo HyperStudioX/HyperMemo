@@ -5,7 +5,7 @@ export type BookmarkRow = {
     url: string;
     summary: string | null;
     raw_content: string | null;
-    embedding: number[] | null;
+    embedding: number[] | string | null;
     created_at: string;
     updated_at: string;
 };

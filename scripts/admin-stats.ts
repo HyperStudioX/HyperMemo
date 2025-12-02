@@ -1,4 +1,4 @@
-import { createClient, User } from '@supabase/supabase-js';
+import { createClient, type User } from '@supabase/supabase-js';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -43,9 +43,18 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
     }
 });
 
+interface Subscription {
+    user_id: string;
+    tier: string;
+    status: string;
+    start_date: string;
+    end_date: string;
+    cancel_at_period_end: boolean;
+}
+
 interface AppData {
     users: User[];
-    subscriptions: any[];
+    subscriptions: Subscription[];
 }
 
 async function fetchData(): Promise<AppData> {
@@ -124,7 +133,7 @@ async function showActiveStats(data: AppData) {
     console.log('\n⚡️ Most Recently Active Users (Top 10)');
     const activeUsers = [...users]
         .filter(u => u.last_sign_in_at)
-        .sort((a, b) => new Date(b.last_sign_in_at!).getTime() - new Date(a.last_sign_in_at!).getTime())
+        .sort((a, b) => new Date(b.last_sign_in_at as string).getTime() - new Date(a.last_sign_in_at as string).getTime())
         .slice(0, 10)
         .map(u => ({
             Email: u.email,

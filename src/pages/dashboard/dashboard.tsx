@@ -914,6 +914,22 @@ export default function DashboardApp() {
                                         </div>
                                     </div>
                                 ))}
+                                {chatLoading && (
+                                    <div className="chat-message chat-message--assistant">
+                                        <div className="chat-avatar">
+                                            {t('chat.ai')}
+                                        </div>
+                                        <div className="chat-bubble-container">
+                                            <div className="chat-bubble chat-bubble--loading">
+                                                <div className="typing-indicator">
+                                                    <span />
+                                                    <span />
+                                                    <span />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                                 {!messages.length && (
                                     <div className="chat-empty">
                                         <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>👋</div>
