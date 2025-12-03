@@ -34,3 +34,15 @@ export function ragPrompt(question: string, sources: string): string {
         sources
     ].join('\n');
 }
+
+export function rerankPrompt(question: string, items: string): string {
+    return [
+        'You are a relevance filter. Given a user question and a list of bookmarks, identify which bookmarks are RELEVANT to the question.',
+        'Return ONLY a JSON array of the relevant IDs, sorted by relevance (most relevant first).',
+        'Example output: ["id1", "id3"]',
+        'If none are relevant, return [].',
+        `Question: ${question}`,
+        'Bookmarks:',
+        items
+    ].join('\n');
+}

@@ -3,7 +3,7 @@ import { jsonResponse } from '../_shared/response.ts';
 import { requireUserId, supabaseAdmin } from '../_shared/supabaseClient.ts';
 import { readJson } from '../_shared/request.ts';
 import { embedText, generateContent } from '../_shared/ai.ts';
-import { ragPrompt } from '../_shared/prompts.ts';
+import { ragPrompt, rerankPrompt } from '../_shared/prompts.ts';
 
 type RagPayload = {
     question?: string;
@@ -88,27 +88,62 @@ async function searchBookmarks(
 }
 
 /**
- * Calculate hybrid score and rank bookmarks
+ * Rerank bookmarks using LLM
  */
-function rankBookmarks(
-    matches: RpcMatch[],
-    requestTags: string[],
-    topK = 5
-): RagMatch[] {
-    return matches
-        .map((match) => {
-            // Calculate tag boost
-            let tagBoost = 0;
-            if (requestTags.length > 0) {
-                // Count how many request tags are present in the bookmark's tags
-                // Note: match.tags are tag names from the RPC
-                const matchCount = match.tags.filter(t => requestTags.includes(t)).length;
-                tagBoost = (matchCount / requestTags.length) * 0.2;
-            }
+async function rerankBookmarksWithLLM(
+    question: string,
+    matches: RpcMatch[]
+): Promise<RagMatch[]> {
+    if (matches.length === 0) return [];
 
-            const finalScore = match.similarity + tagBoost;
+    // Format items for the LLM
+    const itemsText = matches
+        .map(m => `ID: ${m.id}\nTitle: ${m.title}\nSummary: ${m.summary}\n---`)
+        .join('\n');
 
-            return {
+    const prompt = rerankPrompt(question, itemsText);
+    const response = await generateContent(prompt);
+
+    // Parse JSON output
+    let relevantIds: string[] = [];
+    try {
+        // Try to find JSON array in the response
+        const jsonMatch = response.match(/\[.*\]/s);
+        if (jsonMatch) {
+            relevantIds = JSON.parse(jsonMatch[0]);
+        } else {
+            // Fallback: try parsing the whole text
+            relevantIds = JSON.parse(response);
+        }
+    } catch (e) {
+        console.error('Failed to parse rerank response:', response, e);
+        // Fallback: return top 5 original matches if parsing fails
+        return matches.slice(0, 5).map(m => ({
+            bookmark: {
+                id: m.id,
+                title: m.title,
+                url: m.url,
+                summary: m.summary,
+                tags: m.tags
+            },
+            score: m.similarity
+        }));
+    }
+
+    if (!Array.isArray(relevantIds)) {
+        return [];
+    }
+
+    // Filter and reorder matches based on relevantIds
+    const relevantMatches: RagMatch[] = [];
+
+    // Create a map for quick lookup
+    const matchMap = new Map(matches.map(m => [m.id, m]));
+
+    for (const id of relevantIds) {
+        const match = matchMap.get(id);
+        if (match) {
+            relevantMatches.push({
                 bookmark: {
                     id: match.id,
                     title: match.title,
@@ -116,11 +151,12 @@ function rankBookmarks(
                     summary: match.summary,
                     tags: match.tags
                 },
-                score: finalScore
-            };
-        })
-        .sort((a, b) => b.score - a.score)
-        .slice(0, topK);
+                score: 1.0 // High score for LLM-selected items
+            });
+        }
+    }
+
+    return relevantMatches;
 }
 
 /**
@@ -158,8 +194,10 @@ async function handleRagQuery(userId: string, question: string, tags: string[]):
         });
     }
 
-    // Rank bookmarks (apply hybrid scoring)
-    const matches = rankBookmarks(searchResults, tags);
+    // Rerank bookmarks using LLM
+    // We take top 20 from vector search to pass to LLM for reranking
+    const candidates = searchResults.slice(0, 20);
+    const matches = await rerankBookmarksWithLLM(question, candidates);
 
     // Generate answer using RAG
     const prompt = ragPrompt(question, buildSourcesText(matches));
