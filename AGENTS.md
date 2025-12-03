@@ -338,7 +338,7 @@ curl -X POST http://localhost:54321/functions/v1/bookmarks \
 - ❌ Hardcoding credentials in code (security vulnerability)
 
 ## Documentation & Resources
-- [docs/functions-architecture.md](docs/functions-architecture.md) - Detailed Edge Function architecture review
+
 - [docs/release.md](docs/release.md) - Chrome Web Store release process
 - [docs/google-auth.md](docs/google-auth.md) - Google OAuth setup guide
 - [docs/admin-cli.md](docs/admin-cli.md) - Admin CLI tools usage

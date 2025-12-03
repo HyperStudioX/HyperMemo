@@ -237,7 +237,7 @@ ANON_UID=...                 # Fallback user for local dev
 
 ## Documentation
 
-- [docs/functions-architecture.md](docs/functions-architecture.md) - Detailed Edge Function architecture
+
 - [docs/release.md](docs/release.md) - Release process for Chrome Web Store
 - [docs/google-auth.md](docs/google-auth.md) - Google OAuth setup guide
 - [docs/admin-cli.md](docs/admin-cli.md) - Admin CLI tools documentation

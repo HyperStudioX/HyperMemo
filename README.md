@@ -14,8 +14,28 @@
 ## Features
 - **Quick capture**: Save any webpage with one click. Get AI-generated summaries and suggested tags to help you organize your bookmarks.
 - **Chat with your bookmarks**: Ask questions about your saved content and get answers with links back to the original sources.
-- **Note builder** (Coming Soon): Select bookmarks, write notes, and export everything to Google Docs with a single click.
+- **Note builder** (Coming Soon): Convert AI chat conversations into structured notes and export them to Google Docs.
 - **Secure authentication**: Sign in with your Google account to keep your bookmarks private and synced.
+
+## Roadmap
+
+### Phase 1: Core Experience
+- [x] Chrome Extension for quick capture
+- [x] AI-powered summarization and tagging
+- [x] RAG-based chat with bookmarks
+- [x] Basic dashboard for management
+
+### Phase 2: Enhanced Organization
+- [ ] **Note Builder**: Create structured notes from AI chat conversations
+- [ ] **Google Docs Export**: One-click export of research notes
+- [ ] **Advanced Filtering**: Filter by date, domain, and read status
+- [ ] **Full-text Search**: Search within the content of saved pages
+
+### Phase 3: Expansion & Integration
+- [ ] **Mobile App**: iOS and Android apps for on-the-go access
+- [ ] **Knowledge Graph**: Visual exploration of connected ideas
+- [ ] **Integrations**: Sync with Notion, Obsidian, and Readwise
+- [ ] **Collaboration**: Shared collections and team workspaces
 
 ## Setup
 ```bash

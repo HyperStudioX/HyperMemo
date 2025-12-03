@@ -1,14 +1,24 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ESNext",
-    "lib": ["ES2023", "DOM"],
-    "types": ["node", "chrome"],
-    "allowSyntheticDefaultImports": true,
-    "noEmit": true
-  },
-  "include": ["vite.config.ts", "src/manifest.ts"]
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "composite": true,
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "target": "ESNext",
+        "lib": [
+            "ES2023",
+            "DOM"
+        ],
+        "types": [
+            "node",
+            "chrome"
+        ],
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "noEmit": true
+    },
+    "include": [
+        "vite.config.ts",
+        "src/manifest.ts"
+    ]
 }

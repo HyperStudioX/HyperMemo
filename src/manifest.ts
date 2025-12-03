@@ -1,9 +1,10 @@
 import { defineManifest } from '@crxjs/vite-plugin';
+import packageJson from '../package.json';
 
 export default defineManifest({
     manifest_version: 3,
     name: 'HyperMemo',
-    version: '0.1.2',
+    version: packageJson.version,
     description: 'AI-powered bookmark manager with smart tagging, instant search, and chat with your saved pages using RAG technology.',
     content_security_policy: {
         extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
