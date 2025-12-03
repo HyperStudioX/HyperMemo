@@ -19,9 +19,9 @@
     --bg-main: #ffffff;
 
     /* Status Colors */
-    --status-pro-bg: #fffbeb;
-    --status-pro-text: #b45309;
-    --status-pro-border: #fcd34d;
+    --status-pro-bg: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    --status-pro-text: #92400e;
+    --status-pro-border: #f59e0b;
 
     --status-trial-bg: #f3e8ff;
     --status-trial-text: #7e22ce;
@@ -255,9 +255,10 @@ body {
 }
 
 .tab-badge--pro {
-    background: rgba(245, 158, 11, 0.1);
-    color: #b45309;
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    background: var(--status-pro-bg);
+    color: var(--status-pro-text);
+    border: 1px solid var(--status-pro-border);
+    box-shadow: 0 1px 2px rgba(245, 158, 11, 0.15);
 }
 
 .tab-badge--subtle {
@@ -326,6 +327,10 @@ body {
 }
 
 .detail-tags {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
     margin-bottom: 2rem;
 }
 
@@ -333,11 +338,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .detail-tags-label {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
@@ -1772,10 +1777,130 @@ body {
 
 .content-body {
     font-size: 1.0625rem;
-    /* Slightly larger for reading */
     line-height: 1.8;
     color: var(--text-primary);
     max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.content-body h1,
+.content-body h2,
+.content-body h3,
+.content-body h4,
+.content-body h5,
+.content-body h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text-primary);
+}
+
+.content-body h1 {
+    font-size: 1.875rem;
+}
+
+.content-body h2 {
+    font-size: 1.5rem;
+}
+
+.content-body h3 {
+    font-size: 1.25rem;
+}
+
+.content-body h4 {
+    font-size: 1.125rem;
+}
+
+.content-body p {
+    margin-bottom: 1.25rem;
+}
+
+.content-body ul,
+.content-body ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+}
+
+.content-body li {
+    margin-bottom: 0.5rem;
+}
+
+.content-body a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.content-body a:hover {
+    text-decoration: none;
+}
+
+.content-body blockquote {
+    border-left: 4px solid var(--primary);
+    margin: 1.5rem 0;
+    padding: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    background: var(--bg-subtle);
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.content-body code {
+    background: var(--bg-subtle);
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.content-body pre {
+    background: var(--bg-subtle);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.content-body pre code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    color: inherit;
+}
+
+.content-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+}
+
+.content-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    display: block;
+    overflow-x: auto;
+}
+
+.content-body th,
+.content-body td {
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.content-body th {
+    background: var(--bg-subtle);
+    font-weight: 600;
+}
+
+.content-body hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
 }
 
 /* Modern Tag Styles (Ported from popup.css) */

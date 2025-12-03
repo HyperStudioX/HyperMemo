@@ -1,6 +1,9 @@
 {
     "imports": {
         "@supabase/supabase-js": "jsr:@supabase/supabase-js@2",
-        "std/": "https://deno.land/std@0.168.0/"
+        "std/": "https://deno.land/std@0.168.0/",
+        "deno-dom": "https://deno.land/x/deno_dom@v0.1.43/deno-dom-wasm.ts",
+        "@mozilla/readability": "npm:@mozilla/readability@^0.5.0",
+        "turndown": "npm:turndown@^7.1.2"
     }
 }

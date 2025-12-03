@@ -29,35 +29,35 @@
 
 /* Free tier */
 .subscription-badge--free {
-    background-color: var(--bg-subtle);
+    background: var(--bg-subtle);
     color: var(--text-secondary);
     border-color: var(--border);
 }
 
 /* Pro tier - active */
 .subscription-badge--pro {
-    background-color: var(--status-pro-bg);
+    background: var(--status-pro-bg);
     color: var(--status-pro-text);
     border-color: var(--status-pro-border);
 }
 
 /* Pro tier - trial */
 .subscription-badge--trial {
-    background-color: var(--status-trial-bg);
+    background: var(--status-trial-bg);
     color: var(--status-trial-text);
     border-color: var(--status-trial-border);
 }
 
 /* Pro tier - expiring soon */
 .subscription-badge--expiring {
-    background-color: var(--status-warning-bg);
+    background: var(--status-warning-bg);
     color: var(--status-warning-text);
     border-color: var(--status-warning-border);
 }
 
 /* Pro tier - expired */
 .subscription-badge--expired {
-    background-color: var(--status-error-bg);
+    background: var(--status-error-bg);
     color: var(--status-error-text);
     border-color: var(--status-error-border);
 }

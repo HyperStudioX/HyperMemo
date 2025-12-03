@@ -1,9 +1,11 @@
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarksContext } from '@/contexts/BookmarkContext';
 import { getBookmark } from '@/services/bookmarkService';
+import { supabase } from '@/services/supabaseClient';
 import { generateSummary, extractSmartTags } from '@/services/mlService';
 import { TagInput } from '@/components/TagInput';
 import { ConfirmationModal } from '@/components/ConfirmationModal';
@@ -51,6 +53,7 @@ export default function DashboardApp() {
     const [citations, setCitations] = useState<RagMatch[]>([]);
     const [isRegeneratingTags, setIsRegeneratingTags] = useState(false);
     const [isRegeneratingSummary, setIsRegeneratingSummary] = useState(false);
+    const [isRefetchingContent, setIsRefetchingContent] = useState(false);
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
     // Subscription State
@@ -690,6 +693,27 @@ export default function DashboardApp() {
         setNote(draft);
     };
 
+    const handleRefetchContent = async () => {
+        if (!activeBookmarkId) return;
+
+        setIsRefetchingContent(true);
+        try {
+            const { error } = await supabase.functions.invoke('process-bookmark', {
+                body: { bookmark_id: activeBookmarkId }
+            });
+
+            if (error) throw error;
+
+            // Refresh the detailed view
+            const fullBookmark = await getBookmark(activeBookmarkId);
+            setDetailedBookmark(fullBookmark);
+        } catch (error) {
+            console.error('Failed to refetch content:', error);
+        } finally {
+            setIsRefetchingContent(false);
+        }
+    };
+
     const exportNote = async () => {
         if (!note) return;
         setExporting(true);
@@ -934,48 +958,6 @@ export default function DashboardApp() {
                                     </div>
                                 </header>
 
-                                {/* AI Summary Section */}
-                                <section className="summary-card">
-                                    <div className="section-header">
-                                        <div className="flex-center" style={{ gap: '0.5rem' }}>
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#gradient-ai)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <title>AI Icon</title>
-                                                <defs>
-                                                    <linearGradient id="gradient-ai" x1="0" y1="0" x2="24" y2="24">
-                                                        <stop offset="0%" stopColor="var(--primary)" />
-                                                        <stop offset="100%" stopColor="#8b5cf6" />
-                                                    </linearGradient>
-                                                </defs>
-                                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" />
-                                            </svg>
-                                            <h2 className="section-title">{t('dashboard.summary')}</h2>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            className="btn-icon"
-                                            onClick={handleRegenerateSummary}
-                                            disabled={isRegeneratingSummary}
-                                            title={t('dashboard.regenerate')}
-                                        >
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <title>{t('dashboard.regenerate')}</title>
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div className="summary-content markdown-body">
-                                        {isRegeneratingSummary ? (
-                                            <div className="typing-indicator">
-                                                <span /><span /><span />
-                                            </div>
-                                        ) : (
-                                            <ReactMarkdown>
-                                                {detailedBookmark?.summary || activeBookmark.summary || t('dashboard.noContent')}
-                                            </ReactMarkdown>
-                                        )}
-                                    </div>
-                                </section>
-
                                 {/* Tags Section */}
                                 <section className="detail-tags">
                                     <div className="detail-tags-header">
@@ -1000,17 +982,75 @@ export default function DashboardApp() {
                                     />
                                 </section>
 
+                                {/* AI Summary Section */}
+                                <section className="summary-card">
+                                    <div className="section-header">
+                                        <div className="flex-center" style={{ gap: '0.5rem' }}>
+                                            <h2 className="section-title">{t('dashboard.summary')}</h2>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className="btn-icon"
+                                            onClick={handleRegenerateSummary}
+                                            disabled={isRegeneratingSummary}
+                                            title={t('dashboard.regenerate')}
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <title>{t('dashboard.regenerate')}</title>
+                                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div className="summary-content markdown-body">
+                                        {isRegeneratingSummary ? (
+                                            <div className="typing-indicator">
+                                                <span /><span /><span />
+                                            </div>
+                                        ) : (
+                                            <ReactMarkdown>
+                                                {detailedBookmark?.summary || activeBookmark.summary || t('dashboard.noContent')}
+                                            </ReactMarkdown>
+                                        )}
+                                    </div>
+                                </section>
+
                                 {/* Original Content Section */}
                                 <section className="content-section">
                                     <div className="section-header">
                                         <h2 className="section-title">Original Content</h2>
+                                        <button
+                                            type="button"
+                                            className="btn-icon"
+                                            onClick={handleRefetchContent}
+                                            disabled={isRefetchingContent || !activeBookmark}
+                                            title="Refetch content from URL"
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <title>Refetch Content</title>
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                <polyline points="7 10 12 15 17 10" />
+                                                <line x1="12" y1="15" x2="12" y2="3" />
+                                            </svg>
+                                        </button>
                                     </div>
                                     <div className="markdown-body content-body">
-                                        {loadingContent ? (
-                                            <div className="text-subtle">{t('dashboard.fetchingContent')}</div>
+                                        {loadingContent || isRefetchingContent ? (
+                                            <div className="flex-center" style={{ padding: '2rem', color: 'var(--text-secondary)' }}>
+                                                <svg className="animate-spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <title>Loading Content</title>
+                                                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                                </svg>
+                                            </div>
                                         ) : (
                                             detailedBookmark?.rawContent ? (
-                                                <ReactMarkdown>{detailedBookmark.rawContent}</ReactMarkdown>
+                                                <ReactMarkdown
+                                                    remarkPlugins={[remarkGfm]}
+                                                    components={{
+                                                        a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />
+                                                    }}
+                                                >
+                                                    {detailedBookmark.rawContent}
+                                                </ReactMarkdown>
                                             ) : (
                                                 <div className="text-subtle italic">
                                                     {detailedBookmark ? 'No original content captured for this bookmark.' : 'Select a bookmark to view content.'}

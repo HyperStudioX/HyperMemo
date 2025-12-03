@@ -100,6 +100,11 @@ export default function PopupApp() {
                 rawContent: pageContext?.content
             });
             setStatusMessage(t('popup.status.saved'));
+
+            // Close popup after successful save
+            setTimeout(() => {
+                window.close();
+            }, 500);
         } catch (error) {
             console.error(error);
             setStatusMessage(t('popup.status.failed'));
