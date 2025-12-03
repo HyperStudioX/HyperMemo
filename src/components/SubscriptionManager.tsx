@@ -68,11 +68,9 @@ export const SubscriptionManager: FC = () => {
                         <div className="subscription-plan__features">
                             <h4>{t('subscription.whatsIncluded')}</h4>
                             <ul>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.aiSummaries" /></span></li>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.smartTags" /></span></li>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.ragChat" /></span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.aiChat" /></span></li>
+                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.aiNotes" /></span></li>
                                 <li><CheckIcon /> <span><Trans i18nKey="subscription.features.unlimitedBookmarks" /></span></li>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.docsExport" /></span></li>
                                 <li><CheckIcon /> <span><Trans i18nKey="subscription.features.prioritySupport" /></span></li>
                             </ul>
                         </div>
@@ -176,21 +174,21 @@ export const SubscriptionManager: FC = () => {
                             </tr>
                             <tr>
                                 <td>{t('subscription.table.aiSummaries')}</td>
+                                <td><CheckIcon /></td>
+                                <td><CheckIcon /></td>
+                            </tr>
+                            <tr>
+                                <td>{t('subscription.table.aiTags')}</td>
+                                <td><CheckIcon /></td>
+                                <td><CheckIcon /></td>
+                            </tr>
+                            <tr>
+                                <td>{t('subscription.table.aiChat')}</td>
                                 <td><XIcon /></td>
                                 <td><CheckIcon /></td>
                             </tr>
                             <tr>
-                                <td>{t('subscription.table.smartTags')}</td>
-                                <td><XIcon /></td>
-                                <td><CheckIcon /></td>
-                            </tr>
-                            <tr>
-                                <td>{t('subscription.table.ragChat')}</td>
-                                <td><XIcon /></td>
-                                <td><CheckIcon /></td>
-                            </tr>
-                            <tr>
-                                <td>{t('subscription.table.exportDocs')}</td>
+                                <td>{t('subscription.table.aiNotes')}</td>
                                 <td><XIcon /></td>
                                 <td><CheckIcon /></td>
                             </tr>

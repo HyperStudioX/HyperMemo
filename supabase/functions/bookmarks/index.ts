@@ -4,7 +4,7 @@ import { requireUserId, supabaseAdmin } from '../_shared/supabaseClient.ts';
 import { readJson, getPathParam } from '../_shared/request.ts';
 import { normalizeTags, serializeBookmark } from '../_shared/bookmarks.ts';
 import type { BookmarkPayload, BookmarkRow, BookmarkWithTags, Tag } from '../_shared/bookmarks.ts';
-import { computeEmbedding, ensureSummary, ensureTags } from '../_shared/ai.ts';
+// import { computeEmbedding, ensureSummary, ensureTags } from '../_shared/ai.ts';
 import { normalizeTagResult } from '../_shared/tagUtils.ts';
 
 type BookmarkRecord = Omit<BookmarkRow, 'user_id' | 'created_at' | 'updated_at'> & {
@@ -133,57 +133,25 @@ async function fetchBookmarkWithTags(bookmarkId: string, userId: string): Promis
 async function upsertBookmark(userId: string, payload: BookmarkPayload, existingId?: string): Promise<Response> {
     const { title, url } = ensureTitleUrl(payload);
     const rawContent = (payload.rawContent ?? '').trim();
-    let summary = (payload.summary ?? '').trim();
-    let tags = normalizeTags(payload.tags);
-    summary = await ensureSummary(title, rawContent, url, summary);
-    tags = await ensureTags(title, rawContent, tags);
+    const initialSummary = (payload.summary ?? '').trim();
+    const initialTags = normalizeTags(payload.tags);
 
-    let embedding: number[] = [];
-
-    if (existingId) {
-        const { data: existingRecord } = await supabaseAdmin
-            .from('bookmarks')
-            .select('title, summary, raw_content, embedding')
-            .eq('id', existingId)
-            .eq('user_id', userId)
-            .single();
-
-        const contentChanged = !existingRecord ||
-            existingRecord.title !== title ||
-            (existingRecord.summary ?? '') !== summary ||
-            (existingRecord.raw_content ?? '') !== rawContent;
-
-        if (!contentChanged && existingRecord?.embedding) {
-            const currentEmbedding = existingRecord.embedding;
-            if (typeof currentEmbedding === 'string') {
-                try {
-                    embedding = JSON.parse(currentEmbedding);
-                } catch {
-                    // Fallback if parse fails
-                    embedding = await computeEmbedding([title, summary, rawContent]);
-                }
-            } else if (Array.isArray(currentEmbedding)) {
-                embedding = currentEmbedding;
-            } else {
-                embedding = await computeEmbedding([title, summary, rawContent]);
-            }
-        } else {
-            embedding = await computeEmbedding([title, summary, rawContent]);
-        }
-    } else {
-        embedding = await computeEmbedding([title, summary, rawContent]);
-    }
+    // Initial embedding (can be improved to be background too, but keeping it simple for now)
+    // Actually, let's make embedding background too if it's expensive, but for now let's keep it to ensure search works immediately?
+    // No, let's do embedding in background too to make save fast.
+    const embedding: number[] | null = null; // Empty initially, will be populated in background
 
     const record: BookmarkRecord = {
         id: existingId ?? payload.id ?? crypto.randomUUID(),
         user_id: userId,
         title,
         url,
-        summary,
+        summary: initialSummary,
         raw_content: rawContent,
         embedding
     };
 
+    // 1. Save initial record
     if (existingId) {
         const { data, error } = await supabaseAdmin
             .from('bookmarks')
@@ -192,41 +160,25 @@ async function upsertBookmark(userId: string, payload: BookmarkPayload, existing
                 url: record.url,
                 summary: record.summary,
                 raw_content: record.raw_content,
-                embedding: record.embedding
+                // Don't update embedding yet if it's empty
             })
             .eq('id', existingId)
             .eq('user_id', userId)
             .select()
             .single();
-        if (error || !data) {
-            throw new Error(error?.message ?? 'Failed to update bookmark');
-        }
-
-        // Sync tags
-        await syncBookmarkTags(existingId, userId, tags);
-
-        // Fetch with tags
-        const bookmarkWithTags = await fetchBookmarkWithTags(existingId, userId);
-        if (!bookmarkWithTags) {
-            throw new Error('Failed to fetch updated bookmark');
-        }
-        return jsonResponse(200, serializeBookmark(bookmarkWithTags));
+        if (error || !data) throw new Error(error?.message ?? 'Failed to update bookmark');
+    } else {
+        const { data, error } = await supabaseAdmin.from('bookmarks').insert(record).select().single();
+        if (error || !data) throw new Error(error?.message ?? 'Failed to save bookmark');
     }
 
-    const { data, error } = await supabaseAdmin.from('bookmarks').insert(record).select().single();
-    if (error || !data) {
-        throw new Error(error?.message ?? 'Failed to save bookmark');
-    }
+    // 2. Sync initial tags
+    await syncBookmarkTags(record.id, userId, initialTags);
 
-    // Sync tags for new bookmark
-    await syncBookmarkTags(record.id, userId, tags);
-
-    // Fetch with tags
-    const bookmarkWithTags = await fetchBookmarkWithTags(record.id, userId);
-    if (!bookmarkWithTags) {
-        throw new Error('Failed to fetch created bookmark');
-    }
-    return jsonResponse(200, serializeBookmark(bookmarkWithTags));
+    // 3. Prepare response
+    const initialBookmarkWithTags = await fetchBookmarkWithTags(record.id, userId);
+    if (!initialBookmarkWithTags) throw new Error('Failed to fetch bookmark');
+    return jsonResponse(200, serializeBookmark(initialBookmarkWithTags));
 }
 
 async function deleteBookmark(userId: string, resourceId: string | null): Promise<Response> {

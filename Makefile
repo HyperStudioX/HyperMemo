@@ -25,13 +25,20 @@ backend-db: ## Apply SQL migrations to the linked Supabase project
 	$(SUPABASE) db push
 
 backend-functions: ## Deploy Supabase Edge Functions
-	$(SUPABASE) functions deploy bookmarks summaries rag_query notes tags --import-map supabase/functions/deno.json
+	$(SUPABASE) functions deploy bookmarks summaries rag_query notes tags process-bookmark --import-map supabase/functions/deno.json --use-api
 
 backend-lint: ## Run Deno lint on backend functions
 	deno lint supabase/functions
 
 backend-test: ## Run Deno unit tests for backend helpers/functions
 	deno test supabase/functions
+
+bump-version: ## Bump version (usage: make bump-version type=patch|minor|major)
+	@test -n "$(type)" || (echo "❌ Error: type argument is required. Usage: make bump-version type=patch|minor|major" && exit 1)
+	@echo "⬆️  Bumping $(type) version..."
+	@pnpm version $(type) --no-git-tag-version
+	@echo "✅ Version bumped to $$(node -p "require('./package.json').version")"
+	@echo "⚠️  Don't forget to update CHANGELOG.md!"
 
 clean: ## Remove build artifacts and caches
 	rm -rf dist

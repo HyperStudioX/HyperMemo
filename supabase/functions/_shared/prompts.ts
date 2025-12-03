@@ -1,5 +1,10 @@
 export function summarizePrompt(title: string, content: string, url: string): string {
-    const parts = ['You are HyperMemo, a concise research assistant.'];
+    const parts = [
+        'You are HyperMemo, a concise research assistant.',
+        'Summarize the following content in a single paragraph.',
+        'Focus ONLY on the provided content. Do not include external information or meta-commentary.',
+        'If the content is empty or insufficient, describe the topic based on the title.'
+    ];
     if (title) {
         parts.push(`Title: ${title}`);
     }

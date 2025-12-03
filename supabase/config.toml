@@ -1,4 +1,4 @@
-project_id = "your-project-ref"
+project_id = "exjeyrnttrevrbwykmuj"
 
 [functions]
   [functions.bookmarks]
@@ -8,4 +8,6 @@ project_id = "your-project-ref"
   [functions.rag_query]
     verify_jwt = false
   [functions.notes]
+    verify_jwt = false
+  [functions.process-bookmark]
     verify_jwt = false

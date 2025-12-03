@@ -3,19 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarksContext } from '@/contexts/BookmarkContext';
 import type { PageContextPayload } from '@/types/messages';
-import { TagInput } from '@/components/TagInput';
 import { requestPageContext } from '@/utils/chrome';
-import { summarizeText, extractTags } from '@/utils/summarize';
-import { generateSummary, extractSmartTags } from '@/services/mlService';
 import { getUserSubscription } from '@/services/subscriptionService';
 import type { Subscription } from '@/types/subscription';
 import { SubscriptionBadge } from '@/components/SubscriptionBadge';
 
 const DEFAULT_FORM = {
     title: '',
-    url: '',
-    tags: [] as string[],
-    summary: ''
+    url: ''
 };
 
 export default function PopupApp() {
@@ -25,16 +20,8 @@ export default function PopupApp() {
     const [form, setForm] = useState(DEFAULT_FORM);
     const [pageContext, setPageContext] = useState<PageContextPayload | null>(null);
     const [saving, setSaving] = useState(false);
-    const [summarizing, setSummarizing] = useState(false);
-    const [tagging, setTagging] = useState(false);
     const [statusMessage, setStatusMessage] = useState('');
     const [subscription, setSubscription] = useState<Subscription | null>(null);
-
-    const isPro = useMemo(() => {
-        return subscription?.tier === 'pro' &&
-            subscription?.status === 'active' &&
-            new Date(subscription.endDate) > new Date();
-    }, [subscription]);
 
     useEffect(() => {
         if (user) {
@@ -49,9 +36,7 @@ export default function PopupApp() {
             setForm((prev) => ({
                 ...prev,
                 title: context.title ?? prev.title,
-                url: context.url ?? prev.url,
-                summary: prev.summary || summarizeText(context.content ?? ''),
-                tags: prev.tags.length ? prev.tags : extractTags(`${context.title} ${context.content}`)
+                url: context.url ?? prev.url
             }));
         });
     }, []);
@@ -94,56 +79,6 @@ export default function PopupApp() {
         }
     };
 
-    const handleSummarize = async () => {
-        if (!pageContext) return;
-        if (!isPro) {
-            setStatusMessage('Upgrade to Pro for AI summary');
-            return;
-        }
-        setSummarizing(true);
-        try {
-            const summary = await generateSummary({
-                content: pageContext.content,
-                title: pageContext.title,
-                url: pageContext.url
-            });
-            setForm((prev) => ({ ...prev, summary }));
-        } catch (error) {
-            console.warn('Falling back to local summary', error);
-            setForm((prev) => ({
-                ...prev,
-                summary: summarizeText(pageContext.content ?? '')
-            }));
-        } finally {
-            setSummarizing(false);
-        }
-    };
-
-    const handleSmartTags = async () => {
-        if (!pageContext) return;
-        if (!isPro) {
-            setStatusMessage('Upgrade to Pro for auto-tags');
-            return;
-        }
-        setTagging(true);
-        try {
-            const tags = await extractSmartTags({
-                content: pageContext.content,
-                title: pageContext.title,
-                url: pageContext.url
-            });
-            setForm((prev) => ({ ...prev, tags }));
-        } catch (error) {
-            console.warn('Falling back to heuristic tags', error);
-            setForm((prev) => ({
-                ...prev,
-                tags: extractTags(pageContext.content ?? '').slice(0, 5)
-            }));
-        } finally {
-            setTagging(false);
-        }
-    };
-
     const handleSave = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!user) {
@@ -160,8 +95,8 @@ export default function PopupApp() {
             await save({
                 title: form.title || pageContext?.title || 'Untitled',
                 url: form.url || pageContext?.url || '',
-                tags: form.tags,
-                summary: form.summary || summarizeText(pageContext?.content ?? ''),
+                tags: [],
+                summary: '',
                 rawContent: pageContext?.content
             });
             setStatusMessage(t('popup.status.saved'));
@@ -224,40 +159,8 @@ export default function PopupApp() {
                     />
                 </div>
 
-                <div className="field">
-                    <div className="flex justify-between items-center">
-                        <label htmlFor="tags-input">{t('popup.fieldTags')}</label>
-                        <button
-                            type="button"
-                            onClick={handleSmartTags}
-                            disabled={tagging}
-                            className="text text-xs"
-                        >
-                            {tagging ? t('popup.suggesting') : t('popup.autoSuggest')}
-                        </button>
-                    </div>
-                    <TagInput id="tags-input" value={form.tags} onChange={(next) => setForm({ ...form, tags: next })} />
-                </div>
-
-                <div className="field">
-                    <div className="flex justify-between items-center">
-                        <label htmlFor="summary">{t('popup.fieldSummary')}</label>
-                        <button
-                            type="button"
-                            onClick={handleSummarize}
-                            disabled={summarizing}
-                            className="text text-xs"
-                        >
-                            {summarizing ? t('popup.summarizing') : t('popup.autoSummarize')}
-                        </button>
-                    </div>
-                    <textarea
-                        id="summary"
-                        value={form.summary}
-                        onChange={(event) => setForm({ ...form, summary: event.target.value })}
-                        rows={3}
-                        placeholder={t('popup.placeholderSummary')}
-                    />
+                <div className="text-xs text-gray-500 mb-4 italic">
+                    {t('popup.aiGenerationNote', 'AI will generate tags and summary automatically.')}
                 </div>
 
                 {statusMessage && <div className="status">{statusMessage}</div>}

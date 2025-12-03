@@ -11,8 +11,11 @@
         "openWorkspace": "打開工作區"
     },
     "sidebar": {
-        "myLibrary": "我的資料庫",
-        "chats": "對話",
+        "myLibrary": "我的圖書館",
+        "bookmarks": "書籤",
+        "chats": "聊天",
+        "chat": "對話",
+        "notes": "筆記",
         "newChat": "新對話",
         "resetChat": "重置對話",
         "deleteChat": "刪除對話",
@@ -70,9 +73,10 @@
             "signIn": "保存前請先登入",
             "missingUrl": "缺少連結",
             "saving": "正在保存書籤…",
-            "saved": "已保存!",
-            "failed": "保存書籤失敗"
-        }
+            "saved": "已儲存！",
+            "failed": "儲存失敗"
+        },
+        "aiGenerationNote": "AI 將自動生成標籤和摘要。"
     },
     "subscription": {
         "title": "訂閱與帳單",
@@ -84,10 +88,10 @@
         "whatsIncluded": "包含內容：",
         "features": {
             "aiSummaries": "<strong>AI 智能摘要</strong> - 即時總結任何文章",
-            "smartTags": "<strong>智能自動標籤</strong> - 自動整理您的書籤",
-            "ragChat": "<strong>RAG 對話助手</strong> - 與您的知識庫對話",
+            "aiTags": "<strong>AI 標籤</strong> - 自動整理您的書籤",
+            "aiChat": "<strong>AI 對話助手</strong> - 與您的知識庫對話",
+            "aiNotes": "<strong>AI 筆記</strong> - 從您的書籤生成筆記",
             "unlimitedBookmarks": "<strong>無限書籤</strong> - 隨心所欲保存",
-            "docsExport": "<strong>Google Docs 匯出</strong> - 將研究轉化為文檔",
             "prioritySupport": "<strong>優先支援</strong> - 隨時獲取幫助"
         },
         "comingSoon": "即將推出",
@@ -113,9 +117,9 @@
             "bookmarks": "書籤數量",
             "unlimited": "無限",
             "aiSummaries": "AI 摘要",
-            "smartTags": "智能標籤",
-            "ragChat": "RAG 對話",
-            "exportDocs": "匯出文檔",
+            "aiTags": "AI 標籤",
+            "aiChat": "AI 對話",
+            "aiNotes": "AI 筆記",
             "support": "支援",
             "community": "社群",
             "priority": "優先"
@@ -134,8 +138,8 @@
         },
         "prompts": {
             "chat": "使用 RAG 技術與書籤對話是 Pro 功能。升級以解鎖與您保存知識的智能對話。",
-            "autoTag": "自動標籤是 Pro 功能。升級以自動為您的書籤生成智能標籤。",
-            "aiSummary": "AI 智能摘要是 Pro 功能。升級以自動為您的書籤生成摘要。"
+            "autoTag": "自動為您的書籤生成智能標籤。",
+            "aiSummary": "自動為您的書籤生成摘要。"
         }
     }
 }

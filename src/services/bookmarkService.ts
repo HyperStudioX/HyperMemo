@@ -32,8 +32,13 @@ export async function saveBookmark(payload: BookmarkPayload & { id?: string }): 
 }
 
 export async function removeBookmark(id: string): Promise<void> {
+    // Optimistic update: remove from local cache immediately
+    const bookmarks = await chromeStorage.get<Bookmark[]>(BOOKMARK_CACHE_KEY, []);
+    const updated = bookmarks.filter(b => b.id !== id);
+    await chromeStorage.set(BOOKMARK_CACHE_KEY, updated);
+
     await apiClient.delete(`/bookmarks/${id}`);
-    await refreshRemoteCache();
+    refreshRemoteCache();
 }
 
 export async function clearAllBookmarks(): Promise<void> {

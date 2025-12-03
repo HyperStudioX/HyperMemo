@@ -312,6 +312,9 @@ export default function DashboardApp() {
         try {
             const fullBookmark = await getBookmark(id);
             setDetailedBookmark(fullBookmark);
+
+            // Auto-generation is now handled by the backend
+
         } catch (error) {
             console.error('Failed to fetch full bookmark content', error);
         } finally {
@@ -485,6 +488,8 @@ export default function DashboardApp() {
             }
         }
     };
+
+    const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(true);
 
     const handleResetSession = () => {
         if (!activeSessionId) return;
@@ -767,52 +772,49 @@ export default function DashboardApp() {
                         <button
                             type="button"
                             className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
-                            onClick={() => {
-                                setActiveTab('overview');
-                                if (filteredBookmarks.length > 0 && !activeBookmarkId) {
-                                    handleBookmarkClick(filteredBookmarks[0].id);
-                                }
-                            }}
+                            onClick={() => setActiveTab('overview')}
                         >
-                            {t('tabs.overview')}
+                            {t('sidebar.bookmarks')}
                         </button>
                         <button
                             type="button"
                             className={`tab ${activeTab === 'chat' ? 'active' : ''}`}
-                            onClick={() => {
-                                if (!isPro) {
-                                    openConfirm(
-                                        t('subscription.upgradeTitle'),
-                                        t('subscription.prompts.chat'),
-                                        () => setSubscriptionDrawerOpen(true)
-                                    );
-                                    return;
-                                }
-                                setActiveTab('chat');
-                                setActiveBookmarkId(null);
-                                setDetailedBookmark(null);
-                            }}
+                            onClick={() => setActiveTab('chat')}
                         >
-                            {t('tabs.chat')}
-                            {!isPro && (
-                                <span className="tab-badge tab-badge--pro">
-                                    <span className="tab-badge__icon">⭐</span>
-                                    <span className="tab-badge__text">Pro</span>
-                                </span>
-                            )}
+                            {t('sidebar.chat')}
+                            <span className="tab-badge tab-badge--pro">
+                                <span className="tab-badge__icon">✨</span>
+                                <span className="tab-badge__text">AI</span>
+                            </span>
                         </button>
                         <button
                             type="button"
                             className="tab"
                             disabled
                         >
-                            {t('tabs.notes')}
+                            {t('sidebar.notes')}
                             <span className="tab-badge tab-badge--subtle">{t('tabs.comingSoon')}</span>
                         </button>
                     </div>
                     <div className="flex-center">
                         {activeTab === 'chat' && (
-                            <div style={{ marginRight: '0.5rem' }} />
+                            <button
+                                type="button"
+                                className="btn-icon"
+                                onClick={() => setIsChatHistoryOpen(!isChatHistoryOpen)}
+                                title={isChatHistoryOpen ? "Collapse History" : "Open History"}
+                                style={{
+                                    color: isChatHistoryOpen ? 'var(--primary)' : 'var(--text-secondary)',
+                                    background: isChatHistoryOpen ? 'var(--bg-active)' : 'transparent',
+                                    marginRight: '0.5rem'
+                                }}
+                            >
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <title>{isChatHistoryOpen ? "Collapse History" : "Open History"}</title>
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="15" y1="3" x2="15" y2="21" />
+                                </svg>
+                            </button>
                         )}
                         <button
                             type="button"
@@ -866,7 +868,50 @@ export default function DashboardApp() {
                                     </div>
                                 </header>
 
-                                <div className="detail-tags">
+                                {/* AI Summary Section */}
+                                <section className="summary-card">
+                                    <div className="section-header">
+                                        <div className="flex-center" style={{ gap: '0.5rem' }}>
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="url(#gradient-ai)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <title>AI Icon</title>
+                                                <defs>
+                                                    <linearGradient id="gradient-ai" x1="0" y1="0" x2="24" y2="24">
+                                                        <stop offset="0%" stopColor="var(--primary)" />
+                                                        <stop offset="100%" stopColor="#8b5cf6" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" />
+                                            </svg>
+                                            <h2 className="section-title">{t('dashboard.summary')}</h2>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className="btn-icon"
+                                            onClick={handleRegenerateSummary}
+                                            disabled={isRegeneratingSummary}
+                                            title={t('dashboard.regenerate')}
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <title>{t('dashboard.regenerate')}</title>
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div className="summary-content markdown-body">
+                                        {isRegeneratingSummary ? (
+                                            <div className="typing-indicator">
+                                                <span /><span /><span />
+                                            </div>
+                                        ) : (
+                                            <ReactMarkdown>
+                                                {detailedBookmark?.summary || activeBookmark.summary || t('dashboard.noContent')}
+                                            </ReactMarkdown>
+                                        )}
+                                    </div>
+                                </section>
+
+                                {/* Tags Section */}
+                                <section className="detail-tags">
                                     <div className="detail-tags-header">
                                         <span className="detail-tags-label">{t('popup.fieldTags')}</span>
                                         <button
@@ -876,8 +921,10 @@ export default function DashboardApp() {
                                             disabled={isRegeneratingTags}
                                             title={t('dashboard.autoTag')}
                                         >
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('dashboard.autoTag')}</title><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" /></svg>
-                                            {isRegeneratingTags ? t('dashboard.analyzing') : t('dashboard.autoTag')}
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <title>{t('dashboard.autoTag')}</title>
+                                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" />
+                                            </svg>
                                         </button>
                                     </div>
                                     <TagInput
@@ -885,40 +932,27 @@ export default function DashboardApp() {
                                         onChange={handleUpdateTags}
                                         placeholder={t('dashboard.addTags')}
                                     />
-                                </div>
+                                </section>
 
-                                <div className="detail-content">
-                                    <div className="detail-content-header">
-                                        <h2 className="detail-content-title">{t('dashboard.summary')}</h2>
-                                        <button
-                                            type="button"
-                                            className="btn-icon"
-                                            onClick={handleRegenerateSummary}
-                                            disabled={isRegeneratingSummary}
-                                            title={t('dashboard.regenerate')}
-                                        >
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('dashboard.regenerate')}</title><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
-                                            {isRegeneratingSummary ? t('dashboard.writing') : t('dashboard.regenerate')}
-                                        </button>
+                                {/* Original Content Section */}
+                                <section className="content-section">
+                                    <div className="section-header">
+                                        <h2 className="section-title">Original Content</h2>
                                     </div>
-
-
-                                    <div className="markdown-body">
-                                        {loadingContent && (
-                                            <div className="text-subtle" style={{ marginBottom: '1rem', fontSize: '0.875rem' }}>
-                                                {t('dashboard.fetchingContent')}
-                                            </div>
+                                    <div className="markdown-body content-body">
+                                        {loadingContent ? (
+                                            <div className="text-subtle">{t('dashboard.fetchingContent')}</div>
+                                        ) : (
+                                            detailedBookmark?.rawContent ? (
+                                                <ReactMarkdown>{detailedBookmark.rawContent}</ReactMarkdown>
+                                            ) : (
+                                                <div className="text-subtle italic">
+                                                    {detailedBookmark ? 'No original content captured for this bookmark.' : 'Select a bookmark to view content.'}
+                                                </div>
+                                            )
                                         )}
-                                        {detailedBookmark?.rawContent && (
-                                            <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--bg-subtle)', borderRadius: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                                <strong>📄 Original Content</strong> - Showing full page content
-                                            </div>
-                                        )}
-                                        <ReactMarkdown>
-                                            {detailedBookmark?.rawContent || detailedBookmark?.summary || activeBookmark.summary || t('dashboard.noContent')}
-                                        </ReactMarkdown>
                                     </div>
-                                </div>
+                                </section>
                             </div>
                         ) : (
                             <div className="empty-state">
@@ -1112,7 +1146,7 @@ export default function DashboardApp() {
 
             {/* Right Sidebar - Chat History (Only in Chat Tab) */}
             {
-                activeTab === 'chat' && (
+                activeTab === 'chat' && isChatHistoryOpen && (
                     <aside className="sidebar-right">
                         <div className="sidebar__header">
                             <h1 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>{t('sidebar.chats')}</h1>

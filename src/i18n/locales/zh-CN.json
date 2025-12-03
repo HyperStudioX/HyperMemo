@@ -11,8 +11,11 @@
         "openWorkspace": "打开工作区"
     },
     "sidebar": {
-        "myLibrary": "我的资料库",
-        "chats": "对话",
+        "myLibrary": "我的图书馆",
+        "bookmarks": "书签",
+        "chats": "聊天",
+        "chat": "对话",
+        "notes": "笔记",
         "newChat": "新对话",
         "resetChat": "重置对话",
         "deleteChat": "删除对话",
@@ -72,7 +75,8 @@
             "saving": "正在保存书签…",
             "saved": "已保存!",
             "failed": "保存书签失败"
-        }
+        },
+        "aiGenerationNote": "AI 将自动生成标签和摘要。"
     },
     "subscription": {
         "title": "订阅与账单",
@@ -84,10 +88,10 @@
         "whatsIncluded": "包含内容：",
         "features": {
             "aiSummaries": "<strong>AI 智能摘要</strong> - 即时总结任何文章",
-            "smartTags": "<strong>智能自动标签</strong> - 自动整理您的书签",
-            "ragChat": "<strong>RAG 对话助手</strong> - 与您的知识库对话",
+            "aiTags": "<strong>AI 标签</strong> - 自动整理您的书签",
+            "aiChat": "<strong>AI 对话助手</strong> - 与您的知识库对话",
+            "aiNotes": "<strong>AI 笔记</strong> - 从您的书签生成笔记",
             "unlimitedBookmarks": "<strong>无限书签</strong> - 随心所欲保存",
-            "docsExport": "<strong>Google Docs 导出</strong> - 将研究转化为文档",
             "prioritySupport": "<strong>优先支持</strong> - 随时获取帮助"
         },
         "comingSoon": "即将推出",
@@ -113,9 +117,9 @@
             "bookmarks": "书签数量",
             "unlimited": "无限",
             "aiSummaries": "AI 摘要",
-            "smartTags": "智能标签",
-            "ragChat": "RAG 对话",
-            "exportDocs": "导出文档",
+            "aiTags": "AI 标签",
+            "aiChat": "AI 对话",
+            "aiNotes": "AI 笔记",
             "support": "支持",
             "community": "社区",
             "priority": "优先"
@@ -134,8 +138,8 @@
         },
         "prompts": {
             "chat": "使用 RAG 技术与书签对话是 Pro 功能。升级以解锁与您保存知识的智能对话。",
-            "autoTag": "自动标签是 Pro 功能。升级以自动为您的书签生成智能标签。",
-            "aiSummary": "AI 智能摘要是 Pro 功能。升级以自动为您的书签生成摘要。"
+            "autoTag": "自动为您的书签生成智能标签。",
+            "aiSummary": "自动为您的书签生成摘要。"
         }
     }
 }

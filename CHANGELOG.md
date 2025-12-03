@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2025-12-03
+
+### Added
+- **UI Redesign**: Complete overhaul of the dashboard with a modern, "Notion-like" aesthetic.
+- **Responsive Design**: Dashboard now adapts seamlessly to mobile and tablet screens.
+- **Collapsible Chat History**: New toggle in the header to show/hide chat history.
+- **Cron Job**: Added daily cleanup for unused tags in Supabase.
+- **DevOps**: Added `make bump-version` command.
+
+### Changed
+- **Contrast**: Improved global color contrast and dark mode support for better accessibility.
+- **Layout**: Widened the main content area and sidebars for better readability.
+- **Notes Tab**: Disabled "Notes" tab and added a "Coming Soon" badge.
+
+## [0.0.3] - 2025-12-03
+
+### Added
+- **Background AI Processing**: Implemented Supabase Database Webhooks to handle AI summarization and tagging asynchronously.
+- **New Edge Function**: `process-bookmark` for handling webhook events.
+
+### Changed
+- **Performance**: Moved AI tasks out of the main request loop to improve UI responsiveness.
+- **Database**: Updated schema to support `pg_net` and webhook triggers.
+- **Auto-generation**: AI generation now triggers automatically for all users upon bookmark creation.
+
 ## [0.0.2] - 2025-12-01
 
 ### Added

@@ -88,10 +88,14 @@ export async function ensureSummary(
     url: string,
     summary: string
 ): Promise<string> {
-    if (summary || !rawContent) {
+    if (summary?.trim()) {
         return summary;
     }
-    return await generateContent(summarizePrompt(title, rawContent, url));
+    const contentToSummarize = rawContent || `Title: ${title}\nURL: ${url}`;
+    if (!contentToSummarize.trim()) {
+        return '';
+    }
+    return await generateContent(summarizePrompt(title, contentToSummarize, url));
 }
 
 export async function ensureTags(
@@ -99,10 +103,14 @@ export async function ensureTags(
     rawContent: string,
     tags: string[]
 ): Promise<string[]> {
-    if (tags.length || !rawContent) {
+    if (tags && tags.length > 0) {
         return tags;
     }
-    const suggestion = await generateContent(tagsPrompt(title, rawContent));
+    const contentForTags = rawContent || `Title: ${title}`;
+    if (!contentForTags.trim()) {
+        return [];
+    }
+    const suggestion = await generateContent(tagsPrompt(title, contentForTags));
     return parseTags(suggestion);
 }
 
