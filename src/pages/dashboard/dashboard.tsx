@@ -1120,8 +1120,21 @@ export default function DashboardApp() {
                             <div className="chat-window">
                                 {messages.map((message, index) => (
                                     <div key={message.id} className={`chat-message chat-message--${message.role}`}>
-                                        <div className="chat-avatar">
-                                            {message.role === 'user' ? t('chat.you') : t('chat.ai')}
+                                        <div className={`chat-avatar ${message.role === 'user' ? 'chat-avatar--user' : 'chat-avatar--ai'}`}>
+                                            {message.role === 'user' ? (
+                                                user?.user_metadata?.avatar_url ? (
+                                                    <img src={user.user_metadata.avatar_url} alt="You" />
+                                                ) : (
+                                                    <div className="avatar-placeholder">{user?.email?.charAt(0).toUpperCase() || 'U'}</div>
+                                                )
+                                            ) : (
+                                                <div className="ai-avatar-icon">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <title>AI Avatar</title>
+                                                        <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="currentColor" stroke="none" />
+                                                    </svg>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="chat-bubble-container">
                                             <div className="chat-bubble markdown-body">
@@ -1189,8 +1202,13 @@ export default function DashboardApp() {
                                 ))}
                                 {chatLoading && (
                                     <div className="chat-message chat-message--assistant">
-                                        <div className="chat-avatar">
-                                            {t('chat.ai')}
+                                        <div className="chat-avatar chat-avatar--ai">
+                                            <div className="ai-avatar-icon">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <title>AI Avatar</title>
+                                                    <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="currentColor" stroke="none" />
+                                                </svg>
+                                            </div>
                                         </div>
                                         <div className="chat-bubble-container">
                                             <div className="chat-bubble chat-bubble--loading">

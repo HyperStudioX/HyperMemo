@@ -10,3 +10,4 @@ screenshots/AI[[:space:]]Chat.png filter=lfs diff=lfs merge=lfs -text
 screenshots/Bookmarks.jpg filter=lfs diff=lfs merge=lfs -text
 screenshots/Landing.jpg filter=lfs diff=lfs merge=lfs -text
 screenshots/Save[[:space:]]Bookmark.jpg filter=lfs diff=lfs merge=lfs -text
+screenshots/AI[[:space:]]Chat.jpg filter=lfs diff=lfs merge=lfs -text
