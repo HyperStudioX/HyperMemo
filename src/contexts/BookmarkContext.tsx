@@ -13,6 +13,7 @@ import {
     removeBookmark,
     BOOKMARK_CACHE_KEY
 } from '@/services/bookmarkService';
+import { chromeStorage } from '@/utils/chrome';
 import { useAuth } from '@/contexts/AuthContext';
 
 export type BookmarkContextValue = {
@@ -43,15 +44,19 @@ function useProvideBookmarks(): BookmarkContextValue {
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
 
+    const fetchBookmarks = useCallback(async () => {
+        const data = await listBookmarks();
+        setBookmarks(data);
+    }, []);
+
     const refresh = useCallback(async () => {
         setLoading(true);
         try {
-            const data = await listBookmarks();
-            setBookmarks(data);
+            await fetchBookmarks();
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [fetchBookmarks]);
 
     useEffect(() => {
         if (!user) {
@@ -59,8 +64,28 @@ function useProvideBookmarks(): BookmarkContextValue {
             setLoading(false);
             return;
         }
-        refresh();
-    }, [user, refresh]);
+
+        const init = async () => {
+            // Try to load from cache first for instant UI
+            try {
+                const cached = await chromeStorage.get<Bookmark[]>(BOOKMARK_CACHE_KEY, []);
+                if (cached && cached.length > 0) {
+                    setBookmarks(cached);
+                    setLoading(false);
+                    // Trigger background update
+                    fetchBookmarks().catch(console.error);
+                    return;
+                }
+            } catch (error) {
+                console.warn('Failed to load cached bookmarks', error);
+            }
+
+            // If no cache or error, do full refresh
+            refresh();
+        };
+
+        init();
+    }, [user, refresh, fetchBookmarks]);
 
     useEffect(() => {
         if (typeof chrome === 'undefined' || !chrome.storage) return;
