@@ -114,67 +114,81 @@ export default function PopupApp() {
     };
 
     return (
-        <div className="popup">
-            <header className="header">
-                <h1>{t('popup.title')}</h1>
-                <div className="user-menu">
+        <div className="w-[360px] p-4 bg-bg-main">
+            <header className="flex items-center justify-between mb-4 pb-3 border-b border-border">
+                <h1 className="text-lg font-semibold text-text-primary">{t('popup.title')}</h1>
+                <div className="flex items-center gap-2">
                     <SubscriptionBadge subscription={subscription} />
                     {loading ? (
-                        <span className="text-xs text-gray-500">...</span>
+                        <span className="text-xs text-text-secondary">...</span>
                     ) : user ? (
                         <>
                             {userProfile.avatarUrl ? (
                                 <img
                                     src={userProfile.avatarUrl}
                                     alt={userProfile.name}
-                                    className="avatar"
+                                    className="w-8 h-8 rounded-full object-cover border-2 border-border"
                                 />
                             ) : (
-                                <span className="avatar">{userInitials}</span>
+                                <span className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-medium">{userInitials}</span>
                             )}
                         </>
                     ) : (
-                        <button type="button" className="text" onClick={login}>
+                        <button type="button" className="text-sm text-primary hover:underline" onClick={login}>
                             {t('app.signIn')}
                         </button>
                     )}
                 </div>
             </header>
 
-            <form className="form" onSubmit={handleSave}>
-                <div className="field">
-                    <label htmlFor="title">{t('popup.fieldTitle')}</label>
+            <form className="flex flex-col gap-4" onSubmit={handleSave}>
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="title" className="text-sm font-medium text-text-primary">{t('popup.fieldTitle')}</label>
                     <input
                         id="title"
                         type="text"
                         value={form.title}
                         onChange={(event) => setForm({ ...form, title: event.target.value })}
                         placeholder={t('popup.placeholderTitle')}
+                        className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-bg-main text-text-primary placeholder:text-text-secondary outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                 </div>
 
-                <div className="field">
-                    <label htmlFor="url">{t('popup.fieldUrl')}</label>
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="url" className="text-sm font-medium text-text-primary">{t('popup.fieldUrl')}</label>
                     <input
                         id="url"
                         type="url"
                         value={form.url}
                         onChange={(event) => setForm({ ...form, url: event.target.value })}
                         placeholder={t('popup.placeholderUrl')}
+                        className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-bg-main text-text-primary placeholder:text-text-secondary outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                 </div>
 
-                <div className="text-xs text-gray-500 mb-4 italic">
+                <div className="text-xs text-text-secondary italic">
                     {t('popup.aiGenerationNote', 'AI will generate tags and summary automatically.')}
                 </div>
 
-                {statusMessage && <div className="status">{statusMessage}</div>}
+                {statusMessage && (
+                    <div className="px-3 py-2 text-sm rounded-lg bg-success-bg border border-success-border text-success">
+                        {statusMessage}
+                    </div>
+                )}
 
-                <div className="actions">
-                    <button type="submit" className="primary" disabled={!user || saving}>
+                <div className="flex gap-2 pt-2">
+                    <button
+                        type="submit"
+                        className="flex-1 px-4 py-2.5 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={!user || saving}
+                    >
                         {!user ? t('popup.signInToSave') : saving ? t('popup.saving') : t('popup.save')}
                     </button>
-                    <button type="button" className="secondary" onClick={openWorkspace}>
+                    <button
+                        type="button"
+                        className="px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-text-primary hover:bg-bg-subtle transition-colors"
+                        onClick={openWorkspace}
+                    >
                         {t('app.openWorkspace')}
                     </button>
                 </div>

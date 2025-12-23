@@ -4,7 +4,7 @@ import App from './popup';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { BookmarkProvider } from '@/contexts/BookmarkContext';
 import '@/i18n';
-import './popup.css';
+import '@/index.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>

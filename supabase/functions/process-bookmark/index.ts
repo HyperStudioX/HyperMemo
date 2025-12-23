@@ -96,6 +96,48 @@ async function fetchCurrentTags(bookmarkId: string): Promise<string[]> {
         .filter((name: unknown): name is string => Boolean(name));
 }
 
+function cleanMarkdownContent(markdown: string, baseUrl: string): string {
+    // Parse base URL for resolving relative links
+    let origin = '';
+    try {
+        const urlObj = new URL(baseUrl);
+        origin = urlObj.origin;
+    } catch {
+        // If URL parsing fails, just use empty origin
+    }
+
+    let cleaned = markdown;
+
+    // Fix relative links: [text](/path) -> [text](https://domain.com/path)
+    cleaned = cleaned.replace(/\]\(\/([^)]+)\)/g, `](${origin}/$1)`);
+
+    // Remove orphaned link patterns like "](/path)" without preceding text
+    cleaned = cleaned.replace(/\]\([^)]*\)(?!\])/g, '');
+
+    // Remove empty links: [](url) or []()
+    cleaned = cleaned.replace(/\[\]\([^)]*\)/g, '');
+
+    // Remove broken image references
+    cleaned = cleaned.replace(/!\[\]\([^)]*\)/g, '');
+
+    // Clean up multiple consecutive newlines (more than 2)
+    cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
+    // Remove lines that are just numbers (like engagement counts: "60", "437", "2K")
+    cleaned = cleaned.replace(/^[\d,.]+[KMB]?$/gm, '');
+
+    // Remove lines that look like social media metrics (e.g., "774K775K")
+    cleaned = cleaned.replace(/^[\d,.]+[KMB]?[\d,.]+[KMB]?$/gm, '');
+
+    // Clean up resulting empty lines
+    cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
+    // Trim whitespace
+    cleaned = cleaned.trim();
+
+    return cleaned;
+}
+
 async function fetchAndCleanContent(url: string): Promise<string | null> {
     try {
         console.log(`Fetching content from ${url}...`);
@@ -131,7 +173,10 @@ async function fetchAndCleanContent(url: string): Promise<string | null> {
             codeBlockStyle: 'fenced'
         });
 
-        return turndownService.turndown(article.content);
+        const rawMarkdown = turndownService.turndown(article.content);
+
+        // Clean up the markdown content
+        return cleanMarkdownContent(rawMarkdown, url);
 
     } catch (error) {
         console.error(`Error fetching/cleaning content for ${url}:`, error);

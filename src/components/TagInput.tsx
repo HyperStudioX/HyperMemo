@@ -32,15 +32,15 @@ export function TagInput({ value, onChange, placeholder, id }: TagInputProps) {
     };
 
     return (
-        <div className="tag-input">
-            <div className="tag-input__chips">
+        <div className="flex items-center gap-2 flex-wrap flex-1">
+            <div className="flex flex-wrap gap-1.5">
                 {value.map((tag) => (
-                    <span key={tag} className="tag-chip">
+                    <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full">
                         {tag}
                         <button
                             type="button"
                             onClick={() => removeTag(tag)}
-                            className="tag-remove"
+                            className="text-primary/60 hover:text-primary transition-colors"
                             title={`Remove ${tag}`}
                         >
                             ×
@@ -50,7 +50,7 @@ export function TagInput({ value, onChange, placeholder, id }: TagInputProps) {
             </div>
             <input
                 id={id}
-                className="tag-input__field"
+                className="flex-1 min-w-[120px] px-2 py-1 text-sm border-none bg-transparent outline-none placeholder:text-text-secondary"
                 placeholder={value.length === 0 ? (placeholder ?? 'Add tag') : ''}
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
@@ -58,7 +58,7 @@ export function TagInput({ value, onChange, placeholder, id }: TagInputProps) {
             />
             <button
                 type="button"
-                className="tag-input__add"
+                className="w-6 h-6 flex items-center justify-center rounded-full text-text-secondary hover:text-primary hover:bg-primary/10 transition-colors"
                 onClick={() => addTag(input)}
             >
                 +

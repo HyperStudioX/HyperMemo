@@ -2,7 +2,6 @@ import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Subscription } from '@/types/subscription';
 import { isSubscriptionActive, getSubscriptionDaysRemaining, formatSubscriptionPeriod } from '@/types/subscription';
-import './SubscriptionBadge.css';
 
 interface SubscriptionBadgeProps {
     subscription: Subscription | null;
@@ -14,7 +13,7 @@ export const SubscriptionBadge: React.FC<SubscriptionBadgeProps> = ({ subscripti
 
     if (!subscription) {
         return (
-            <span className="subscription-badge subscription-badge--free">
+            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-bg-subtle text-text-secondary rounded-full">
                 {t('subscription.badge.free')}
             </span>
         );
@@ -24,12 +23,12 @@ export const SubscriptionBadge: React.FC<SubscriptionBadgeProps> = ({ subscripti
     const daysRemaining = getSubscriptionDaysRemaining(subscription);
     const isPro = subscription.tier === 'pro';
 
-    const getBadgeClass = () => {
-        if (!isPro) return 'subscription-badge--free';
-        if (!isActive) return 'subscription-badge--expired';
-        if (subscription.status === 'trial') return 'subscription-badge--trial';
-        if (daysRemaining <= 7) return 'subscription-badge--expiring';
-        return 'subscription-badge--pro';
+    const getBadgeStyles = () => {
+        if (!isPro) return 'bg-bg-subtle text-text-secondary';
+        if (!isActive) return 'bg-error/10 text-error';
+        if (subscription.status === 'trial') return 'bg-primary/10 text-primary';
+        if (daysRemaining <= 7) return 'bg-yellow-100 text-yellow-700';
+        return 'bg-success/10 text-success';
     };
 
     const getBadgeText = () => {
@@ -40,47 +39,46 @@ export const SubscriptionBadge: React.FC<SubscriptionBadgeProps> = ({ subscripti
     };
 
     const getStatusIcon = () => {
-        if (!isPro) return '🆓';
-        if (!isActive) return '⚠️';
-        if (subscription.status === 'trial') return '🎁';
-        if (daysRemaining <= 7) return '⏰';
-        return '⭐';
+        if (!isPro) return null;
+        if (!isActive) return null;
+        if (subscription.status === 'trial') return null;
+        if (daysRemaining <= 7) return null;
+        return null;
     };
 
     return (
-        <div className="subscription-badge-container">
-            <span className={`subscription-badge ${getBadgeClass()}`}>
-                <span className="subscription-badge__icon">{getStatusIcon()}</span>
-                <span className="subscription-badge__text">{getBadgeText()}</span>
+        <div className="inline-flex flex-col gap-2">
+            <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full ${getBadgeStyles()}`}>
+                <span>{getBadgeText()}</span>
             </span>
 
             {showDetails && isPro && (
-                <div className="subscription-details">
-                    <div className="subscription-details__row">
-                        <span className="subscription-details__label">{t('subscription.status')}</span>
-                        <span className={`subscription-details__value ${isActive ? 'active' : 'inactive'}`}>
+                <div className="bg-bg-subtle rounded-lg p-3 text-sm">
+                    <div className="flex justify-between py-1">
+                        <span className="text-text-secondary">{t('subscription.status')}</span>
+                        <span className={isActive ? 'text-success' : 'text-error'}>
                             {isActive ? t('subscription.badge.active') : t('subscription.badge.expired')}
                         </span>
                     </div>
 
-                    <div className="subscription-details__row">
-                        <span className="subscription-details__label">{t('subscription.badge.period')}</span>
-                        <span className="subscription-details__value">
+                    <div className="flex justify-between py-1">
+                        <span className="text-text-secondary">{t('subscription.badge.period')}</span>
+                        <span className="text-text-primary">
                             {formatSubscriptionPeriod(subscription)}
                         </span>
                     </div>
 
                     {isActive && (
-                        <div className="subscription-details__row">
-                            <span className="subscription-details__label">{t('subscription.badge.daysRemaining')}</span>
-                            <span className={`subscription-details__value ${daysRemaining <= 7 ? 'warning' : ''}`}>
+                        <div className="flex justify-between py-1">
+                            <span className="text-text-secondary">{t('subscription.badge.daysRemaining')}</span>
+                            <span className={daysRemaining <= 7 ? 'text-yellow-600' : 'text-text-primary'}>
                                 {t('subscription.badge.days', { days: daysRemaining })}
                             </span>
                         </div>
                     )}
 
                     {subscription.cancelAtPeriodEnd && (
-                        <div className="subscription-details__warning">
+                        <div className="mt-2 px-2 py-1 bg-yellow-50 text-yellow-700 text-xs rounded">
                             {t('subscription.badge.wontRenew')}
                         </div>
                     )}

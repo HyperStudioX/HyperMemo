@@ -3,6 +3,33 @@ import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import {
+    Bookmark as BookmarkIcon,
+    FileText,
+    MessageSquare,
+    Plus,
+    Search,
+    Trash2,
+    Save,
+    Copy,
+    Check,
+    ExternalLink,
+    Loader2,
+    ChevronDown,
+    LogOut,
+    Settings,
+    CreditCard,
+    User,
+    Sparkles,
+    PanelRightClose,
+    PanelRightOpen,
+    Send,
+    Globe,
+    RefreshCw,
+    Link,
+    Bot,
+    AlertTriangle,
+} from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarksContext } from '@/contexts/BookmarkContext';
 import { getBookmark } from '@/services/bookmarkService';
@@ -14,6 +41,7 @@ import { SubscriptionBadge } from '@/components/SubscriptionBadge';
 import { SubscriptionManager } from '@/components/SubscriptionManager';
 import { ChatInput, type ChatContextBookmark } from '@/components/ChatInput';
 import { Drawer } from '@/components/Drawer';
+import { Button } from '@/components/ui/button';
 import type { Bookmark, ChatMessage, NoteDocument, ChatSession } from '@/types/bookmark';
 import type { TagSummary } from '@/types/tag';
 import type { Subscription } from '@/types/subscription';
@@ -43,10 +71,10 @@ function transformTextWithCitations(text: string, citations?: RagMatch[]): React
                         href={citation.bookmark.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-citation"
+                        className="relative inline-flex items-center px-1 mx-0.5 text-xs font-medium text-primary bg-primary/10 rounded hover:bg-primary/20 transition-colors group"
                     >
                         [{match[1]}]
-                        <span className="citation-tooltip">{citation.bookmark.title}</span>
+                        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-text-primary text-bg-main rounded whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 pointer-events-none">{citation.bookmark.title}</span>
                     </a>
                 );
             }
@@ -1025,22 +1053,29 @@ export default function DashboardApp() {
 
     if (loading) {
         return (
-            <div className="dashboard dashboard--loading">
-                <p>{t('app.loading')}</p>
+            <div className="flex h-screen w-screen items-center justify-center bg-bg-main">
+                <div className="flex flex-col items-center gap-4">
+                    <Loader2 className="animate-spin w-8 h-8 text-primary" />
+                    <p className="text-text-secondary">{t('app.loading')}</p>
+                </div>
             </div>
         );
     }
 
     if (!user) {
         return (
-            <div className="dashboard dashboard--auth">
-                <div className="dashboard__auth-card">
-                    <div className="auth-logo">
-                        <img src="/icons/icon-128.png" alt="HyperMemo" />
+            <div className="flex h-screen w-screen items-center justify-center bg-bg-subtle">
+                <div className="bg-bg-main border border-border rounded-2xl shadow-md p-10 max-w-[400px] w-full text-center">
+                    <div className="mb-6">
+                        <img src="/icons/icon-128.png" alt="HyperMemo" className="w-20 h-20 mx-auto" />
                     </div>
-                    <h1>{t('app.signInTitle')}</h1>
-                    <p>{t('app.signInDesc')}</p>
-                    <button type="button" className="btn-google" onClick={login}>
+                    <h1 className="text-2xl font-bold mb-2 text-text-primary">{t('app.signInTitle')}</h1>
+                    <p className="text-text-secondary mb-8">{t('app.signInDesc')}</p>
+                    <button
+                        type="button"
+                        className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-bg-main border border-border rounded-lg text-text-primary font-medium hover:bg-bg-subtle hover:border-text-secondary transition-colors"
+                        onClick={login}
+                    >
                         <svg width="18" height="18" viewBox="0 0 24 24">
                             <title>Google</title>
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -1056,72 +1091,53 @@ export default function DashboardApp() {
     }
 
     return (
-        <div className="dashboard">
+        <div className="flex h-screen w-screen">
             {/* Left Sidebar - Bookmarks/Notes */}
-            <aside className="sidebar">
-                <div className="sidebar__header">
-                    <div className="flex-center" style={{ gap: '0.75rem' }}>
-                        <img src="/icons/icon-48.png" alt="HyperMemo" style={{ width: 32, height: 32 }} />
-                        <h1 style={{ fontSize: '1.25rem', letterSpacing: '-0.025em' }}>{t('app.name')}</h1>
+            <aside className="w-[400px] min-w-[400px] bg-bg-subtle border-r border-border flex flex-col shrink-0">
+                <div className="p-4 border-b border-border">
+                    <div className="flex items-center gap-3">
+                        <img src="/icons/icon-48.png" alt="HyperMemo" className="w-8 h-8" />
+                        <h1 className="text-xl font-semibold tracking-tight">{t('app.name')}</h1>
                     </div>
                 </div>
 
                 {/* Sidebar Tabs */}
-                <div className="sidebar-tabs">
+                <div className="flex border-b border-border">
                     <button
                         type="button"
-                        className={`sidebar-tab ${sidebarTab === 'bookmarks' ? 'active' : ''}`}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${sidebarTab === 'bookmarks' ? 'text-primary border-b-2 border-primary bg-bg-main' : 'text-text-secondary hover:text-text-primary hover:bg-bg-main'}`}
                         onClick={() => {
                             setSidebarTab('bookmarks');
                             setActiveNoteId(null);
                         }}
                     >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <title>{t('sidebar.bookmarks')}</title>
-                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                        </svg>
+                        <BookmarkIcon className="w-4 h-4" />
                         <span>{t('sidebar.bookmarks')}</span>
-                        <span className="sidebar-tab-count">{filteredBookmarks.length}</span>
+                        <span className="text-xs bg-bg-active px-1.5 py-0.5 rounded-full">{filteredBookmarks.length}</span>
                     </button>
                     <button
                         type="button"
-                        className={`sidebar-tab ${sidebarTab === 'notes' ? 'active' : ''}`}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${sidebarTab === 'notes' ? 'text-primary border-b-2 border-primary bg-bg-main' : 'text-text-secondary hover:text-text-primary hover:bg-bg-main'}`}
                         onClick={() => {
                             setSidebarTab('notes');
                             setActiveTab('notes');
                             setActiveBookmarkId(null);
                         }}
                     >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <title>{t('sidebar.notes')}</title>
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                            <polyline points="14 2 14 8 20 8" />
-                            <line x1="16" y1="13" x2="8" y2="13" />
-                            <line x1="16" y1="17" x2="8" y2="17" />
-                            <polyline points="10 9 9 9 8 9" />
-                        </svg>
+                        <FileText className="w-4 h-4" />
                         <span>{t('sidebar.notes')}</span>
-                        <span className="sidebar-tab-count">{notes.length}</span>
+                        <span className="text-xs bg-bg-active px-1.5 py-0.5 rounded-full">{notes.length}</span>
                     </button>
                 </div>
 
                 {/* Bookmarks List */}
                 {sidebarTab === 'bookmarks' && (
                     <>
-                        <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)', background: 'var(--bg-subtle)' }}>
+                        <div className="px-4 py-3 border-b border-border bg-bg-subtle">
                             <select
                                 value={selectedTag || ''}
                                 onChange={(e) => setSelectedTag(e.target.value || null)}
-                                style={{
-                                    width: '100%',
-                                    padding: '0.375rem',
-                                    fontSize: '0.8rem',
-                                    borderRadius: '0.375rem',
-                                    border: '1px solid var(--border)',
-                                    background: 'var(--bg-main)',
-                                    color: 'var(--text-primary)',
-                                    outline: 'none'
-                                }}
+                                className="w-full px-2 py-1.5 text-sm rounded-md border border-border bg-bg-main text-text-primary outline-none focus:ring-2 focus:ring-primary"
                                 disabled={loadingTags && availableTags.length === 0}
                             >
                                 <option value="">{t('sidebar.allTags')}</option>
@@ -1132,48 +1148,61 @@ export default function DashboardApp() {
                                 ))}
                             </select>
                         </div>
-                        <div className="sidebar__list">
-                            {filteredBookmarks.map((bookmark) => (
-                                <div
-                                    key={bookmark.id}
-                                    className={`nav-item ${activeBookmarkId === bookmark.id ? 'active' : ''}`}
-                                    onClick={() => handleBookmarkClick(bookmark.id)}
-                                    // biome-ignore lint/a11y/useSemanticElements: Nested interactive elements require div
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            handleBookmarkClick(bookmark.id);
-                                        }
-                                    }}
-                                >
-                                    <h3>{bookmark.title || t('dashboard.untitled')}</h3>
-                                    <div className="flex-between">
-                                        <p>{new URL(bookmark.url).hostname}</p>
+                        <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
+                            {filteredBookmarks.map((bookmark) => {
+                                const hostname = new URL(bookmark.url).hostname;
+                                const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+                                return (
+                                    <div
+                                        key={bookmark.id}
+                                        className={`flex gap-3 p-3 rounded-lg cursor-pointer border transition-all ${activeBookmarkId === bookmark.id ? 'bg-bg-main border-primary shadow-sm' : 'border-transparent hover:bg-bg-main hover:border-border'}`}
+                                        onClick={() => handleBookmarkClick(bookmark.id)}
+                                        // biome-ignore lint/a11y/useSemanticElements: Nested interactive elements require div
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                handleBookmarkClick(bookmark.id);
+                                            }
+                                        }}
+                                    >
+                                        <div className="w-5 h-5 rounded flex-shrink-0 mt-0.5 bg-bg-active flex items-center justify-center">
+                                            <img
+                                                src={faviconUrl}
+                                                alt=""
+                                                className="w-4 h-4 rounded-sm"
+                                                onError={(e) => {
+                                                    e.currentTarget.style.display = 'none';
+                                                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                                    if (fallback) fallback.style.display = 'block';
+                                                }}
+                                            />
+                                            <Globe style={{ display: 'none' }} className="w-3 h-3 text-text-secondary" />
+                                        </div>
+                                        <div className="flex-1 min-w-0 overflow-hidden">
+                                            <h3 className="text-[0.9375rem] font-medium line-clamp-2 leading-snug mb-1">{bookmark.title || t('dashboard.untitled')}</h3>
+                                            <p className="text-xs text-text-secondary truncate">{hostname}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </>
                 )}
 
                 {/* Notes List */}
                 {sidebarTab === 'notes' && (
-                    <div className="sidebar__list">
+                    <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
                         {notes.length === 0 ? (
-                            <div className="sidebar-empty">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <title>{t('notes.empty')}</title>
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                    <polyline points="14 2 14 8 20 8" />
-                                </svg>
-                                <p>{t('notes.emptyMessage')}</p>
+                            <div className="flex flex-col items-center justify-center py-12 text-text-secondary">
+                                <FileText className="w-10 h-10 opacity-50" />
+                                <p className="mt-3 text-sm">{t('notes.emptyMessage')}</p>
                             </div>
                         ) : (
                             notes.map((noteItem) => (
                                 <div
                                     key={noteItem.id}
-                                    className={`nav-item nav-item--note ${activeNoteId === noteItem.id ? 'active' : ''}`}
+                                    className={`group flex items-center justify-between p-3 rounded-lg cursor-pointer border transition-all ${activeNoteId === noteItem.id ? 'bg-bg-main border-primary shadow-sm' : 'border-transparent hover:bg-bg-main hover:border-border'}`}
                                     onClick={() => {
                                         setActiveNoteId(noteItem.id);
                                         setActiveTab('notes');
@@ -1189,21 +1218,17 @@ export default function DashboardApp() {
                                         }
                                     }}
                                 >
-                                    <h3>{noteItem.title}</h3>
+                                    <h3 className="text-sm font-medium truncate">{noteItem.title}</h3>
                                     <button
                                         type="button"
-                                        className="nav-item-delete"
+                                        className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-error/10 hover:text-error transition-all"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleDeleteNote(noteItem.id);
                                         }}
                                         title={t('notes.deleteNote')}
                                     >
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <title>{t('notes.deleteNote')}</title>
-                                            <polyline points="3 6 5 6 21 6" />
-                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                        </svg>
+                                        <Trash2 className="w-3.5 h-3.5" />
                                     </button>
                                 </div>
                             ))
@@ -1213,26 +1238,26 @@ export default function DashboardApp() {
             </aside>
 
             {/* Main Content */}
-            <main className="main">
-                <header className="main__header">
-                    <div className="tabs">
+            <main className="flex-1 flex flex-col overflow-hidden bg-bg-main">
+                <header className="px-8 border-b border-border flex justify-between items-center bg-bg-main h-16 shrink-0">
+                    <div className="flex gap-6 h-full">
                         <button
                             type="button"
-                            className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
+                            className={`flex items-center px-1 text-[0.9375rem] font-medium border-b-2 transition-colors ${activeTab === 'overview' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
                             onClick={() => setActiveTab('overview')}
                         >
                             {t('sidebar.bookmarks')}
                         </button>
                         <button
                             type="button"
-                            className={`tab ${activeTab === 'chat' ? 'active' : ''}`}
+                            className={`flex items-center px-1 text-[0.9375rem] font-medium border-b-2 transition-colors ${activeTab === 'chat' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
                             onClick={() => setActiveTab('chat')}
                         >
                             {t('sidebar.chat')}
                         </button>
                         <button
                             type="button"
-                            className={`tab ${activeTab === 'notes' ? 'active' : ''}`}
+                            className={`flex items-center gap-2 px-1 text-[0.9375rem] font-medium border-b-2 transition-colors ${activeTab === 'notes' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
                             onClick={() => {
                                 setActiveTab('notes');
                                 setSidebarTab('notes');
@@ -1240,40 +1265,31 @@ export default function DashboardApp() {
                             }}
                         >
                             {t('sidebar.notes')}
-                            <span className="tab-badge tab-badge--beta">Beta</span>
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">Beta</span>
                         </button>
                     </div>
-                    <div className="flex-center">
+                    <div className="flex items-center">
                         {activeTab === 'chat' && (
                             <button
                                 type="button"
-                                className="btn-icon"
+                                className={`p-2 rounded-md transition-colors mr-2 ${isChatHistoryOpen ? 'text-primary bg-bg-active' : 'text-text-secondary hover:bg-bg-subtle'}`}
                                 onClick={() => setIsChatHistoryOpen(!isChatHistoryOpen)}
                                 title={isChatHistoryOpen ? "Collapse History" : "Open History"}
-                                style={{
-                                    color: isChatHistoryOpen ? 'var(--primary)' : 'var(--text-secondary)',
-                                    background: isChatHistoryOpen ? 'var(--bg-active)' : 'transparent',
-                                    marginRight: '0.5rem'
-                                }}
                             >
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <title>{isChatHistoryOpen ? "Collapse History" : "Open History"}</title>
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                    <line x1="15" y1="3" x2="15" y2="21" />
-                                </svg>
+                                {isChatHistoryOpen ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
                             </button>
                         )}
                         <button
                             type="button"
                             onClick={() => setSubscriptionDrawerOpen(true)}
-                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                            className="bg-transparent border-none p-0 cursor-pointer"
                         >
                             <SubscriptionBadge subscription={subscription} />
                         </button>
-                        <div className="profile-menu-container" ref={profileMenuRef}>
+                        <div className="relative" ref={profileMenuRef}>
                             <button
                                 type="button"
-                                className="profile-button"
+                                className="w-9 h-9 rounded-full overflow-hidden border-2 border-border hover:border-primary transition-colors"
                                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                                 title={user.email || 'Profile'}
                             >
@@ -1281,34 +1297,28 @@ export default function DashboardApp() {
                                     <img
                                         src={user.user_metadata.avatar_url || user.user_metadata.picture}
                                         alt={user.email || 'User'}
-                                        className="user-avatar"
+                                        className="w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <div className="user-avatar-placeholder">
+                                    <div className="w-full h-full bg-primary text-white flex items-center justify-center text-sm font-medium">
                                         {user.email?.charAt(0).toUpperCase() || 'U'}
                                     </div>
                                 )}
                             </button>
                             {isProfileMenuOpen && (
-                                <div className="profile-dropdown">
-                                    <div className="profile-dropdown-header">
-                                        <div className="profile-dropdown-email">{user.email}</div>
+                                <div className="absolute right-0 top-full mt-2 w-56 bg-bg-main border border-border rounded-lg shadow-md z-50 overflow-hidden">
+                                    <div className="px-4 py-3 border-b border-border">
+                                        <div className="text-sm font-medium text-text-primary truncate">{user.email}</div>
                                     </div>
-                                    <div className="profile-dropdown-divider" />
                                     <button
                                         type="button"
-                                        className="profile-dropdown-item"
+                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-text-primary hover:bg-bg-subtle transition-colors"
                                         onClick={() => {
                                             setIsProfileMenuOpen(false);
                                             logout();
                                         }}
                                     >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <title>Sign Out</title>
-                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                                            <polyline points="16 17 21 12 16 7" />
-                                            <line x1="21" y1="12" x2="9" y2="12" />
-                                        </svg>
+                                        <LogOut className="w-4 h-4" />
                                         {t('app.signOut')}
                                     </button>
                                 </div>
@@ -1317,36 +1327,38 @@ export default function DashboardApp() {
                     </div>
                 </header>
 
-                <div className="main__content">
+                <div className="flex-1 overflow-y-auto p-8 max-w-[1200px] w-full mx-auto">
                     {activeTab === 'overview' && (
                         activeBookmark ? (
-                            <div className="detail-view">
-                                <header className="detail-header">
-                                    <div className="flex-between" style={{ alignItems: 'flex-start', gap: '1rem' }}>
-                                        <h1 className="detail-title">{activeBookmark.title}</h1>
-                                        <div className="detail-actions">
-                                            <button
-                                                type="button"
-                                                className="btn-icon primary"
+                            <div className="max-w-[1000px] mx-auto">
+                                <header className="mb-8 border-b border-border pb-6">
+                                    <div className="flex justify-between items-start gap-4">
+                                        <h1 className="text-3xl font-bold leading-tight tracking-tight">{activeBookmark.title}</h1>
+                                        <div className="flex gap-2 shrink-0">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="text-primary bg-primary/10 hover:bg-primary/20"
                                                 onClick={() => askAIAboutBookmark(activeBookmark)}
                                                 title={t('dashboard.askAI')}
                                             >
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('dashboard.askAI')}</title><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" /></svg>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn-icon danger"
+                                                <Sparkles className="w-5 h-5" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="text-error hover:bg-error/10"
                                                 onClick={handleDelete}
                                                 title={t('dashboard.deleteBookmark')}
                                             >
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('dashboard.deleteBookmark')}</title><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                            </button>
+                                                <Trash2 className="w-5 h-5" />
+                                            </Button>
                                         </div>
                                     </div>
 
-                                    <div className="detail-meta">
-                                        <a href={activeBookmark.url} target="_blank" rel="noreferrer" className="link-primary flex-center" style={{ gap: '0.5rem' }}>
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('dashboard.externalLink')}</title><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+                                    <div className="flex items-center gap-4 mt-4 text-sm text-text-secondary">
+                                        <a href={activeBookmark.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+                                            <ExternalLink className="w-4 h-4" />
                                             {new URL(activeBookmark.url).hostname}
                                         </a>
                                         <span>•</span>
@@ -1355,20 +1367,17 @@ export default function DashboardApp() {
                                 </header>
 
                                 {/* Tags Section */}
-                                <section className="detail-tags">
-                                    <div className="detail-tags-header">
-                                        <span className="detail-tags-label">{t('popup.fieldTags')}</span>
+                                <div className="flex items-center gap-3 mb-6 flex-wrap">
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        <span className="text-xs uppercase tracking-wider font-semibold text-text-secondary">{t('popup.fieldTags')}</span>
                                         <button
                                             type="button"
-                                            className="btn-icon"
+                                            className="p-1 rounded text-text-secondary hover:text-primary hover:bg-bg-subtle transition-colors disabled:opacity-50"
                                             onClick={handleRegenerateTags}
                                             disabled={isRegeneratingTags}
                                             title={t('dashboard.autoTag')}
                                         >
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <title>{t('dashboard.autoTag')}</title>
-                                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" />
-                                            </svg>
+                                            <RefreshCw className={`w-3 h-3 ${isRegeneratingTags ? 'animate-spin' : ''}`} />
                                         </button>
                                     </div>
                                     <TagInput
@@ -1376,31 +1385,28 @@ export default function DashboardApp() {
                                         onChange={handleUpdateTags}
                                         placeholder={t('dashboard.addTags')}
                                     />
-                                </section>
+                                </div>
 
                                 {/* AI Summary Section */}
-                                <section className="summary-card">
-                                    <div className="section-header">
-                                        <div className="flex-center" style={{ gap: '0.5rem' }}>
-                                            <h2 className="section-title">{t('dashboard.summary')}</h2>
-                                        </div>
+                                <section className="bg-bg-subtle border border-border rounded-xl p-6 mb-6">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h2 className="text-lg font-semibold">{t('dashboard.summary')}</h2>
                                         <button
                                             type="button"
-                                            className="btn-icon"
+                                            className="p-2 rounded-lg text-text-secondary hover:text-primary hover:bg-bg-main transition-colors disabled:opacity-50"
                                             onClick={handleRegenerateSummary}
                                             disabled={isRegeneratingSummary}
                                             title={t('dashboard.regenerate')}
                                         >
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <title>{t('dashboard.regenerate')}</title>
-                                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" />
-                                            </svg>
+                                            <RefreshCw className={`w-3.5 h-3.5 ${isRegeneratingSummary ? 'animate-spin' : ''}`} />
                                         </button>
                                     </div>
-                                    <div className="summary-content markdown-body">
+                                    <div className="prose max-w-none text-text-primary">
                                         {isRegeneratingSummary ? (
-                                            <div className="typing-indicator">
-                                                <span /><span /><span />
+                                            <div className="flex gap-1">
+                                                <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                                <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                                <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                                             </div>
                                         ) : (
                                             <ReactMarkdown>
@@ -1411,42 +1417,38 @@ export default function DashboardApp() {
                                 </section>
 
                                 {/* Original Content Section */}
-                                <section className="content-section">
-                                    <div className="section-header">
-                                        <h2 className="section-title">Original Content</h2>
+                                <section className="mb-6">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h2 className="text-lg font-semibold">Original Content</h2>
                                         <button
                                             type="button"
-                                            className="btn-icon"
+                                            className="p-2 rounded-lg text-text-secondary hover:text-primary hover:bg-bg-subtle transition-colors disabled:opacity-50"
                                             onClick={handleRefetchContent}
                                             disabled={isRefetchingContent || !activeBookmark}
                                             title="Refetch content from URL"
                                         >
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <title>Refetch Content</title>
-                                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" />
-                                            </svg>
+                                            <RefreshCw className={`w-3.5 h-3.5 ${isRefetchingContent ? 'animate-spin' : ''}`} />
                                         </button>
                                     </div>
-                                    <div className="markdown-body content-body">
+                                    <div className="bg-bg-subtle border border-border rounded-xl p-6">
                                         {loadingContent || isRefetchingContent ? (
-                                            <div className="flex-center" style={{ padding: '2rem', color: 'var(--text-secondary)' }}>
-                                                <svg className="animate-spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <title>Loading Content</title>
-                                                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                                                </svg>
+                                            <div className="flex justify-center items-center py-8 text-text-secondary">
+                                                <Loader2 className="animate-spin w-6 h-6" />
                                             </div>
                                         ) : (
                                             detailedBookmark?.rawContent ? (
-                                                <ReactMarkdown
-                                                    remarkPlugins={[remarkGfm]}
-                                                    components={{
-                                                        a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />
-                                                    }}
-                                                >
-                                                    {detailedBookmark.rawContent}
-                                                </ReactMarkdown>
+                                                <div className="prose max-w-none text-text-primary">
+                                                    <ReactMarkdown
+                                                        remarkPlugins={[remarkGfm]}
+                                                        components={{
+                                                            a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />
+                                                        }}
+                                                    >
+                                                        {detailedBookmark.rawContent}
+                                                    </ReactMarkdown>
+                                                </div>
                                             ) : (
-                                                <div className="text-subtle italic">
+                                                <div className="text-text-secondary italic">
                                                     {detailedBookmark ? 'No original content captured for this bookmark.' : 'Select a bookmark to view content.'}
                                                 </div>
                                             )
@@ -1455,15 +1457,15 @@ export default function DashboardApp() {
                                 </section>
                             </div>
                         ) : (
-                            <div className="empty-state">
-                                <div className="flex-center" style={{ flexDirection: 'column', gap: '1.5rem', opacity: 0.8, maxWidth: '600px', width: '100%', margin: '0 auto' }}>
-                                    <img src="/icons/icon-128.png" alt="HyperMemo" style={{ width: 80, height: 80 }} />
-                                    <div style={{ textAlign: 'center' }}>
-                                        <h1 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.025em', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{t('app.name')}</h1>
-                                        <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', margin: 0 }}>{t('app.slogan')}</p>
+                            <div className="flex items-center justify-center h-full">
+                                <div className="flex flex-col items-center gap-6 opacity-80 max-w-[600px] w-full mx-auto">
+                                    <img src="/icons/icon-128.png" alt="HyperMemo" className="w-20 h-20" />
+                                    <div className="text-center">
+                                        <h1 className="text-3xl font-bold tracking-tight mb-2">{t('app.name')}</h1>
+                                        <p className="text-lg text-text-secondary">{t('app.slogan')}</p>
                                     </div>
 
-                                    <div className="landing-search" style={{ width: '100%', position: 'relative' }}>
+                                    <div className="w-full relative">
                                         <ChatInput
                                             value={question}
                                             onChange={handleChatInputChange}
@@ -1483,92 +1485,89 @@ export default function DashboardApp() {
                                         />
                                     </div>
 
-                                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{t('dashboard.selectBookmark')}</p>
+                                    <p className="text-sm text-text-secondary">{t('dashboard.selectBookmark')}</p>
                                 </div>
                             </div>
                         )
                     )}
 
                     {activeTab === 'chat' && (
-                        <div className="chat-section">
-                            <div className="chat-window">
+                        <div className="flex flex-col h-full w-full px-4">
+                            <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-6 scroll-smooth">
                                 {messages.map((message, index) => (
-                                    <div key={message.id} className={`chat-message chat-message--${message.role}`}>
-                                        <div className={`chat-avatar ${message.role === 'user' ? 'chat-avatar--user' : 'chat-avatar--ai'}`}>
+                                    <div key={message.id} className={`flex gap-3 max-w-[90%] animate-fade-in mb-4 ${message.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
+                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${message.role === 'user' ? 'bg-primary' : 'bg-bg-active'}`}>
                                             {message.role === 'user' ? (
                                                 user?.user_metadata?.avatar_url ? (
-                                                    <img src={user.user_metadata.avatar_url} alt="You" />
+                                                    <img src={user.user_metadata.avatar_url} alt="You" className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <div className="avatar-placeholder">{user?.email?.charAt(0).toUpperCase() || 'U'}</div>
+                                                    <div className="text-white text-sm font-medium">{user?.email?.charAt(0).toUpperCase() || 'U'}</div>
                                                 )
                                             ) : (
-                                                <div className="ai-avatar-icon">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <title>AI Avatar</title>
-                                                        <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="currentColor" stroke="none" />
-                                                    </svg>
+                                                <div className="text-primary">
+                                                    <Sparkles className="w-5 h-5" />
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="chat-bubble-container">
-                                            <div className={`chat-bubble ${message.content ? 'markdown-body' : 'chat-bubble--loading'}`}>
+                                        <div className="flex flex-col">
+                                            <div className={`px-4 py-3 rounded-2xl text-base ${message.role === 'user' ? 'bg-primary text-white rounded-tr-sm' : 'bg-bg-subtle rounded-tl-sm'}`}>
                                                 {message.content ? (
                                                     <MessageContent content={message.content} citations={message.citations} />
                                                 ) : message.role === 'assistant' ? (
-                                                    <div className="typing-indicator">
-                                                        <span />
-                                                        <span />
-                                                        <span />
+                                                    <div className="flex gap-1">
+                                                        <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                                        <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                                        <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                                                     </div>
                                                 ) : null}
                                             </div>
                                             {message.role === 'assistant' && (
-                                                <div className="chat-actions">
+                                                <div className="flex gap-2 mt-2 opacity-0 hover:opacity-100 transition-opacity">
                                                     <button
                                                         type="button"
-                                                        className="chat-action-btn"
+                                                        className="flex items-center gap-1 px-2 py-1 text-xs text-text-secondary hover:text-text-primary hover:bg-bg-subtle rounded transition-colors"
                                                         onClick={() => handleCopyMessage(message.id, message.content)}
                                                         title="Copy response"
                                                     >
                                                         {copiedMessageId === message.id ? (
                                                             <>
-                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>Copied</title><polyline points="20 6 9 17 4 12" /></svg>
+                                                                <Check className="w-3.5 h-3.5" />
                                                                 <span>Copied!</span>
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>Copy</title><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+                                                                <Copy className="w-3.5 h-3.5" />
                                                                 <span>Copy</span>
                                                             </>
                                                         )}
                                                     </button>
                                                     <button
                                                         type="button"
-                                                        className="chat-action-btn"
+                                                        className="flex items-center gap-1 px-2 py-1 text-xs text-text-secondary hover:text-text-primary hover:bg-bg-subtle rounded transition-colors disabled:opacity-50"
                                                         onClick={() => handleRegenerateResponse(index)}
                                                         disabled={regeneratingMessageId === message.id}
                                                         title="Regenerate response"
                                                     >
-                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>Regenerate</title><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /><path d="M16 21h5v-5" /></svg>
+                                                        <RefreshCw className={`w-3.5 h-3.5 ${regeneratingMessageId === message.id ? 'animate-spin' : ''}`} />
                                                         <span>{regeneratingMessageId === message.id ? 'Regenerating...' : 'Regenerate'}</span>
                                                     </button>
                                                 </div>
                                             )}
                                             {/* Only show citations after streaming is complete */}
                                             {message.citations && message.citations.length > 0 && !chatLoading && (
-                                                <div className="chat-citations">
-                                                    <span className="chat-citations-label">{t('chat.sources')}</span>
-                                                    <div className="chat-citations-list">
+                                                <div className="mt-3 pt-3 border-t border-border">
+                                                    <span className="text-xs font-medium text-text-secondary uppercase tracking-wide">{t('chat.sources')}</span>
+                                                    <div className="flex flex-wrap gap-2 mt-2">
                                                         {message.citations.map((citation) => (
                                                             <a
                                                                 key={citation.bookmark.id}
                                                                 href={citation.bookmark.url}
                                                                 target="_blank"
                                                                 rel="noreferrer"
-                                                                className="citation-chip"
+                                                                className="inline-flex items-center px-2.5 py-1 text-xs bg-bg-active hover:bg-primary/10 text-text-primary hover:text-primary rounded-full transition-colors truncate max-w-[200px]"
                                                                 title={citation.bookmark.title}
                                                             >
-                                                                <span className="citation-title">{citation.bookmark.title || t('dashboard.untitled')}</span>
+                                                                <span className="truncate">{citation.bookmark.title || t('dashboard.untitled')}</span>
                                                             </a>
                                                         ))}
                                                     </div>
@@ -1578,29 +1577,23 @@ export default function DashboardApp() {
                                     </div>
                                 ))}
                                 {!messages.length && (
-                                    <div className="chat-empty">
-                                        <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>👋</div>
-                                        <h3 style={{ margin: '0 0 0.75rem 0', color: 'var(--text-primary)', fontSize: '1.5rem' }}>{t('chat.welcomeTitle')}</h3>
-                                        <p style={{ margin: 0, fontSize: '1.125rem' }}>{t('chat.welcomeSubtitle')}</p>
+                                    <div className="flex flex-col items-center justify-center h-full text-center text-text-secondary">
+                                        <div className="text-6xl mb-6">👋</div>
+                                        <h3 className="text-2xl font-semibold mb-3 text-text-primary">{t('chat.welcomeTitle')}</h3>
+                                        <p className="text-lg">{t('chat.welcomeSubtitle')}</p>
                                     </div>
                                 )}
                             </div>
                             {/* Save as Note button */}
                             {messages.length > 0 && (
-                                <div className="chat-save-note">
+                                <div className="flex justify-start py-2">
                                     <button
                                         type="button"
-                                        className="btn-save-note"
+                                        className="inline-flex items-center gap-2 px-4 py-2 text-sm text-text-secondary hover:text-text-primary bg-bg-subtle hover:bg-bg-active rounded-lg transition-colors disabled:opacity-50"
                                         onClick={handleSaveAsNote}
                                         disabled={savingNote || chatLoading}
                                     >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <title>{t('notes.saveAsNote')}</title>
-                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                            <polyline points="14 2 14 8 20 8" />
-                                            <line x1="12" y1="18" x2="12" y2="12" />
-                                            <line x1="9" y1="15" x2="15" y2="15" />
-                                        </svg>
+                                        <Save className="w-4 h-4" />
                                         {savingNote ? t('notes.saving') : t('notes.saveAsNote')}
                                     </button>
                                 </div>
@@ -1623,34 +1616,34 @@ export default function DashboardApp() {
                                 inputRef={chatInputRef}
                                 suggestionPlacement="top"
                             />
-                            {chatError && <p className="chat-error">{chatError}</p>}
+                            {chatError && <p className="text-sm text-error mt-2">{chatError}</p>}
                         </div>
                     )}
 
                     {activeTab === 'notes' && (
-                        <div className="notes-section">
+                        <div className="h-full">
                             {activeNote ? (
-                                <div className="detail-view note-detail-view">
-                                    <header className="detail-header">
-                                        <div className="flex-between" style={{ alignItems: 'flex-start', gap: '1rem' }}>
-                                            <h1 className="detail-title">{activeNote.title}</h1>
-                                            <div className="detail-actions">
+                                <div className="max-w-[1000px] mx-auto">
+                                    <header className="mb-8 border-b border-border pb-6">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <h1 className="text-3xl font-bold leading-tight tracking-tight">{activeNote.title}</h1>
+                                            <div className="flex gap-2 shrink-0">
                                                 <button
                                                     type="button"
-                                                    className="btn-icon danger"
+                                                    className="p-2 rounded-lg text-error hover:bg-error/10 transition-colors"
                                                     onClick={() => handleDeleteNote(activeNote.id)}
                                                     title={t('notes.deleteNote')}
                                                 >
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('notes.deleteNote')}</title><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                    <Trash2 className="w-5 h-5" />
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div className="detail-meta">
+                                        <div className="flex items-center gap-4 mt-4 text-sm text-text-secondary">
                                             {activeNote.sourceType === 'chat' && activeNote.chatSessionId ? (
                                                 <button
                                                     type="button"
-                                                    className="note-source-badge note-source-badge--clickable"
+                                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
                                                     onClick={() => {
                                                         if (activeNote.chatSessionId && sessions.find(s => s.id === activeNote.chatSessionId)) {
                                                             setActiveSessionId(activeNote.chatSessionId);
@@ -1661,18 +1654,12 @@ export default function DashboardApp() {
                                                     }}
                                                     title={t('notes.goToChat')}
                                                 >
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <title>{t('notes.fromChat')}</title>
-                                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                                    </svg>
+                                                    <MessageSquare className="w-3.5 h-3.5" />
                                                     {t('notes.fromChat')}
                                                 </button>
                                             ) : (
-                                                <span className="note-source-badge">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <title>{t('notes.fromBookmarks')}</title>
-                                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                                                    </svg>
+                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-bg-subtle text-text-secondary rounded-full">
+                                                    <BookmarkIcon className="w-3.5 h-3.5" />
                                                     {t('notes.fromBookmarks')}
                                                 </span>
                                             )}
@@ -1681,8 +1668,8 @@ export default function DashboardApp() {
                                         </div>
                                     </header>
 
-                                    <section className="content-section">
-                                        <div className="markdown-body content-body">
+                                    <section className="bg-bg-subtle border border-border rounded-xl p-6">
+                                        <div className="prose max-w-none text-text-primary">
                                             <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
                                                 components={{
@@ -1695,20 +1682,12 @@ export default function DashboardApp() {
                                     </section>
                                 </div>
                             ) : (
-                                <div className="notes-empty-state">
-                                    <div className="empty-state">
-                                        <div className="flex-center" style={{ flexDirection: 'column', gap: '1.5rem', opacity: 0.8 }}>
-                                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4 }}>
-                                                <title>{t('notes.empty')}</title>
-                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                                <polyline points="14 2 14 8 20 8" />
-                                                <line x1="16" y1="13" x2="8" y2="13" />
-                                                <line x1="16" y1="17" x2="8" y2="17" />
-                                            </svg>
-                                            <div style={{ textAlign: 'center' }}>
-                                                <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{t('notes.empty')}</h2>
-                                                <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', margin: 0 }}>{t('notes.emptyMessage')}</p>
-                                            </div>
+                                <div className="flex items-center justify-center h-full">
+                                    <div className="flex flex-col items-center gap-6 opacity-80">
+                                        <FileText className="w-16 h-16 opacity-40 text-text-secondary" />
+                                        <div className="text-center">
+                                            <h2 className="text-2xl font-semibold mb-2 text-text-primary">{t('notes.empty')}</h2>
+                                            <p className="text-base text-text-secondary">{t('notes.emptyMessage')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1722,27 +1701,29 @@ export default function DashboardApp() {
             {/* Right Sidebar - Chat History (Only in Chat Tab) */}
             {
                 activeTab === 'chat' && isChatHistoryOpen && (
-                    <aside className="chat-history-panel">
-                        <div className="chat-history-header">
-                            <h2>{t('sidebar.chats')}</h2>
-                            <button type="button" className="chat-history-new-btn" onClick={() => createNewSession()} title={t('sidebar.newChat')}>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><title>{t('sidebar.newChat')}</title><path d="M12 5v14M5 12h14" /></svg>
+                    <aside className="w-[320px] min-w-[320px] bg-bg-subtle border-l border-border flex flex-col shrink-0">
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+                            <h2 className="text-sm font-semibold text-text-primary">{t('sidebar.chats')}</h2>
+                            <button
+                                type="button"
+                                className="w-7 h-7 flex items-center justify-center rounded-md text-text-secondary hover:text-primary hover:bg-bg-main transition-colors"
+                                onClick={() => createNewSession()}
+                                title={t('sidebar.newChat')}
+                            >
+                                <Plus className="w-3.5 h-3.5" />
                             </button>
                         </div>
-                        <div className="chat-history-list">
+                        <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
                             {sessions.length === 0 ? (
-                                <div className="chat-history-empty">
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                        <title>No chats</title>
-                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                    </svg>
-                                    <p>No conversations yet</p>
+                                <div className="flex flex-col items-center justify-center py-12 text-text-secondary">
+                                    <MessageSquare className="w-10 h-10 opacity-50" />
+                                    <p className="mt-3 text-sm">No conversations yet</p>
                                 </div>
                             ) : (
                                 sessions.map((session) => (
                                     <div
                                         key={session.id}
-                                        className={`chat-history-item ${activeSessionId === session.id ? 'active' : ''}`}
+                                        className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer border transition-all ${activeSessionId === session.id ? 'bg-bg-main border-primary shadow-sm' : 'border-transparent hover:bg-bg-main hover:border-border'}`}
                                         onClick={() => setActiveSessionId(session.id)}
                                         // biome-ignore lint/a11y/useSemanticElements: Nested interactive elements require div
                                         role="button"
@@ -1753,25 +1734,22 @@ export default function DashboardApp() {
                                             }
                                         }}
                                     >
-                                        <div className="chat-history-item-icon">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <title>Chat</title>
-                                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                            </svg>
+                                        <div className="w-8 h-8 rounded-full bg-bg-active flex items-center justify-center shrink-0 text-text-secondary">
+                                            <MessageSquare className="w-4 h-4" />
                                         </div>
-                                        <div className="chat-history-item-content">
-                                            <span className="chat-history-item-title">{session.title || 'New Chat'}</span>
-                                            <span className="chat-history-item-meta">
+                                        <div className="flex-1 min-w-0 overflow-hidden">
+                                            <span className="block text-sm font-medium truncate">{session.title || 'New Chat'}</span>
+                                            <span className="block text-xs text-text-secondary mt-0.5 truncate">
                                                 {session.messages.length} messages · {new Date(session.updatedAt).toLocaleDateString()}
                                             </span>
                                         </div>
                                         <button
                                             type="button"
-                                            className="chat-history-item-delete"
+                                            className="opacity-0 group-hover:opacity-100 p-1.5 rounded hover:bg-error/10 hover:text-error transition-all text-text-secondary"
                                             onClick={(e) => deleteSession(e, session.id)}
                                             title={t('sidebar.deleteChat')}
                                         >
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>{t('sidebar.deleteChat')}</title><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                                            <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                 ))

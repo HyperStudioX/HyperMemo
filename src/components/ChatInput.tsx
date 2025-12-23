@@ -1,6 +1,6 @@
 import type { FC, KeyboardEvent, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import './ChatInput.css';
+import { Bookmark, Loader2, Send, X } from 'lucide-react';
 
 export interface ChatContextBookmark {
     id: string;
@@ -58,39 +58,36 @@ export const ChatInput: FC<ChatInputProps> = ({
     };
 
     return (
-        <div className="chat-input-container" style={{ position: 'relative' }}>
+        <div className="relative">
             {(tags.length > 0 || bookmarks.length > 0) && (
-                <div className="chat-tags">
+                <div className="flex flex-wrap gap-2 mb-2">
                     {bookmarks.map(bookmark => (
-                        <span key={bookmark.id} className="chat-tag chat-tag-bookmark">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <title>Bookmark</title>
-                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                            </svg>
+                        <span key={bookmark.id} className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-bg-active text-text-primary rounded-full">
+                            <Bookmark className="w-3 h-3" />
                             {bookmark.title.length > 30 ? `${bookmark.title.slice(0, 30)}...` : bookmark.title}
                             {onRemoveBookmark && (
                                 <button
                                     type="button"
                                     onClick={() => onRemoveBookmark(bookmark.id)}
-                                    className="chat-tag-remove"
+                                    className="text-text-secondary hover:text-text-primary transition-colors"
                                     aria-label={`Remove ${bookmark.title}`}
                                 >
-                                    ×
+                                    <X className="w-3 h-3" />
                                 </button>
                             )}
                         </span>
                     ))}
                     {tags.map(tag => (
-                        <span key={tag} className="chat-tag">
+                        <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full">
                             @{tag}
                             {onRemoveTag && (
                                 <button
                                     type="button"
                                     onClick={() => onRemoveTag(tag)}
-                                    className="chat-tag-remove"
+                                    className="text-primary/60 hover:text-primary transition-colors"
                                     aria-label={`Remove ${tag}`}
                                 >
-                                    ×
+                                    <X className="w-3 h-3" />
                                 </button>
                             )}
                         </span>
@@ -99,36 +96,35 @@ export const ChatInput: FC<ChatInputProps> = ({
             )}
 
             {showTagSuggestions && (
-                <div className={`tag-suggestions placement-${suggestionPlacement}`}>
+                <div className={`absolute left-0 right-0 bg-bg-main border border-border rounded-lg shadow-md z-50 max-h-[200px] overflow-y-auto ${suggestionPlacement === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'}`}>
                     {filteredTags.length > 0 ? (
                         filteredTags.map((tag, index) => (
                             <button
                                 type="button"
                                 key={tag}
                                 onClick={() => onTagSelect?.(tag)}
-                                className={`tag-suggestion ${index === selectedTagIndex ? 'active' : ''}`}
+                                className={`w-full px-3 py-2 text-left text-sm transition-colors ${index === selectedTagIndex ? 'bg-primary/10 text-primary' : 'text-text-primary hover:bg-bg-subtle'}`}
                                 onMouseEnter={() => onTagHover?.(index)}
                             >
                                 {tag}
                             </button>
                         ))
                     ) : (
-                        <div className="tag-suggestion-empty">
+                        <div className="px-3 py-2 text-sm text-text-secondary">
                             No tags found
                         </div>
                     )}
                 </div>
             )}
 
-            <div className="chat-input-wrapper">
-
+            <div className="flex items-end gap-2 bg-bg-subtle border border-border rounded-xl p-2">
                 <textarea
                     ref={inputRef}
                     value={value}
                     onChange={handleChange}
                     placeholder={placeholder || t('chat.placeholder')}
                     onKeyDown={onKeyDown}
-                    className="chat-textarea"
+                    className="flex-1 bg-transparent border-none outline-none resize-none text-sm text-text-primary placeholder:text-text-secondary min-h-[40px] max-h-[200px] py-2 px-2"
                     rows={1}
                     disabled={disabled}
                 />
@@ -136,16 +132,12 @@ export const ChatInput: FC<ChatInputProps> = ({
                     type="button"
                     onClick={onSend}
                     disabled={loading || !value.trim() || disabled}
-                    className="chat-send-button"
+                    className="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                 >
                     {loading ? (
-                        <div className="spinner" />
+                        <Loader2 className="animate-spin w-5 h-5" />
                     ) : (
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <title>Send</title>
-                            <line x1="22" y1="2" x2="11" y2="13" />
-                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                        </svg>
+                        <Send className="w-5 h-5" />
                     )}
                 </button>
             </div>

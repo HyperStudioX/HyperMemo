@@ -1,4 +1,4 @@
-.PHONY: frontend-install frontend-dev frontend-build frontend-lint frontend-test backend-db backend-functions backend-lint backend-test clean build-prod package release validate-build
+.PHONY: frontend-install frontend-dev frontend-build frontend-lint frontend-test backend-db backend-functions backend-lint backend-test backend-serve clean build-prod package release validate-build
 
 SUPABASE ?= supabase
 VERSION := $(shell node -p "require('./package.json').version")
@@ -32,6 +32,9 @@ backend-lint: ## Run Deno lint on backend functions
 
 backend-test: ## Run Deno unit tests for backend helpers/functions
 	deno test supabase/functions
+
+backend-serve: ## Serve all Edge Functions locally (with live logs)
+	$(SUPABASE) functions serve --import-map supabase/functions/deno.json
 
 bump-version: ## Bump version (usage: make bump-version type=patch|minor|major)
 	@test -n "$(type)" || (echo "❌ Error: type argument is required. Usage: make bump-version type=patch|minor|major" && exit 1)

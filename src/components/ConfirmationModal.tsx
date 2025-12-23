@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 interface ConfirmationModalProps {
     isOpen: boolean;
@@ -53,33 +53,45 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
     return (
         <div
-            className="modal-overlay"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
             ref={overlayRef}
             onClick={handleOverlayClick}
             onKeyDown={handleOverlayKeyDown}
             role="presentation"
         >
-            <dialog open className="modal-container" aria-modal="true">
-                <div className="modal-header">
-                    <h2 className="modal-title">{title}</h2>
-                    <button type="button" className="btn-icon" onClick={onClose} aria-label="Close" disabled={isLoading}>
+            <dialog open className="bg-bg-main border border-border rounded-xl shadow-md max-w-[400px] w-full mx-4 p-0" aria-modal="true">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+                    <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
+                    <button
+                        type="button"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors"
+                        onClick={onClose}
+                        aria-label="Close"
+                        disabled={isLoading}
+                    >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>Close</title><path d="M18 6L6 18M6 6l12 12" /></svg>
                     </button>
                 </div>
-                <div className="modal-content">
-                    <p style={{ whiteSpace: 'pre-line' }}>{message}</p>
+                <div className="px-5 py-4">
+                    <p className="text-text-primary whitespace-pre-line">{message}</p>
                 </div>
-                <div className="modal-footer">
-                    <button type="button" className="ghost" onClick={onClose} disabled={isLoading}>{cancelLabel}</button>
+                <div className="flex justify-end gap-2 px-5 py-4 border-t border-border">
                     <button
                         type="button"
-                        className={isDangerous ? 'btn-danger' : 'primary'}
+                        className="px-4 py-2 text-sm font-medium rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors"
+                        onClick={onClose}
+                        disabled={isLoading}
+                    >
+                        {cancelLabel}
+                    </button>
+                    <button
+                        type="button"
+                        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 ${isDangerous ? 'bg-error text-white hover:bg-error/90' : 'bg-primary text-white hover:bg-primary-hover'}`}
                         onClick={handleConfirm}
                         disabled={isLoading}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                     >
                         {isLoading && (
-                            <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <title>Loading</title>
                                 <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                             </svg>

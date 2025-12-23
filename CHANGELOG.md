@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Font**: Switched to Noto Sans for better readability across languages
+- **Typography**: Increased font sizes throughout the app for improved readability
+  - Bookmark titles in sidebar: 14px → 15px
+  - Chat messages: Now use base font size (16px)
+  - Summary and notes sections: Upgraded from `prose-sm` to full `prose` styling
+- **Markdown Rendering**: Bookmark content now renders full markdown with code blocks instead of plain text
+- **Code Blocks**: Enhanced styling with monospace font, borders, and proper background colors
+
 ## [0.0.9] - 2025-12-08
 
 ### Added

@@ -3,17 +3,16 @@ import { useTranslation, Trans } from 'react-i18next';
 import type { Subscription } from '@/types/subscription';
 import { getUserSubscription } from '@/services/subscriptionService';
 import { isProUser, getSubscriptionDaysRemaining, formatSubscriptionPeriod } from '@/types/subscription';
-import './SubscriptionManager.css';
 
 const CheckIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#059669' }}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-success">
         <title>Included</title>
         <polyline points="20 6 9 17 4 12" />
     </svg>
 );
 
 const XIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-secondary)' }}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text-secondary">
         <title>Not Included</title>
         <line x1="18" y1="6" x2="6" y2="18" />
         <line x1="6" y1="6" x2="18" y2="18" />
@@ -41,165 +40,164 @@ export const SubscriptionManager: FC = () => {
 
     if (loading) {
         return (
-            <div className="subscription-manager">
-                <div className="subscription-manager__loading">
-                    <div className="spinner" />
-                    <span>{t('subscription.loading')}</span>
-                </div>
+            <div className="flex flex-col items-center justify-center py-12 gap-4">
+                <svg className="animate-spin w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <title>Loading</title>
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                <span className="text-text-secondary">{t('subscription.loading')}</span>
             </div>
         );
     }
 
     return (
-        <div className="subscription-manager">
-            <div className="subscription-manager__content">
-                {!isPro ? (
-                    <div className="subscription-plan subscription-plan--pro">
-                        <div className="subscription-plan__header">
-                            <div>
-                                <h3>{t('subscription.upgradeTitle')}</h3>
-                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{t('subscription.upgradeSubtitle')}</p>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                                <p className="subscription-plan__price">$4.99<span style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{t('subscription.perMonth')}</span></p>
-                            </div>
+        <div className="flex flex-col gap-6">
+            {!isPro ? (
+                <div className="bg-bg-subtle rounded-xl p-6 border border-primary/20">
+                    <div className="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 className="text-xl font-semibold text-text-primary">{t('subscription.upgradeTitle')}</h3>
+                            <p className="text-text-secondary mt-1">{t('subscription.upgradeSubtitle')}</p>
                         </div>
-
-                        <div className="subscription-plan__features">
-                            <h4>{t('subscription.whatsIncluded')}</h4>
-                            <ul>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.aiChat" /></span></li>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.aiNotes" /></span></li>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.unlimitedBookmarks" /></span></li>
-                                <li><CheckIcon /> <span><Trans i18nKey="subscription.features.prioritySupport" /></span></li>
-                            </ul>
-                        </div>
-
-                        <button className="btn-upgrade" disabled type="button">
-                            {t('subscription.upgradeTitle')}
-                            <span className="badge-coming-soon">{t('subscription.comingSoon')}</span>
-                        </button>
-                        <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                            {t('subscription.securePayment')}
-                        </p>
-                    </div>
-                ) : (
-                    <div className="subscription-plan subscription-plan--pro">
-                        <div className="subscription-plan__header">
-                            <div>
-                                <h3>{t('subscription.proActiveTitle')}</h3>
-                                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>{t('subscription.proActiveSubtitle')}</p>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                                <span className="status-pill status-pill--active">{t('subscription.active')}</span>
-                            </div>
-                        </div>
-
-                        <div className="subscription-details-grid">
-                            <div className="detail-item">
-                                <span className="detail-label">{t('subscription.currentPeriod')}</span>
-                                <span className="detail-value">{subscription ? formatSubscriptionPeriod(subscription) : '-'}</span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="detail-label">{t('subscription.status')}</span>
-                                <span className="detail-value" style={{ color: '#059669' }}>{t('subscription.active')}</span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="detail-label">{t('subscription.nextBilling')}</span>
-                                <span className="detail-value">
-                                    {subscription?.cancelAtPeriodEnd ? t('subscription.endsOn') : t('subscription.renewsOn')}
-                                    {subscription ? new Date(subscription.endDate).toLocaleDateString() : '-'}
-                                </span>
-                            </div>
-                            <div className="detail-item">
-                                <span className="detail-label">{t('subscription.planCost')}</span>
-                                <span className="detail-value">$4.99{t('subscription.perMonthLong')}</span>
-                            </div>
-                        </div>
-
-                        {daysRemaining <= 7 && daysRemaining > 0 && (
-                            <div className="subscription-warning">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <title>Warning</title>
-                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                                    <line x1="12" y1="9" x2="12" y2="13" />
-                                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                                </svg>
-                                <span>{t('subscription.expiresIn', { days: daysRemaining })}</span>
-                            </div>
-                        )}
-
-                        {subscription?.cancelAtPeriodEnd && (
-                            <div className="subscription-warning">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <title>Info</title>
-                                    <circle cx="12" cy="12" r="10" />
-                                    <line x1="12" y1="8" x2="12" y2="12" />
-                                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                                </svg>
-                                <span>{t('subscription.wontRenew')}</span>
-                            </div>
-                        )}
-
-                        <div className="subscription-actions">
-                            <button className="btn-secondary" disabled type="button">
-                                {t('subscription.manageBilling')}
-                                <span className="badge-coming-soon">{t('subscription.comingSoon')}</span>
-                            </button>
-                            {!subscription?.cancelAtPeriodEnd && (
-                                <button className="btn-danger" disabled type="button">
-                                    {t('subscription.cancelSubscription')}
-                                    <span className="badge-coming-soon">{t('subscription.comingSoon')}</span>
-                                </button>
-                            )}
+                        <div className="text-right">
+                            <p className="text-3xl font-bold text-text-primary">$4.99<span className="text-base text-text-secondary font-medium">{t('subscription.perMonth')}</span></p>
                         </div>
                     </div>
-                )}
 
-                <div className="subscription-comparison">
-                    <h3>{t('subscription.planComparison')}</h3>
-                    <table className="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>{t('subscription.table.feature')}</th>
-                                <th>{t('subscription.table.free')}</th>
-                                <th>{t('subscription.table.pro')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{t('subscription.table.bookmarks')}</td>
-                                <td>{t('subscription.table.unlimited')}</td>
-                                <td>{t('subscription.table.unlimited')}</td>
-                            </tr>
-                            <tr>
-                                <td>{t('subscription.table.aiSummaries')}</td>
-                                <td><CheckIcon /></td>
-                                <td><CheckIcon /></td>
-                            </tr>
-                            <tr>
-                                <td>{t('subscription.table.aiTags')}</td>
-                                <td><CheckIcon /></td>
-                                <td><CheckIcon /></td>
-                            </tr>
-                            <tr>
-                                <td>{t('subscription.table.aiChat')}</td>
-                                <td><XIcon /></td>
-                                <td><CheckIcon /></td>
-                            </tr>
-                            <tr>
-                                <td>{t('subscription.table.aiNotes')}</td>
-                                <td><XIcon /></td>
-                                <td><CheckIcon /></td>
-                            </tr>
-                            <tr>
-                                <td>{t('subscription.table.support')}</td>
-                                <td>{t('subscription.table.community')}</td>
-                                <td>{t('subscription.table.priority')}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div className="mb-6">
+                        <h4 className="text-sm font-semibold text-text-primary mb-3">{t('subscription.whatsIncluded')}</h4>
+                        <ul className="space-y-2">
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.aiChat" /></span></li>
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.aiNotes" /></span></li>
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.unlimitedBookmarks" /></span></li>
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.prioritySupport" /></span></li>
+                        </ul>
+                    </div>
+
+                    <button className="w-full px-4 py-3 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled type="button">
+                        {t('subscription.upgradeTitle')}
+                        <span className="text-xs px-2 py-0.5 bg-white/20 rounded">{t('subscription.comingSoon')}</span>
+                    </button>
+                    <p className="text-center mt-4 text-sm text-text-secondary">
+                        {t('subscription.securePayment')}
+                    </p>
                 </div>
+            ) : (
+                <div className="bg-bg-subtle rounded-xl p-6 border border-success/20">
+                    <div className="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 className="text-xl font-semibold text-text-primary">{t('subscription.proActiveTitle')}</h3>
+                            <p className="text-text-secondary mt-1">{t('subscription.proActiveSubtitle')}</p>
+                        </div>
+                        <div className="text-right">
+                            <span className="inline-flex items-center px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-full">{t('subscription.active')}</span>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-bg-main rounded-lg p-3">
+                            <span className="block text-xs text-text-secondary mb-1">{t('subscription.currentPeriod')}</span>
+                            <span className="block text-sm font-medium text-text-primary">{subscription ? formatSubscriptionPeriod(subscription) : '-'}</span>
+                        </div>
+                        <div className="bg-bg-main rounded-lg p-3">
+                            <span className="block text-xs text-text-secondary mb-1">{t('subscription.status')}</span>
+                            <span className="block text-sm font-medium text-success">{t('subscription.active')}</span>
+                        </div>
+                        <div className="bg-bg-main rounded-lg p-3">
+                            <span className="block text-xs text-text-secondary mb-1">{t('subscription.nextBilling')}</span>
+                            <span className="block text-sm font-medium text-text-primary">
+                                {subscription?.cancelAtPeriodEnd ? t('subscription.endsOn') : t('subscription.renewsOn')}
+                                {subscription ? new Date(subscription.endDate).toLocaleDateString() : '-'}
+                            </span>
+                        </div>
+                        <div className="bg-bg-main rounded-lg p-3">
+                            <span className="block text-xs text-text-secondary mb-1">{t('subscription.planCost')}</span>
+                            <span className="block text-sm font-medium text-text-primary">$4.99{t('subscription.perMonthLong')}</span>
+                        </div>
+                    </div>
+
+                    {daysRemaining <= 7 && daysRemaining > 0 && (
+                        <div className="flex items-center gap-2 px-4 py-3 bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-lg mb-4">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <title>Warning</title>
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                            <span>{t('subscription.expiresIn', { days: daysRemaining })}</span>
+                        </div>
+                    )}
+
+                    {subscription?.cancelAtPeriodEnd && (
+                        <div className="flex items-center gap-2 px-4 py-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg mb-4">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <title>Info</title>
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <span>{t('subscription.wontRenew')}</span>
+                        </div>
+                    )}
+
+                    <div className="flex gap-3">
+                        <button className="flex-1 px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-text-primary hover:bg-bg-main transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled type="button">
+                            {t('subscription.manageBilling')}
+                            <span className="text-xs px-2 py-0.5 bg-bg-active rounded">{t('subscription.comingSoon')}</span>
+                        </button>
+                        {!subscription?.cancelAtPeriodEnd && (
+                            <button className="px-4 py-2.5 text-sm font-medium rounded-lg bg-error text-white hover:bg-error/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled type="button">
+                                {t('subscription.cancelSubscription')}
+                                <span className="text-xs px-2 py-0.5 bg-white/20 rounded">{t('subscription.comingSoon')}</span>
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            <div className="bg-bg-subtle rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">{t('subscription.planComparison')}</h3>
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="border-b border-border">
+                            <th className="text-left py-3 font-medium text-text-secondary">{t('subscription.table.feature')}</th>
+                            <th className="text-center py-3 font-medium text-text-secondary">{t('subscription.table.free')}</th>
+                            <th className="text-center py-3 font-medium text-text-secondary">{t('subscription.table.pro')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr className="border-b border-border/50">
+                            <td className="py-3 text-text-primary">{t('subscription.table.bookmarks')}</td>
+                            <td className="py-3 text-center text-text-primary">{t('subscription.table.unlimited')}</td>
+                            <td className="py-3 text-center text-text-primary">{t('subscription.table.unlimited')}</td>
+                        </tr>
+                        <tr className="border-b border-border/50">
+                            <td className="py-3 text-text-primary">{t('subscription.table.aiSummaries')}</td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><CheckIcon /></div></td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><CheckIcon /></div></td>
+                        </tr>
+                        <tr className="border-b border-border/50">
+                            <td className="py-3 text-text-primary">{t('subscription.table.aiTags')}</td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><CheckIcon /></div></td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><CheckIcon /></div></td>
+                        </tr>
+                        <tr className="border-b border-border/50">
+                            <td className="py-3 text-text-primary">{t('subscription.table.aiChat')}</td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><XIcon /></div></td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><CheckIcon /></div></td>
+                        </tr>
+                        <tr className="border-b border-border/50">
+                            <td className="py-3 text-text-primary">{t('subscription.table.aiNotes')}</td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><XIcon /></div></td>
+                            <td className="py-3 text-center"><div className="flex justify-center"><CheckIcon /></div></td>
+                        </tr>
+                        <tr>
+                            <td className="py-3 text-text-primary">{t('subscription.table.support')}</td>
+                            <td className="py-3 text-center text-text-secondary">{t('subscription.table.community')}</td>
+                            <td className="py-3 text-center text-text-primary">{t('subscription.table.priority')}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     );
