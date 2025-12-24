@@ -16,13 +16,10 @@ import {
     ExternalLink,
     Loader2,
     ChevronDown,
-    LogOut,
     Settings,
     CreditCard,
     User,
     Sparkles,
-    PanelRightClose,
-    PanelRightOpen,
     Send,
     Globe,
     RefreshCw,
@@ -39,7 +36,7 @@ import { supabase } from '@/services/supabaseClient';
 import { generateSummary, extractSmartTags } from '@/services/mlService';
 import { TagInput } from '@/components/TagInput';
 import { ConfirmationModal } from '@/components/ConfirmationModal';
-import { SubscriptionBadge } from '@/components/SubscriptionBadge';
+import { Header } from '@/components/Header';
 import { SubscriptionManager } from '@/components/SubscriptionManager';
 import { ChatInput, type ChatContextBookmark } from '@/components/ChatInput';
 import { Drawer } from '@/components/Drawer';
@@ -136,9 +133,11 @@ function MessageContent({ content, citations }: { content: string; citations?: R
     }), [citations]);
 
     return (
-        <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-            {content}
-        </ReactMarkdown>
+        <div className="prose prose-chat max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+                {content}
+            </ReactMarkdown>
+        </div>
     );
 }
 
@@ -239,24 +238,6 @@ export default function DashboardApp() {
         onConfirm: () => { },
         isDangerous: false
     });
-
-    // Profile Menu State
-    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-    const profileMenuRef = useRef<HTMLDivElement>(null);
-
-    // Close profile menu when clicking outside
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
-                setIsProfileMenuOpen(false);
-            }
-        };
-
-        if (isProfileMenuOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-            return () => document.removeEventListener('mousedown', handleClickOutside);
-        }
-    }, [isProfileMenuOpen]);
 
     const openConfirm = (title: string, message: string, onConfirm: () => void, isDangerous = false) => {
         setModalConfig({
@@ -1286,93 +1267,21 @@ export default function DashboardApp() {
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col overflow-hidden bg-bg-main pt-14 md:pt-0">
-                <header className="px-4 md:px-8 border-b border-border flex justify-between items-center bg-bg-main h-14 md:h-16 shrink-0">
-                    <div className="flex gap-3 md:gap-6 h-full overflow-x-auto">
-                        <button
-                            type="button"
-                            className={`flex items-center px-1 text-sm md:text-[0.9375rem] font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'overview' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
-                            onClick={() => setActiveTab('overview')}
-                        >
-                            {t('sidebar.bookmarks')}
-                        </button>
-                        <button
-                            type="button"
-                            className={`flex items-center px-1 text-sm md:text-[0.9375rem] font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'chat' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
-                            onClick={() => setActiveTab('chat')}
-                        >
-                            {t('sidebar.chat')}
-                        </button>
-                        <button
-                            type="button"
-                            className={`flex items-center gap-2 px-1 text-sm md:text-[0.9375rem] font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'notes' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
-                            onClick={() => {
-                                setActiveTab('notes');
-                                setSidebarTab('notes');
-                                setActiveBookmarkId(null);
-                            }}
-                        >
-                            {t('sidebar.notes')}
-                            <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">Beta</span>
-                        </button>
-                    </div>
-                    <div className="flex items-center">
-                        {activeTab === 'chat' && (
-                            <button
-                                type="button"
-                                className={`p-2 rounded-md transition-colors mr-2 ${isChatHistoryOpen ? 'text-primary bg-bg-active' : 'text-text-secondary hover:bg-bg-subtle'}`}
-                                onClick={() => setIsChatHistoryOpen(!isChatHistoryOpen)}
-                                title={isChatHistoryOpen ? "Collapse History" : "Open History"}
-                            >
-                                {isChatHistoryOpen ? <PanelRightClose className="w-5 h-5" /> : <PanelRightOpen className="w-5 h-5" />}
-                            </button>
-                        )}
-                        <button
-                            type="button"
-                            onClick={() => setSubscriptionDrawerOpen(true)}
-                            className="bg-transparent border-none p-0 cursor-pointer"
-                        >
-                            <SubscriptionBadge subscription={subscription} />
-                        </button>
-                        <div className="relative" ref={profileMenuRef}>
-                            <button
-                                type="button"
-                                className="w-9 h-9 rounded-full overflow-hidden border-2 border-border hover:border-primary transition-colors"
-                                onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                                title={user.email || 'Profile'}
-                            >
-                                {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
-                                    <img
-                                        src={user.user_metadata.avatar_url || user.user_metadata.picture}
-                                        alt={user.email || 'User'}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full bg-primary text-white flex items-center justify-center text-sm font-medium">
-                                        {user.email?.charAt(0).toUpperCase() || 'U'}
-                                    </div>
-                                )}
-                            </button>
-                            {isProfileMenuOpen && (
-                                <div className="absolute right-0 top-full mt-2 w-56 bg-bg-main border border-border rounded-lg shadow-md z-50 overflow-hidden">
-                                    <div className="px-4 py-3 border-b border-border">
-                                        <div className="text-sm font-medium text-text-primary truncate">{user.email}</div>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-text-primary hover:bg-bg-subtle transition-colors"
-                                        onClick={() => {
-                                            setIsProfileMenuOpen(false);
-                                            logout();
-                                        }}
-                                    >
-                                        <LogOut className="w-4 h-4" />
-                                        {t('app.signOut')}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </header>
+                <Header
+                    user={user}
+                    activeTab={activeTab}
+                    isChatHistoryOpen={isChatHistoryOpen}
+                    subscription={subscription}
+                    onTabChange={setActiveTab}
+                    onNotesTabClick={() => {
+                        setActiveTab('notes');
+                        setSidebarTab('notes');
+                        setActiveBookmarkId(null);
+                    }}
+                    onChatHistoryToggle={() => setIsChatHistoryOpen(!isChatHistoryOpen)}
+                    onSubscriptionClick={() => setSubscriptionDrawerOpen(true)}
+                    onLogout={logout}
+                />
 
                 <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-[1200px] w-full mx-auto">
                     {activeTab === 'overview' && (
@@ -1569,8 +1478,8 @@ export default function DashboardApp() {
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex flex-col">
-                                            <div className={`px-3 py-2 md:px-4 md:py-3 rounded-2xl text-sm md:text-base ${message.role === 'user' ? 'bg-primary text-white rounded-tr-sm' : 'bg-bg-subtle rounded-tl-sm'}`}>
+                                        <div className="flex flex-col min-w-0">
+                                            <div className={`px-4 py-3 md:px-5 md:py-4 rounded-2xl ${message.role === 'user' ? 'bg-primary text-white rounded-tr-sm text-[0.9375rem]' : 'bg-bg-subtle rounded-tl-sm'}`}>
                                                 {message.content ? (
                                                     <MessageContent content={message.content} citations={message.citations} />
                                                 ) : message.role === 'assistant' ? (

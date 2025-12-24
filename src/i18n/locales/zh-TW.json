@@ -25,6 +25,7 @@
         "overview": "概覽",
         "chat": "對話",
         "notes": "筆記",
+        "subscription": "訂閱",
         "comingSoon": "即將推出"
     },
     "dashboard": {
@@ -142,6 +143,22 @@
             "chat": "使用 RAG 技術與書籤對話是 Pro 功能。升級以解鎖與您保存知識的智能對話。",
             "autoTag": "自動為您的書籤生成智能標籤。",
             "aiSummary": "自動為您的書籤生成摘要。"
+        }
+    },
+    "header": {
+        "beta": "測試版",
+        "collapseHistory": "收起歷史",
+        "openHistory": "展開歷史",
+        "theme": "主題",
+        "themeLight": "淺色",
+        "themeDark": "深色",
+        "themeSystem": "跟隨系統",
+        "profile": "個人資料",
+        "language": "語言",
+        "languages": {
+            "en": "English",
+            "zh-CN": "简体中文",
+            "zh-TW": "繁體中文"
         }
     },
     "notes": {

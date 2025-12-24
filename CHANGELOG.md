@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Theme Toggle**: Manual theme switching between Light, Dark, and System modes
+  - Persists preference to Chrome storage
+  - Shows Sun/Moon/Monitor icons based on current mode
+- **Language Switcher**: In-app language selection dropdown in the header
+  - Supports English, 简体中文 (Simplified Chinese), 繁體中文 (Traditional Chinese)
+  - Shows checkmark for current language selection
+
 ### Changed
+- **Header Component**: Extracted dashboard header into reusable `Header.tsx` component
+- **i18n**: Completed Simplified Chinese translations and added missing keys
 - **Font**: Switched to Noto Sans for better readability across languages
 - **Typography**: Increased font sizes throughout the app for improved readability
   - Bookmark titles in sidebar: 14px → 15px

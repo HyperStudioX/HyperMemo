@@ -25,6 +25,7 @@
         "overview": "概览",
         "chat": "对话",
         "notes": "笔记",
+        "subscription": "订阅",
         "comingSoon": "即将推出"
     },
     "dashboard": {
@@ -142,6 +143,22 @@
             "chat": "使用 RAG 技术与书签对话是 Pro 功能。升级以解锁与您保存知识的智能对话。",
             "autoTag": "自动为您的书签生成智能标签。",
             "aiSummary": "自动为您的书签生成摘要。"
+        }
+    },
+    "header": {
+        "beta": "测试版",
+        "collapseHistory": "收起历史",
+        "openHistory": "展开历史",
+        "theme": "主题",
+        "themeLight": "浅色",
+        "themeDark": "深色",
+        "themeSystem": "跟随系统",
+        "profile": "个人资料",
+        "language": "语言",
+        "languages": {
+            "en": "English",
+            "zh-CN": "简体中文",
+            "zh-TW": "繁體中文"
         }
     },
     "notes": {
