@@ -84,11 +84,19 @@ function transformTextWithCitations(text: string, citations?: RagMatch[]): React
 }
 
 // Component to render message content with inline citations
-function MessageContent({ content, citations }: { content: string; citations?: RagMatch[] }) {
+function MessageContent({ content, citations, isUserMessage = false }: { content: string; citations?: RagMatch[]; isUserMessage?: boolean }) {
     // Create custom components that process citations in text nodes
     const components = useMemo(() => ({
         a: ({ href, children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { node?: unknown }) => (
-            <a href={href} {...props} target="_blank" rel="noreferrer">{children}</a>
+            <a
+                href={href}
+                {...props}
+                target="_blank"
+                rel="noreferrer"
+                className={isUserMessage ? 'text-white underline decoration-white/50 hover:decoration-white' : undefined}
+            >
+                {children}
+            </a>
         ),
         p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement> & { node?: unknown }) => {
             const processChildren = (child: React.ReactNode): React.ReactNode => {
@@ -130,10 +138,10 @@ function MessageContent({ content, citations }: { content: string; citations?: R
             const processed = Array.isArray(children) ? children.map(processChildren) : processChildren(children);
             return <em {...props}>{processed}</em>;
         }
-    }), [citations]);
+    }), [citations, isUserMessage]);
 
     return (
-        <div className="prose prose-chat max-w-none">
+        <div className={`prose prose-chat max-w-none ${isUserMessage ? 'prose-chat-user' : ''}`}>
             <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
                 {content}
             </ReactMarkdown>
@@ -1481,7 +1489,7 @@ export default function DashboardApp() {
                                         <div className="flex flex-col min-w-0">
                                             <div className={`px-4 py-3 md:px-5 md:py-4 rounded-2xl ${message.role === 'user' ? 'bg-primary text-white rounded-tr-sm text-[0.9375rem]' : 'bg-bg-subtle rounded-tl-sm'}`}>
                                                 {message.content ? (
-                                                    <MessageContent content={message.content} citations={message.citations} />
+                                                    <MessageContent content={message.content} citations={message.citations} isUserMessage={message.role === 'user'} />
                                                 ) : message.role === 'assistant' ? (
                                                     <div className="flex gap-1">
                                                         <span className="w-2 h-2 bg-text-secondary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />

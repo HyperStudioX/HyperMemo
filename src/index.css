@@ -265,6 +265,19 @@ body {
     @apply text-primary no-underline hover:underline;
 }
 
+/* User message links need to be white on primary background */
+.prose-chat-user a,
+.prose-chat-user a:visited,
+.prose-chat-user a:hover {
+    color: white !important;
+    text-decoration: underline !important;
+    text-decoration-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.prose-chat-user a:hover {
+    text-decoration-color: white !important;
+}
+
 /* Remove external link indicator in chat for cleaner look */
 .prose-chat a[target="_blank"]::after {
     content: none;
