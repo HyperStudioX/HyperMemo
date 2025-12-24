@@ -51,26 +51,26 @@ export const SubscriptionManager: FC = () => {
     }
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 md:gap-6">
             {!isPro ? (
-                <div className="bg-bg-subtle rounded-xl p-6 border border-primary/20">
-                    <div className="flex justify-between items-start mb-6">
+                <div className="bg-bg-subtle rounded-xl p-4 md:p-6 border border-primary/20">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 md:gap-4 mb-4 md:mb-6">
                         <div>
-                            <h3 className="text-xl font-semibold text-text-primary">{t('subscription.upgradeTitle')}</h3>
-                            <p className="text-text-secondary mt-1">{t('subscription.upgradeSubtitle')}</p>
+                            <h3 className="text-lg md:text-xl font-semibold text-text-primary">{t('subscription.upgradeTitle')}</h3>
+                            <p className="text-sm md:text-base text-text-secondary mt-1">{t('subscription.upgradeSubtitle')}</p>
                         </div>
-                        <div className="text-right">
-                            <p className="text-3xl font-bold text-text-primary">$4.99<span className="text-base text-text-secondary font-medium">{t('subscription.perMonth')}</span></p>
+                        <div className="md:text-right">
+                            <p className="text-2xl md:text-3xl font-bold text-text-primary">$4.99<span className="text-sm md:text-base text-text-secondary font-medium">{t('subscription.perMonth')}</span></p>
                         </div>
                     </div>
 
-                    <div className="mb-6">
+                    <div className="mb-4 md:mb-6">
                         <h4 className="text-sm font-semibold text-text-primary mb-3">{t('subscription.whatsIncluded')}</h4>
                         <ul className="space-y-2">
-                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.aiChat" /></span></li>
-                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.aiNotes" /></span></li>
-                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.unlimitedBookmarks" /></span></li>
-                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-text-primary"><Trans i18nKey="subscription.features.prioritySupport" /></span></li>
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-sm md:text-base text-text-primary"><Trans i18nKey="subscription.features.aiChat" /></span></li>
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-sm md:text-base text-text-primary"><Trans i18nKey="subscription.features.aiNotes" /></span></li>
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-sm md:text-base text-text-primary"><Trans i18nKey="subscription.features.unlimitedBookmarks" /></span></li>
+                            <li className="flex items-center gap-2"><CheckIcon /> <span className="text-sm md:text-base text-text-primary"><Trans i18nKey="subscription.features.prioritySupport" /></span></li>
                         </ul>
                     </div>
 
@@ -78,23 +78,23 @@ export const SubscriptionManager: FC = () => {
                         {t('subscription.upgradeTitle')}
                         <span className="text-xs px-2 py-0.5 bg-white/20 rounded">{t('subscription.comingSoon')}</span>
                     </button>
-                    <p className="text-center mt-4 text-sm text-text-secondary">
+                    <p className="text-center mt-3 md:mt-4 text-xs md:text-sm text-text-secondary">
                         {t('subscription.securePayment')}
                     </p>
                 </div>
             ) : (
-                <div className="bg-bg-subtle rounded-xl p-6 border border-success/20">
-                    <div className="flex justify-between items-start mb-6">
+                <div className="bg-bg-subtle rounded-xl p-4 md:p-6 border border-success/20">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 mb-4 md:mb-6">
                         <div>
-                            <h3 className="text-xl font-semibold text-text-primary">{t('subscription.proActiveTitle')}</h3>
-                            <p className="text-text-secondary mt-1">{t('subscription.proActiveSubtitle')}</p>
+                            <h3 className="text-lg md:text-xl font-semibold text-text-primary">{t('subscription.proActiveTitle')}</h3>
+                            <p className="text-sm md:text-base text-text-secondary mt-1">{t('subscription.proActiveSubtitle')}</p>
                         </div>
-                        <div className="text-right">
+                        <div className="md:text-right">
                             <span className="inline-flex items-center px-3 py-1 text-sm font-medium bg-success/10 text-success rounded-full">{t('subscription.active')}</span>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
                         <div className="bg-bg-main rounded-lg p-3">
                             <span className="block text-xs text-text-secondary mb-1">{t('subscription.currentPeriod')}</span>
                             <span className="block text-sm font-medium text-text-primary">{subscription ? formatSubscriptionPeriod(subscription) : '-'}</span>
@@ -140,13 +140,13 @@ export const SubscriptionManager: FC = () => {
                         </div>
                     )}
 
-                    <div className="flex gap-3">
-                        <button className="flex-1 px-4 py-2.5 text-sm font-medium rounded-lg border border-border text-text-primary hover:bg-bg-main transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled type="button">
+                    <div className="flex flex-col md:flex-row gap-3">
+                        <button className="flex-1 px-4 py-3 text-sm font-medium rounded-lg border border-border text-text-primary hover:bg-bg-main transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled type="button">
                             {t('subscription.manageBilling')}
                             <span className="text-xs px-2 py-0.5 bg-bg-active rounded">{t('subscription.comingSoon')}</span>
                         </button>
                         {!subscription?.cancelAtPeriodEnd && (
-                            <button className="px-4 py-2.5 text-sm font-medium rounded-lg bg-error text-white hover:bg-error/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled type="button">
+                            <button className="px-4 py-3 text-sm font-medium rounded-lg bg-error text-white hover:bg-error/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2" disabled type="button">
                                 {t('subscription.cancelSubscription')}
                                 <span className="text-xs px-2 py-0.5 bg-white/20 rounded">{t('subscription.comingSoon')}</span>
                             </button>
@@ -155,9 +155,10 @@ export const SubscriptionManager: FC = () => {
                 </div>
             )}
 
-            <div className="bg-bg-subtle rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-text-primary mb-4">{t('subscription.planComparison')}</h3>
-                <table className="w-full text-sm">
+            <div className="bg-bg-subtle rounded-xl p-4 md:p-6">
+                <h3 className="text-base md:text-lg font-semibold text-text-primary mb-3 md:mb-4">{t('subscription.planComparison')}</h3>
+                <div className="overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0">
+                <table className="w-full text-xs md:text-sm">
                     <thead>
                         <tr className="border-b border-border">
                             <th className="text-left py-3 font-medium text-text-secondary">{t('subscription.table.feature')}</th>
@@ -198,6 +199,7 @@ export const SubscriptionManager: FC = () => {
                         </tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     );

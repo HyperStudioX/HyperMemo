@@ -103,7 +103,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                                 type="button"
                                 key={tag}
                                 onClick={() => onTagSelect?.(tag)}
-                                className={`w-full px-3 py-2 text-left text-sm transition-colors ${index === selectedTagIndex ? 'bg-primary/10 text-primary' : 'text-text-primary hover:bg-bg-subtle'}`}
+                                className={`w-full px-3 py-3 text-left text-sm transition-colors ${index === selectedTagIndex ? 'bg-primary/10 text-primary' : 'text-text-primary hover:bg-bg-subtle'}`}
                                 onMouseEnter={() => onTagHover?.(index)}
                             >
                                 {tag}
@@ -132,7 +132,7 @@ export const ChatInput: FC<ChatInputProps> = ({
                     type="button"
                     onClick={onSend}
                     disabled={loading || !value.trim() || disabled}
-                    className="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                    className="w-11 h-11 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                 >
                     {loading ? (
                         <Loader2 className="animate-spin w-5 h-5" />

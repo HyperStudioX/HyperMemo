@@ -29,6 +29,8 @@ import {
     Link,
     Bot,
     AlertTriangle,
+    Menu,
+    X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarksContext } from '@/contexts/BookmarkContext';
@@ -51,6 +53,7 @@ import { listTags } from '@/services/tagService';
 import { getUserSubscription } from '@/services/subscriptionService';
 import { ApiError } from '@/services/apiClient';
 import { chromeStorage } from '@/utils/chrome';
+import { cleanMarkdownContent, isValidContent } from '@/utils/markdown';
 
 // Helper to transform text with citation patterns into React nodes
 function transformTextWithCitations(text: string, citations?: RagMatch[]): React.ReactNode {
@@ -151,6 +154,7 @@ export default function DashboardApp() {
     const [activeBookmarkId, setActiveBookmarkId] = useState<string | null>(null);
     const [detailedBookmark, setDetailedBookmark] = useState<Bookmark | null>(null);
     const [loadingContent, setLoadingContent] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     // Chat State
     const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -499,6 +503,7 @@ export default function DashboardApp() {
     const handleBookmarkClick = async (id: string) => {
         setActiveBookmarkId(id);
         setActiveTab('overview');
+        setMobileSidebarOpen(false); // Close mobile sidebar when selecting
 
         const cacheKey = `bookmark_detail_${id}`;
         const cached = localStorage.getItem(cacheKey);
@@ -1091,14 +1096,55 @@ export default function DashboardApp() {
     }
 
     return (
-        <div className="flex h-screen w-screen">
+        <div className="flex h-screen w-screen relative">
+            {/* Mobile Header */}
+            <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-bg-main border-b border-border px-4 py-3 flex items-center justify-between">
+                <button
+                    type="button"
+                    onClick={() => setMobileSidebarOpen(true)}
+                    className="p-2 -ml-2 rounded-lg hover:bg-bg-subtle"
+                >
+                    <Menu className="w-5 h-5" />
+                </button>
+                <div className="flex items-center gap-2">
+                    <img src="/icons/icon-48.png" alt="HyperMemo" className="w-6 h-6" />
+                    <span className="font-semibold">{t('app.name')}</span>
+                </div>
+                <div className="w-9" /> {/* Spacer for balance */}
+            </div>
+
+            {/* Mobile Sidebar Overlay */}
+            {mobileSidebarOpen && (
+                <div
+                    className="md:hidden fixed inset-0 bg-black/50 z-40"
+                    onClick={() => setMobileSidebarOpen(false)}
+                    onKeyDown={(e) => e.key === 'Escape' && setMobileSidebarOpen(false)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Close sidebar"
+                />
+            )}
+
             {/* Left Sidebar - Bookmarks/Notes */}
-            <aside className="w-[400px] min-w-[400px] bg-bg-subtle border-r border-border flex flex-col shrink-0">
-                <div className="p-4 border-b border-border">
+            <aside className={`
+                fixed md:relative inset-y-0 left-0 z-50
+                w-[85vw] max-w-[400px] md:w-[400px] md:min-w-[400px]
+                bg-bg-subtle border-r border-border flex flex-col shrink-0
+                transform transition-transform duration-300 ease-in-out
+                ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            `}>
+                <div className="p-4 border-b border-border flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <img src="/icons/icon-48.png" alt="HyperMemo" className="w-8 h-8" />
                         <h1 className="text-xl font-semibold tracking-tight">{t('app.name')}</h1>
                     </div>
+                    <button
+                        type="button"
+                        onClick={() => setMobileSidebarOpen(false)}
+                        className="md:hidden p-2 -mr-2 rounded-lg hover:bg-bg-active"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
                 </div>
 
                 {/* Sidebar Tabs */}
@@ -1207,6 +1253,7 @@ export default function DashboardApp() {
                                         setActiveNoteId(noteItem.id);
                                         setActiveTab('notes');
                                         setActiveBookmarkId(null);
+                                        setMobileSidebarOpen(false); // Close mobile sidebar
                                     }}
                                     // biome-ignore lint/a11y/useSemanticElements: Nested interactive elements require div
                                     role="button"
@@ -1238,26 +1285,26 @@ export default function DashboardApp() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col overflow-hidden bg-bg-main">
-                <header className="px-8 border-b border-border flex justify-between items-center bg-bg-main h-16 shrink-0">
-                    <div className="flex gap-6 h-full">
+            <main className="flex-1 flex flex-col overflow-hidden bg-bg-main pt-14 md:pt-0">
+                <header className="px-4 md:px-8 border-b border-border flex justify-between items-center bg-bg-main h-14 md:h-16 shrink-0">
+                    <div className="flex gap-3 md:gap-6 h-full overflow-x-auto">
                         <button
                             type="button"
-                            className={`flex items-center px-1 text-[0.9375rem] font-medium border-b-2 transition-colors ${activeTab === 'overview' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
+                            className={`flex items-center px-1 text-sm md:text-[0.9375rem] font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'overview' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
                             onClick={() => setActiveTab('overview')}
                         >
                             {t('sidebar.bookmarks')}
                         </button>
                         <button
                             type="button"
-                            className={`flex items-center px-1 text-[0.9375rem] font-medium border-b-2 transition-colors ${activeTab === 'chat' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
+                            className={`flex items-center px-1 text-sm md:text-[0.9375rem] font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'chat' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
                             onClick={() => setActiveTab('chat')}
                         >
                             {t('sidebar.chat')}
                         </button>
                         <button
                             type="button"
-                            className={`flex items-center gap-2 px-1 text-[0.9375rem] font-medium border-b-2 transition-colors ${activeTab === 'notes' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
+                            className={`flex items-center gap-2 px-1 text-sm md:text-[0.9375rem] font-medium border-b-2 transition-colors whitespace-nowrap ${activeTab === 'notes' ? 'text-primary border-primary' : 'text-text-secondary border-transparent hover:text-text-primary'}`}
                             onClick={() => {
                                 setActiveTab('notes');
                                 setSidebarTab('notes');
@@ -1327,13 +1374,13 @@ export default function DashboardApp() {
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto p-8 max-w-[1200px] w-full mx-auto">
+                <div className="flex-1 overflow-y-auto p-4 md:p-8 max-w-[1200px] w-full mx-auto">
                     {activeTab === 'overview' && (
                         activeBookmark ? (
                             <div className="max-w-[1000px] mx-auto">
-                                <header className="mb-8 border-b border-border pb-6">
-                                    <div className="flex justify-between items-start gap-4">
-                                        <h1 className="text-3xl font-bold leading-tight tracking-tight">{activeBookmark.title}</h1>
+                                <header className="mb-6 md:mb-8 border-b border-border pb-4 md:pb-6">
+                                    <div className="flex justify-between items-start gap-3 md:gap-4">
+                                        <h1 className="text-xl md:text-3xl font-bold leading-tight tracking-tight">{activeBookmark.title}</h1>
                                         <div className="flex gap-2 shrink-0">
                                             <Button
                                                 variant="ghost"
@@ -1356,10 +1403,10 @@ export default function DashboardApp() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-4 mt-4 text-sm text-text-secondary">
-                                        <a href={activeBookmark.url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
-                                            <ExternalLink className="w-4 h-4" />
-                                            {new URL(activeBookmark.url).hostname}
+                                    <div className="flex items-center gap-2 md:gap-4 mt-3 md:mt-4 text-xs md:text-sm text-text-secondary flex-wrap">
+                                        <a href={activeBookmark.url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 md:gap-2 text-primary hover:underline">
+                                            <ExternalLink className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                                            <span className="truncate max-w-[200px] md:max-w-none">{new URL(activeBookmark.url).hostname}</span>
                                         </a>
                                         <span>•</span>
                                         <span>{new Date(activeBookmark.createdAt).toLocaleDateString()}</span>
@@ -1367,7 +1414,7 @@ export default function DashboardApp() {
                                 </header>
 
                                 {/* Tags Section */}
-                                <div className="flex items-center gap-3 mb-6 flex-wrap">
+                                <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6 flex-wrap">
                                     <div className="flex items-center gap-2 shrink-0">
                                         <span className="text-xs uppercase tracking-wider font-semibold text-text-secondary">{t('popup.fieldTags')}</span>
                                         <button
@@ -1388,7 +1435,7 @@ export default function DashboardApp() {
                                 </div>
 
                                 {/* AI Summary Section */}
-                                <section className="bg-bg-subtle border border-border rounded-xl p-6 mb-6">
+                                <section className="bg-bg-subtle border border-border rounded-xl p-4 md:p-6 mb-4 md:mb-6">
                                     <div className="flex justify-between items-center mb-4">
                                         <h2 className="text-lg font-semibold">{t('dashboard.summary')}</h2>
                                         <button
@@ -1417,9 +1464,9 @@ export default function DashboardApp() {
                                 </section>
 
                                 {/* Original Content Section */}
-                                <section className="mb-6">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h2 className="text-lg font-semibold">Original Content</h2>
+                                <section className="mb-4 md:mb-6">
+                                    <div className="flex justify-between items-center mb-3 md:mb-4">
+                                        <h2 className="text-base md:text-lg font-semibold">Original Content</h2>
                                         <button
                                             type="button"
                                             className="p-2 rounded-lg text-text-secondary hover:text-primary hover:bg-bg-subtle transition-colors disabled:opacity-50"
@@ -1430,28 +1477,41 @@ export default function DashboardApp() {
                                             <RefreshCw className={`w-3.5 h-3.5 ${isRefetchingContent ? 'animate-spin' : ''}`} />
                                         </button>
                                     </div>
-                                    <div className="bg-bg-subtle border border-border rounded-xl p-6">
+                                    <div className="bg-bg-subtle border border-border rounded-xl p-4 md:p-6">
                                         {loadingContent || isRefetchingContent ? (
                                             <div className="flex justify-center items-center py-8 text-text-secondary">
                                                 <Loader2 className="animate-spin w-6 h-6" />
                                             </div>
+                                        ) : isValidContent(detailedBookmark?.rawContent) ? (
+                                            <div className="prose max-w-none text-text-primary">
+                                                <ReactMarkdown
+                                                    remarkPlugins={[remarkGfm]}
+                                                    components={{
+                                                        a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />
+                                                    }}
+                                                >
+                                                    {cleanMarkdownContent(detailedBookmark?.rawContent || '', activeBookmark?.url)}
+                                                </ReactMarkdown>
+                                            </div>
+                                        ) : activeBookmark?.url ? (
+                                            <div className="flex flex-col items-center gap-4 py-8 text-center">
+                                                <p className="text-text-secondary">
+                                                    {t('dashboard.contentNotAvailable', 'Content extraction was not available for this page.')}
+                                                </p>
+                                                <a
+                                                    href={activeBookmark.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+                                                >
+                                                    <ExternalLink className="w-4 h-4" />
+                                                    {t('dashboard.viewOriginalPage', 'View Original Page')}
+                                                </a>
+                                            </div>
                                         ) : (
-                                            detailedBookmark?.rawContent ? (
-                                                <div className="prose max-w-none text-text-primary">
-                                                    <ReactMarkdown
-                                                        remarkPlugins={[remarkGfm]}
-                                                        components={{
-                                                            a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />
-                                                        }}
-                                                    >
-                                                        {detailedBookmark.rawContent}
-                                                    </ReactMarkdown>
-                                                </div>
-                                            ) : (
-                                                <div className="text-text-secondary italic">
-                                                    {detailedBookmark ? 'No original content captured for this bookmark.' : 'Select a bookmark to view content.'}
-                                                </div>
-                                            )
+                                            <div className="text-text-secondary italic text-center py-8">
+                                                {t('dashboard.selectBookmark', 'Select a bookmark to view content.')}
+                                            </div>
                                         )}
                                     </div>
                                 </section>
@@ -1492,11 +1552,11 @@ export default function DashboardApp() {
                     )}
 
                     {activeTab === 'chat' && (
-                        <div className="flex flex-col h-full w-full px-4">
-                            <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-6 scroll-smooth">
+                        <div className="flex flex-col h-full w-full px-2 md:px-4">
+                            <div className="flex-1 overflow-y-auto py-3 md:py-4 flex flex-col gap-4 md:gap-6 scroll-smooth">
                                 {messages.map((message, index) => (
-                                    <div key={message.id} className={`flex gap-3 max-w-[90%] animate-fade-in mb-4 ${message.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
-                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${message.role === 'user' ? 'bg-primary' : 'bg-bg-active'}`}>
+                                    <div key={message.id} className={`flex gap-2 md:gap-3 max-w-[95%] md:max-w-[90%] animate-fade-in mb-3 md:mb-4 ${message.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
+                                        <div className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${message.role === 'user' ? 'bg-primary' : 'bg-bg-active'}`}>
                                             {message.role === 'user' ? (
                                                 user?.user_metadata?.avatar_url ? (
                                                     <img src={user.user_metadata.avatar_url} alt="You" className="w-full h-full object-cover" />
@@ -1510,7 +1570,7 @@ export default function DashboardApp() {
                                             )}
                                         </div>
                                         <div className="flex flex-col">
-                                            <div className={`px-4 py-3 rounded-2xl text-base ${message.role === 'user' ? 'bg-primary text-white rounded-tr-sm' : 'bg-bg-subtle rounded-tl-sm'}`}>
+                                            <div className={`px-3 py-2 md:px-4 md:py-3 rounded-2xl text-sm md:text-base ${message.role === 'user' ? 'bg-primary text-white rounded-tr-sm' : 'bg-bg-subtle rounded-tl-sm'}`}>
                                                 {message.content ? (
                                                     <MessageContent content={message.content} citations={message.citations} />
                                                 ) : message.role === 'assistant' ? (
@@ -1577,10 +1637,10 @@ export default function DashboardApp() {
                                     </div>
                                 ))}
                                 {!messages.length && (
-                                    <div className="flex flex-col items-center justify-center h-full text-center text-text-secondary">
-                                        <div className="text-6xl mb-6">👋</div>
-                                        <h3 className="text-2xl font-semibold mb-3 text-text-primary">{t('chat.welcomeTitle')}</h3>
-                                        <p className="text-lg">{t('chat.welcomeSubtitle')}</p>
+                                    <div className="flex flex-col items-center justify-center h-full text-center text-text-secondary px-4">
+                                        <div className="text-5xl md:text-6xl mb-4 md:mb-6">👋</div>
+                                        <h3 className="text-xl md:text-2xl font-semibold mb-2 md:mb-3 text-text-primary">{t('chat.welcomeTitle')}</h3>
+                                        <p className="text-base md:text-lg">{t('chat.welcomeSubtitle')}</p>
                                     </div>
                                 )}
                             </div>
@@ -1698,10 +1758,10 @@ export default function DashboardApp() {
 
             </main >
 
-            {/* Right Sidebar - Chat History (Only in Chat Tab) */}
+            {/* Right Sidebar - Chat History (Only in Chat Tab, hidden on mobile) */}
             {
                 activeTab === 'chat' && isChatHistoryOpen && (
-                    <aside className="w-[320px] min-w-[320px] bg-bg-subtle border-l border-border flex flex-col shrink-0">
+                    <aside className="hidden md:flex w-[320px] min-w-[320px] bg-bg-subtle border-l border-border flex-col shrink-0">
                         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
                             <h2 className="text-sm font-semibold text-text-primary">{t('sidebar.chats')}</h2>
                             <button

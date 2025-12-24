@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Summary and notes sections: Upgraded from `prose-sm` to full `prose` styling
 - **Markdown Rendering**: Bookmark content now renders full markdown with code blocks instead of plain text
 - **Code Blocks**: Enhanced styling with monospace font, borders, and proper background colors
+- **Content Fallback**: When content extraction fails, now shows "View Original Page" button instead of broken content
+
+### Added
+- **Mobile Experience**: Comprehensive mobile responsive improvements
+  - Responsive dashboard layout with collapsible left sidebar (hamburger menu on mobile)
+  - Mobile header with app branding and navigation
+  - Touch-friendly 44px minimum touch targets for all interactive elements
+  - Bottom-sheet style Drawer and Modal on mobile (slides up from bottom)
+  - Responsive typography and spacing throughout the app
+  - iOS zoom prevention for input fields (16px minimum font size)
+  - Responsive prose/markdown content styling for mobile reading
+  - Slide-in animations for mobile drawers and sidebars
+- **Content Validation**: Added utilities to detect and clean malformed markdown from web scraping
 
 ## [0.0.9] - 2025-12-08
 

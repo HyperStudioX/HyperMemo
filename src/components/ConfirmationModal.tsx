@@ -53,18 +53,18 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
     return (
         <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/50 flex items-end md:items-center justify-center z-50 p-0 md:p-4"
             ref={overlayRef}
             onClick={handleOverlayClick}
             onKeyDown={handleOverlayKeyDown}
             role="presentation"
         >
-            <dialog open className="bg-bg-main border border-border rounded-xl shadow-md max-w-[400px] w-full mx-4 p-0" aria-modal="true">
-                <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-                    <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
+            <dialog open className="bg-bg-main border border-border rounded-t-2xl md:rounded-xl shadow-md max-w-full md:max-w-[400px] w-full p-0 animate-slide-in-bottom md:animate-fade-in" aria-modal="true">
+                <div className="flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border-b border-border">
+                    <h2 className="text-base md:text-lg font-semibold text-text-primary">{title}</h2>
                     <button
                         type="button"
-                        className="w-8 h-8 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors"
+                        className="w-11 h-11 flex items-center justify-center rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors -mr-1"
                         onClick={onClose}
                         aria-label="Close"
                         disabled={isLoading}
@@ -72,13 +72,13 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><title>Close</title><path d="M18 6L6 18M6 6l12 12" /></svg>
                     </button>
                 </div>
-                <div className="px-5 py-4">
-                    <p className="text-text-primary whitespace-pre-line">{message}</p>
+                <div className="px-4 md:px-5 py-4">
+                    <p className="text-sm md:text-base text-text-primary whitespace-pre-line">{message}</p>
                 </div>
-                <div className="flex justify-end gap-2 px-5 py-4 border-t border-border">
+                <div className="flex flex-col-reverse md:flex-row md:justify-end gap-2 px-4 md:px-5 py-4 border-t border-border">
                     <button
                         type="button"
-                        className="px-4 py-2 text-sm font-medium rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors"
+                        className="w-full md:w-auto px-4 py-3 md:py-2 text-sm font-medium rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-subtle transition-colors"
                         onClick={onClose}
                         disabled={isLoading}
                     >
@@ -86,7 +86,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     </button>
                     <button
                         type="button"
-                        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 ${isDangerous ? 'bg-error text-white hover:bg-error/90' : 'bg-primary text-white hover:bg-primary-hover'}`}
+                        className={`w-full md:w-auto flex items-center justify-center gap-2 px-4 py-3 md:py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 ${isDangerous ? 'bg-error text-white hover:bg-error/90' : 'bg-primary text-white hover:bg-primary-hover'}`}
                         onClick={handleConfirm}
                         disabled={isLoading}
                     >

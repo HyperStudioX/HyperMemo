@@ -1,4 +1,30 @@
 /**
+ * Checks if content appears to be valid extracted content vs broken/empty
+ * Returns false if content is mostly garbage (broken links, metrics, etc.)
+ */
+export function isValidContent(content: string | null | undefined): boolean {
+    if (!content || content.trim().length === 0) return false;
+
+    const cleaned = content.trim();
+
+    // If content is less than 50 chars, likely not useful
+    if (cleaned.length < 50) return false;
+
+    // Count actual word-like content vs noise patterns
+    const words = cleaned.split(/\s+/).filter(word => {
+        // Filter out things that look like broken markdown or metrics
+        if (/^\[.*\]$/.test(word)) return false; // [text]
+        if (/^\]\(.*\)$/.test(word)) return false; // ](url)
+        if (/^[\d,.]+[KMB]?$/.test(word)) return false; // numbers/metrics
+        if (word.length < 2) return false;
+        return true;
+    });
+
+    // Need at least 10 real words
+    return words.length >= 10;
+}
+
+/**
  * Cleans up malformed markdown content from web scraping
  * Handles issues like broken links, orphaned patterns, and social media noise
  */
@@ -23,8 +49,8 @@ export function cleanMarkdownContent(markdown: string, baseUrl?: string): string
         cleaned = cleaned.replace(/\]\(\/([^)]+)\)/g, `](${origin}/$1)`);
     }
 
-    // Remove orphaned link patterns like "](/path)" at the start of a line or after whitespace
-    cleaned = cleaned.replace(/(?:^|\s)\]\([^)]*\)/gm, '');
+    // Remove orphaned link patterns like "](/path)" at start of line or after whitespace/newline
+    cleaned = cleaned.replace(/(?:^|[\s\n])\]\([^)]*\)/gm, '');
 
     // Remove empty links: [](url) or []()
     cleaned = cleaned.replace(/\[\]\([^)]*\)/g, '');
@@ -35,6 +61,12 @@ export function cleanMarkdownContent(markdown: string, baseUrl?: string): string
     // Remove standalone bracket patterns that look broken
     cleaned = cleaned.replace(/^\[$/gm, '');
     cleaned = cleaned.replace(/^\]$/gm, '');
+
+    // Remove lines that are just brackets with content but no URL: [text] without (url)
+    cleaned = cleaned.replace(/^\[[^\]]*\]$/gm, '');
+
+    // Remove orphaned opening brackets at start of line followed by newline
+    cleaned = cleaned.replace(/^\[\n/gm, '\n');
 
     // Clean up multiple consecutive newlines (more than 2)
     cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
