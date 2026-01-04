@@ -11,6 +11,7 @@ import {
 import { BrainIcon } from '@/components/icons/BrainIcon';
 import { TagInput } from '@/components/TagInput';
 import { Button } from '@/components/ui/button';
+import { Favicon } from '@/components/Favicon';
 import type { Bookmark } from '@/types/bookmark';
 import { cleanMarkdownContent, isValidContent } from '@/utils/markdown';
 
@@ -74,7 +75,7 @@ export const BookmarkDetailView = memo(function BookmarkDetailView({
 
                 <div className="flex items-center gap-2 md:gap-4 mt-3 md:mt-4 text-xs md:text-sm text-text-secondary flex-wrap">
                     <a href={bookmark.url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 md:gap-2 text-primary hover:underline">
-                        <ExternalLink className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                        <Favicon url={bookmark.url} size={32} className="w-4 h-4 rounded-sm" />
                         <span className="truncate max-w-[200px] md:max-w-none">{new URL(bookmark.url).hostname}</span>
                     </a>
                     <span>•</span>

@@ -27,7 +27,7 @@ export default defineManifest({
         48: 'icons/icon-48.png',
         128: 'icons/icon-128.png'
     },
-    permissions: ['storage', 'tabs', 'identity', 'scripting', 'activeTab'],
+    permissions: ['storage', 'tabs', 'identity', 'scripting', 'activeTab', 'favicon'],
     host_permissions: ['http://*/*', 'https://*/*'],
     content_scripts: [
         {

@@ -1,11 +1,12 @@
-import type { Bookmark, BookmarkPayload } from '@/types/bookmark';
+import type { Bookmark, BookmarkPayload, PaginatedResponse } from '@/types/bookmark';
 import { chromeStorage } from '@/utils/chrome';
 import { apiClient } from '@/services/apiClient';
 
 export const BOOKMARK_CACHE_KEY = 'hypermemo:cache:bookmarks';
 
 async function refreshRemoteCache(): Promise<Bookmark[]> {
-    const bookmarks = await apiClient.get<Bookmark[]>('/bookmarks');
+    const response = await apiClient.get<PaginatedResponse<Bookmark>>('/bookmarks');
+    const bookmarks = response.data;
     await chromeStorage.set(BOOKMARK_CACHE_KEY, bookmarks);
     return bookmarks;
 }

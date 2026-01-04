@@ -37,6 +37,7 @@ import { composeNoteFromBookmarks, generateNoteFromChat, saveNote, listNotes, de
 import { listTags } from '@/services/tagService';
 import { getUserSubscription } from '@/services/subscriptionService';
 import { chromeStorage } from '@/utils/chrome';
+import { Favicon } from '@/components/Favicon';
 
 export default function DashboardApp() {
     const { user, login, logout, loading } = useAuth();
@@ -1136,11 +1137,10 @@ export default function DashboardApp() {
                                 <button
                                     type="button"
                                     onClick={() => setSelectedTag(null)}
-                                    className={`shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-all ${
-                                        !selectedTag
+                                    className={`shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-all ${!selectedTag
                                             ? 'bg-primary text-white shadow-sm'
                                             : 'bg-bg-main text-text-secondary hover:text-text-primary hover:bg-bg-active border border-border'
-                                    }`}
+                                        }`}
                                 >
                                     {t('sidebar.allTags')}
                                 </button>
@@ -1149,11 +1149,10 @@ export default function DashboardApp() {
                                         type="button"
                                         key={tag.id}
                                         onClick={() => setSelectedTag(tag.name)}
-                                        className={`shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-all flex items-center gap-1 ${
-                                            selectedTag === tag.name
+                                        className={`shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-all flex items-center gap-1 ${selectedTag === tag.name
                                                 ? 'bg-primary text-white shadow-sm'
                                                 : 'bg-bg-main text-text-secondary hover:text-text-primary hover:bg-bg-active border border-border'
-                                        }`}
+                                            }`}
                                     >
                                         <span>{tag.name}</span>
                                         {tag.bookmarkCount !== undefined && (
@@ -1167,8 +1166,6 @@ export default function DashboardApp() {
                         </div>
                         <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
                             {filteredBookmarks.map((bookmark, index) => {
-                                const hostname = new URL(bookmark.url).hostname;
-                                const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
                                 const hasAiContent = bookmark.summary || (bookmark.tags && bookmark.tags.length > 0);
                                 return (
                                     <div
@@ -1186,17 +1183,7 @@ export default function DashboardApp() {
                                         }}
                                     >
                                         <div className="w-5 h-5 rounded flex-shrink-0 mt-0.5 bg-bg-active flex items-center justify-center">
-                                            <img
-                                                src={faviconUrl}
-                                                alt=""
-                                                className="w-4 h-4 rounded-sm"
-                                                onError={(e) => {
-                                                    e.currentTarget.style.display = 'none';
-                                                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                                                    if (fallback) fallback.style.display = 'block';
-                                                }}
-                                            />
-                                            <Globe style={{ display: 'none' }} className="w-3 h-3 text-text-secondary" />
+                                            <Favicon url={bookmark.url} size={32} />
                                         </div>
                                         <div className="flex-1 min-w-0 overflow-hidden">
                                             <div className="flex items-center gap-1.5 mb-1">
@@ -1207,7 +1194,7 @@ export default function DashboardApp() {
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-xs text-text-secondary truncate">{hostname}</p>
+                                            <p className="text-xs text-text-secondary truncate">{new URL(bookmark.url).hostname}</p>
                                         </div>
                                     </div>
                                 );

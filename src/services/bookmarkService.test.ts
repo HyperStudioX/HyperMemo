@@ -43,13 +43,23 @@ describe('bookmarkService', () => {
         },
     ];
 
+    const mockPaginatedResponse = {
+        data: mockBookmarks,
+        pagination: {
+            offset: 0,
+            limit: 50,
+            total: mockBookmarks.length,
+            hasMore: false
+        }
+    };
+
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
     describe('listBookmarks', () => {
         it('should fetch bookmarks from API and update cache', async () => {
-            vi.mocked(apiClient.get).mockResolvedValue(mockBookmarks);
+            vi.mocked(apiClient.get).mockResolvedValue(mockPaginatedResponse);
 
             const result = await listBookmarks();
 
@@ -76,7 +86,11 @@ describe('bookmarkService', () => {
             const savedBookmark = { ...newBookmark, id: '3', createdAt: '2023-01-03', updatedAt: '2023-01-03' };
 
             vi.mocked(apiClient.post).mockResolvedValue(savedBookmark);
-            vi.mocked(apiClient.get).mockResolvedValue([...mockBookmarks, savedBookmark]);
+            vi.mocked(apiClient.get).mockResolvedValue({
+                ...mockPaginatedResponse,
+                data: [...mockBookmarks, savedBookmark],
+                pagination: { ...mockPaginatedResponse.pagination, total: mockBookmarks.length + 1 }
+            });
 
             const result = await saveBookmark(newBookmark);
 
@@ -96,7 +110,10 @@ describe('bookmarkService', () => {
             const updatedBookmark = { ...mockBookmarks[0], ...updatePayload, updatedAt: '2023-01-04' };
 
             vi.mocked(apiClient.put).mockResolvedValue(updatedBookmark);
-            vi.mocked(apiClient.get).mockResolvedValue([updatedBookmark, mockBookmarks[1]]);
+            vi.mocked(apiClient.get).mockResolvedValue({
+                ...mockPaginatedResponse,
+                data: [updatedBookmark, mockBookmarks[1]]
+            });
 
             const result = await saveBookmark(updatePayload);
 
