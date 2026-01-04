@@ -158,10 +158,10 @@ async function processBookmarkRecord(record: BookmarkRecord) {
     if (url) {
         const cleanedContent = await fetchAndCleanContent(url);
         if (cleanedContent) {
-            console.log("Successfully fetched and cleaned content from URL");
+            console.log(`Successfully fetched and cleaned ${cleanedContent.length} chars from URL`);
             rawContent = cleanedContent;
         } else {
-            console.log("Falling back to provided raw_content");
+            console.warn(`Falling back to provided raw_content for ${id}`);
         }
     }
 
@@ -213,8 +213,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
     try {
         // 1. Check for Webhook (internal trigger from database)
         const webhookSecret = req.headers.get('x-webhook-secret');
-        const expectedSecret = WEBHOOK_SECRET || 'hypermemo-webhook-secret'; // Fallback for backwards compatibility
-        if (webhookSecret === expectedSecret) {
+        const expectedSecret = WEBHOOK_SECRET;
+
+        if (!expectedSecret) {
+            console.error("WEBHOOK_SECRET not configured in environment");
+        }
+
+        if (webhookSecret && webhookSecret === expectedSecret) {
             const payload: WebhookPayload = await req.json();
             const { record } = payload;
             if (!record || !record.id) {

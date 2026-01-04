@@ -137,7 +137,11 @@ async function getBookmarksByIds(
         url: b.url,
         summary: b.summary || '',
         raw_content: b.raw_content || '',
-        tags: (b.bookmark_tags || []).map((bt: { tags: { name: string } }) => bt.tags?.name).filter(Boolean),
+        tags: (b.bookmark_tags || []).flatMap((bt: { tags: { name: string } | { name: string }[] | null }) => {
+            const tags = bt.tags;
+            if (Array.isArray(tags)) return tags.map((t: { name: string }) => t.name);
+            return tags?.name ? [tags.name] : [];
+        }).filter(Boolean),
         created_at: b.created_at,
         updated_at: b.updated_at,
         similarity: 1.0 // Direct match, highest score
@@ -280,9 +284,25 @@ async function handleRagQuery(
         const searchResults = await searchBookmarks(userId, queryEmbedding, tagIds);
 
         if (searchResults.length > 0) {
-            // Rerank bookmarks using LLM
-            const candidates = searchResults.slice(0, 20);
-            matches = await rerankBookmarksWithLLM(question, candidates);
+            // Optimization: If the top match is highly relevant (similarity > 0.85),
+            // skip re-ranking to save latency and tokens.
+            if (searchResults[0].similarity > 0.85) {
+                console.log('Top match similarity high enough, skipping re-ranking');
+                matches = searchResults.slice(0, 5).map(m => ({
+                    bookmark: {
+                        id: m.id,
+                        title: m.title,
+                        url: m.url,
+                        summary: m.summary,
+                        tags: m.tags
+                    },
+                    score: m.similarity
+                }));
+            } else {
+                // Rerank bookmarks using LLM
+                const candidates = searchResults.slice(0, 20);
+                matches = await rerankBookmarksWithLLM(question, candidates);
+            }
         }
     }
 
@@ -401,9 +421,25 @@ async function handleRagQueryStream(
         const searchResults = await searchBookmarks(userId, queryEmbedding, tagIds);
 
         if (searchResults.length > 0) {
-            // Rerank bookmarks using LLM
-            const candidates = searchResults.slice(0, 20);
-            matches = await rerankBookmarksWithLLM(question, candidates);
+            // Optimization: If the top match is highly relevant (similarity > 0.85),
+            // skip re-ranking to save latency and tokens.
+            if (searchResults[0].similarity > 0.85) {
+                console.log('Top match similarity high enough, skipping re-ranking');
+                matches = searchResults.slice(0, 5).map(m => ({
+                    bookmark: {
+                        id: m.id,
+                        title: m.title,
+                        url: m.url,
+                        summary: m.summary,
+                        tags: m.tags
+                    },
+                    score: m.similarity
+                }));
+            } else {
+                // Rerank bookmarks using LLM
+                const candidates = searchResults.slice(0, 20);
+                matches = await rerankBookmarksWithLLM(question, candidates);
+            }
         }
     }
 
