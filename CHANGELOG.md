@@ -5,29 +5,17 @@ All notable changes to HyperMemo will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.0]
 
 ### Added
+- **Design Style Guide**: Created a comprehensive frontend design style guide documenting design tokens, typography, and component standards (`docs/design-style-guide.md`)
+- **App Settings**: Implementation of `app_settings` table in Supabase for centralized, project-independent configuration
 - **Theme Toggle**: Manual theme switching between Light, Dark, and System modes
   - Persists preference to Chrome storage
   - Shows Sun/Moon/Monitor icons based on current mode
 - **Language Switcher**: In-app language selection dropdown in the header
   - Supports English, 简体中文 (Simplified Chinese), 繁體中文 (Traditional Chinese)
   - Shows checkmark for current language selection
-
-### Changed
-- **Header Component**: Extracted dashboard header into reusable `Header.tsx` component
-- **i18n**: Completed Simplified Chinese translations and added missing keys
-- **Font**: Switched to Noto Sans for better readability across languages
-- **Typography**: Increased font sizes throughout the app for improved readability
-  - Bookmark titles in sidebar: 14px → 15px
-  - Chat messages: Now use base font size (16px)
-  - Summary and notes sections: Upgraded from `prose-sm` to full `prose` styling
-- **Markdown Rendering**: Bookmark content now renders full markdown with code blocks instead of plain text
-- **Code Blocks**: Enhanced styling with monospace font, borders, and proper background colors
-- **Content Fallback**: When content extraction fails, now shows "View Original Page" button instead of broken content
-
-### Added
 - **Mobile Experience**: Comprehensive mobile responsive improvements
   - Responsive dashboard layout with collapsible left sidebar (hamburger menu on mobile)
   - Mobile header with app branding and navigation
@@ -38,6 +26,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Responsive prose/markdown content styling for mobile reading
   - Slide-in animations for mobile drawers and sidebars
 - **Content Validation**: Added utilities to detect and clean malformed markdown from web scraping
+
+### Changed
+- **Supabase Webhooks**: Refactored database triggers to fetch function URLs dynamically from settings, removing hardcoded environment dependencies
+- **RAG Performance**: Optimized AI chat latency by implementing a similarity-based threshold that skips expensive LLM re-ranking for high-confidence matches (>0.85)
+- **Background Processing Security**: Hardened `process-bookmark` secret verification and added structured character-count logging for extraction debugging
+- **Type Safety**: Resolved `no-explicit-any` lint errors and improved type definitions in Edge Functions
+- **Header Component**: Extracted dashboard header into reusable `Header.tsx` component
+- **i18n**: Completed Simplified Chinese translations and added missing keys
+- **Font**: Switched to Noto Sans for better readability across languages
+- **Typography**: Increased font sizes throughout the app for improved readability
+  - Bookmark titles in sidebar: 14px → 15px
+  - Chat messages: Now use base font size (16px)
+  - Summary and notes sections: Upgraded from `prose-sm` to full `prose` styling
+- **Markdown Rendering**: Bookmark content now renders full markdown with code blocks instead of plain text
+- **Code Blocks**: Enhanced styling with monospace font, borders, and proper background colors
+- **Content Fallback**: When content extraction fails, now shows "View Original Page" button instead of broken content
 
 ## [0.0.9] - 2025-12-08
 
