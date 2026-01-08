@@ -138,8 +138,8 @@ async function listBookmarks(userId: string, resourceId: string | null, req: Req
 
     // Parse pagination params from query string
     const url = new URL(req.url);
-    const offset = Math.max(0, parseInt(url.searchParams.get('offset') ?? '0', 10) || 0);
-    const limit = Math.min(MAX_LIMIT, Math.max(1, parseInt(url.searchParams.get('limit') ?? String(DEFAULT_LIMIT), 10) || DEFAULT_LIMIT));
+    const offset = Math.max(0, Number.parseInt(url.searchParams.get('offset') ?? '0', 10) || 0);
+    const limit = Math.min(MAX_LIMIT, Math.max(1, Number.parseInt(url.searchParams.get('limit') ?? String(DEFAULT_LIMIT), 10) || DEFAULT_LIMIT));
 
     // Fetch bookmarks with pagination
     const { data: bookmarks, error, count } = await supabaseAdmin
