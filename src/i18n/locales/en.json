@@ -104,9 +104,7 @@
             "aiSummaries": "<strong>AI-Powered Summaries</strong> - Instantly summarize any article",
             "aiTags": "<strong>AI Tags</strong> - Organize your bookmarks automatically",
             "aiChat": "<strong>AI Chat Assistant</strong> - Chat with your knowledge base",
-            "aiNotes": "<strong>AI Notes</strong> - Generate notes from your bookmarks",
-            "unlimitedBookmarks": "<strong>Unlimited Bookmarks</strong> - Save as much as you want",
-            "prioritySupport": "<strong>Priority Support</strong> - Get help when you need it"
+            "aiNotes": "<strong>AI Notes</strong> - Generate notes from your bookmarks"
         },
         "comingSoon": "Coming Soon",
         "securePayment": "Secure payment via Stripe • Cancel anytime",
@@ -128,15 +126,10 @@
             "feature": "Feature",
             "free": "Free",
             "pro": "Pro",
-            "bookmarks": "Bookmarks",
-            "unlimited": "Unlimited",
             "aiSummaries": "AI Summaries",
             "aiTags": "AI Tags",
             "aiChat": "AI Chat",
-            "aiNotes": "AI Notes",
-            "support": "Support",
-            "community": "Community",
-            "priority": "Priority"
+            "aiNotes": "AI Notes"
         },
         "badge": {
             "free": "Free",

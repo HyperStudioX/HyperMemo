@@ -1,14 +1,17 @@
 import { memo, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 
+import { cn } from '@/lib/utils';
+
 interface DrawerProps {
     isOpen: boolean;
     onClose: () => void;
     children: ReactNode;
     title?: string;
+    className?: string;
 }
 
-export const Drawer = memo(function Drawer({ isOpen, onClose, children, title }: DrawerProps) {
+export const Drawer = memo(function Drawer({ isOpen, onClose, children, title, className }: DrawerProps) {
     if (!isOpen) return null;
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -27,7 +30,10 @@ export const Drawer = memo(function Drawer({ isOpen, onClose, children, title }:
                 tabIndex={0}
                 aria-label="Close drawer"
             />
-            <div className="fixed inset-x-0 bottom-0 md:inset-y-0 md:left-auto md:right-0 md:w-[480px] md:max-w-[90vw] max-h-[90vh] md:max-h-none bg-bg-main shadow-lg z-50 flex flex-col animate-slide-in-bottom md:animate-slide-in-right rounded-t-2xl md:rounded-none">
+            <div className={cn(
+                "fixed inset-x-0 bottom-0 md:inset-y-0 md:left-auto md:right-0 md:w-[480px] md:max-w-[90vw] max-h-[90vh] md:max-h-none bg-bg-main shadow-lg z-50 flex flex-col animate-slide-in-bottom md:animate-slide-in-right rounded-t-2xl md:rounded-none",
+                className
+            )}>
                 <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-border">
                     {title && <h2 className="text-lg md:text-xl font-semibold text-text-primary">{title}</h2>}
                     <button

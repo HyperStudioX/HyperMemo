@@ -1575,6 +1575,7 @@ export default function DashboardApp() {
                 isOpen={subscriptionDrawerOpen}
                 onClose={() => setSubscriptionDrawerOpen(false)}
                 title={t('subscription.title')}
+                className="md:w-[800px]"
             >
                 <SubscriptionManager />
             </Drawer>

@@ -99,9 +99,7 @@
             "aiSummaries": "<strong>AI 智能摘要</strong> - 即時總結任何文章",
             "aiTags": "<strong>AI 標籤</strong> - 自動整理您的書籤",
             "aiChat": "<strong>AI 對話助手</strong> - 與您的知識庫對話",
-            "aiNotes": "<strong>AI 筆記</strong> - 從您的書籤生成筆記",
-            "unlimitedBookmarks": "<strong>無限書籤</strong> - 隨心所欲保存",
-            "prioritySupport": "<strong>優先支援</strong> - 隨時獲取幫助"
+            "aiNotes": "<strong>AI 筆記</strong> - 從您的書籤生成筆記"
         },
         "comingSoon": "即將推出",
         "securePayment": "通過 Stripe 安全支付 • 隨時取消",
@@ -123,15 +121,10 @@
             "feature": "功能",
             "free": "免費版",
             "pro": "專業版",
-            "bookmarks": "書籤數量",
-            "unlimited": "無限",
             "aiSummaries": "AI 摘要",
             "aiTags": "AI 標籤",
             "aiChat": "AI 對話",
-            "aiNotes": "AI 筆記",
-            "support": "支援",
-            "community": "社群",
-            "priority": "優先"
+            "aiNotes": "AI 筆記"
         },
         "badge": {
             "free": "免費版",

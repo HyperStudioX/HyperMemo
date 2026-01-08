@@ -99,9 +99,7 @@
             "aiSummaries": "<strong>AI 智能摘要</strong> - 即时总结任何文章",
             "aiTags": "<strong>AI 标签</strong> - 自动整理您的书签",
             "aiChat": "<strong>AI 对话助手</strong> - 与您的知识库对话",
-            "aiNotes": "<strong>AI 笔记</strong> - 从您的书签生成笔记",
-            "unlimitedBookmarks": "<strong>无限书签</strong> - 随心所欲保存",
-            "prioritySupport": "<strong>优先支持</strong> - 随时获取帮助"
+            "aiNotes": "<strong>AI 笔记</strong> - 从您的书签生成笔记"
         },
         "comingSoon": "即将推出",
         "securePayment": "通过 Stripe 安全支付 • 随时取消",
@@ -123,15 +121,10 @@
             "feature": "功能",
             "free": "免费版",
             "pro": "专业版",
-            "bookmarks": "书签数量",
-            "unlimited": "无限",
             "aiSummaries": "AI 摘要",
             "aiTags": "AI 标签",
             "aiChat": "AI 对话",
-            "aiNotes": "AI 笔记",
-            "support": "支持",
-            "community": "社区",
-            "priority": "优先"
+            "aiNotes": "AI 笔记"
         },
         "badge": {
             "free": "免费版",
