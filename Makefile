@@ -1,4 +1,4 @@
-.PHONY: frontend-install frontend-dev frontend-build frontend-lint frontend-test backend-db backend-functions backend-lint backend-test backend-serve clean build-prod package release validate-build
+.PHONY: frontend-install frontend-dev frontend-build frontend-lint frontend-test backend-db backend-functions backend-lint backend-test backend-serve clean build-prod package release validate-build extension-release
 
 SUPABASE ?= supabase
 VERSION := $(shell node -p "require('./package.json').version")
@@ -67,6 +67,8 @@ package: build-prod validate-build ## Package extension for Chrome Web Store
 	@cd $(DIST_DIR) && zip -r ../$(RELEASE_DIR)/$(PACKAGE_NAME) . -x "*.map" "*.DS_Store"
 	@echo "✅ Package created: $(RELEASE_DIR)/$(PACKAGE_NAME)"
 	@ls -lh $(RELEASE_DIR)/$(PACKAGE_NAME)
+
+extension-release: package ## Build, validate, and package the extension for release
 
 release: package ## Create release package and show upload instructions
 	@echo ""
